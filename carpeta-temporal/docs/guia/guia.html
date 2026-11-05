@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Guía del proyecto Sokoban: clases, patrones y cómo validarlos</title>
+<style>
+@font-face { font-family: "Lora"; src: url(fuentes/lora.woff2) format("woff2"); font-weight: 400 700; }
+@font-face { font-family: "Lora"; src: url(fuentes/lora-italic.woff2) format("woff2"); font-weight: 400 700; font-style: italic; }
+@font-face { font-family: "Inter"; src: url(fuentes/inter.woff2) format("woff2"); font-weight: 100 900; }
+@font-face { font-family: "Inter"; src: url(fuentes/inter-italic.woff2) format("woff2"); font-weight: 100 900; font-style: italic; }
+@font-face { font-family: "Plex Mono"; src: url(fuentes/plex-mono.woff2) format("woff2"); font-weight: 500; }
+:root { --acento: #6E1A2C; --oro: #C9A24A; --crema: #F3EADB; --tinta: #1E1A17; --tinta-2: #4A403A; --apag: #8A7F76; --linea: #D9CBAE; }
+@page { size: A4; margin: 22mm 18mm 20mm 18mm;
+  @top-left { content: "Sokoban · Proceso de Desarrollo de Software"; font-family: "Lora"; font-style: italic; font-size: 8.5pt; color: var(--acento); vertical-align: bottom; padding-bottom: 3mm; border-bottom: .6pt solid var(--linea); }
+  @top-right { content: "Guía del proyecto: clases, patrones y cómo validarlos"; font-family: "Inter"; font-size: 7.5pt; color: var(--apag); vertical-align: bottom; padding-bottom: 3mm; border-bottom: .6pt solid var(--linea); }
+  @bottom-left { content: "Equipo Sokoban · UADE · Proceso de Desarrollo de Software"; font-family: "Inter"; font-size: 7.5pt; color: var(--apag); }
+  @bottom-right { content: "Página " counter(page) " de " counter(pages); font-family: "Inter"; font-size: 7.5pt; color: var(--acento); } }
+@page ancha { size: A4 landscape; margin: 16mm 12mm 14mm 12mm; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { font-family: "Inter", Arial, sans-serif; font-size: 9.6pt; line-height: 1.55; color: var(--tinta); margin: 0; }
+h1.sec { font-family: "Lora"; font-weight: 500; font-size: 18pt; color: var(--acento); padding-bottom: 2mm; border-bottom: .8pt solid var(--oro); margin: 9mm 0 4mm; break-after: avoid; }
+h1.sec + .baj { break-before: avoid; }
+h1.sec:first-child { margin-top: 0; }
+h1.sec .n, h2.sub .n { color: var(--oro); margin-right: 2mm; }
+h2.sub { font-family: "Lora"; font-weight: 500; font-size: 12.5pt; color: var(--acento); margin: 6mm 0 2.5mm; break-after: avoid; }
+h3 { font-weight: 700; font-size: 8.8pt; color: var(--acento); margin: 3.5mm 0 1mm; break-after: avoid; }
+p { margin: 0 0 2.4mm; }
+ul, ol { margin: 0 0 2.6mm; padding-left: 5mm; } li { margin-bottom: 1mm; }
+.baj { font-family: "Lora"; font-style: italic; color: var(--tinta-2); background: var(--crema); border-left: 2.2pt solid var(--acento); padding: 2mm 4mm; margin-bottom: 3.5mm; break-inside: avoid; }
+.idea { background: var(--crema); padding: 3mm 4mm; margin: 3mm 0 4mm; break-inside: avoid; }
+.idea .h { font-weight: 700; font-size: 7pt; letter-spacing: .2em; text-transform: uppercase; color: var(--oro); display: block; margin-bottom: 1mm; }
+.cifras { display: grid; grid-template-columns: repeat(4, 1fr); background: var(--crema); padding: 3mm 0; margin: 2mm 0 4mm; break-inside: avoid; }
+.cifras div { padding: 0 4mm; border-left: .6pt solid var(--linea); } .cifras div:first-child { border-left: 0; }
+.cifras b { display: block; font-family: "Lora"; font-weight: 500; font-size: 17pt; color: var(--acento); }
+.cifras span { font-size: 7.4pt; color: var(--tinta-2); }
+dl.def dt { font-weight: 700; color: var(--acento); margin-top: 2mm; } dl.def dd { margin: 0; padding-left: 5mm; }
+table { width: 100%; border-collapse: collapse; font-size: 8.4pt; margin: 2mm 0 4mm; }
+tr { break-inside: avoid; }
+th { background: #EBD9AE; text-align: left; padding: 1.6mm 2.5mm; } td { padding: 1.6mm 2.5mm; border-bottom: .6pt solid var(--linea); vertical-align: top; }
+.cod { font-family: "Plex Mono", monospace; font-size: 8.2pt; background: #1E1A17; color: #EDE6DA; padding: 2.2mm 4mm; border-radius: 1.5mm; white-space: pre-wrap; break-inside: avoid; line-height: 1.5; margin: 1mm 0 3.5mm; }
+.cod .ln { display: inline-block; width: 7mm; color: #8A7F76; } .cod .cm { color: var(--oro); }
+.cod .tit { display: block; color: #8A7F76; font-size: 7.4pt; margin-bottom: 1mm; }
+code { font-family: "Plex Mono", monospace; font-size: 8.4pt; background: #F1ECE3; padding: 0 1mm; border-radius: 1mm; }
+figure { margin: 2mm 0 4mm; break-inside: avoid; } figure img { width: 100%; display: block; border: .6pt solid var(--linea); border-radius: 1.5mm; }
+figcaption { font-size: 7.6pt; color: var(--apag); margin-top: 1.2mm; font-style: italic; }
+.ancha { page: ancha; break-before: page; }
+.ancha img { width: 100%; max-height: 150mm; object-fit: contain; border: 0; }
+.salto { break-before: page; }
+.junto { break-inside: avoid; }
+.ok, .med, .no { display: inline-block; font-weight: 700; font-size: 7.4pt; padding: .2mm 1.6mm; border-radius: 3mm; white-space: nowrap; }
+.ok { background: #CDD8C1; } .med { background: #F2E3BD; } .no { background: #E8BAB3; }
+/* Código de colores del apunte (resaltado de fondo, texto negro; negrita solo en flúor) */
+.fl, .na, .am, .ve, .ro, .ce, .vi, .ci { padding: 0 .7mm; border-radius: .8mm; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.fl { background: #ECC96F; font-weight: 700; } .na { background: #ECC3A2; } .am { background: #F2E3BD; } .ve { background: #CDD8C1; }
+.ro { background: #E8BAB3; } .ce { background: #C6D3D9; } .vi { background: #D8C9DA; } .ci { background: #A9CDC3; }
+.leyenda td:first-child { width: 33mm; }
+.dos { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; }
+.pie-nota { font-size: 7.6pt; color: var(--apag); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════ 1 ═══════════════════════════ -->
+<h1 class="sec"><span class="n">1</span>Para qué sirve esta guía</h1>
+<div class="baj">Para entender el proyecto parte por parte y poder comprobar por tu cuenta si cada patrón está bien aplicado, con el código a la vista.</div>
+
+<p><span class="ce">La guía recorre el Sokoban tal como está hoy en el repositorio</span>: <span class="na">qué hace cada clase</span>, <span class="ce">cómo se conectan</span> y <span class="na">dónde está cada patrón</span>. <span class="ve">Cada patrón trae una lista de chequeo con el archivo y la línea donde mirar</span>, así no hace falta creerle a nadie: <span class="ve">abrís el archivo y lo comprobás</span>.</p>
+
+<p>La consigna deja claro por qué esto importa: <span class="fl">«El foco de la evaluación es la correcta aplicación de los principios y patrones de diseño presentados en la asignatura (SOLID, GRASP, MVC, GOF)»</span>, y además <span class="fl">«Cada integrante del equipo deberá realizar una defensa exhaustiva del proyecto (oral y/o escrita), lo que determinará la calificación final del mismo.»</span></p>
+
+<div class="cifras">
+  <div><b>15</b><span>clases, interfaces, enums y records (14 archivos .java + el record interno Foto)</span></div>
+  <div><b>3 + 1</b><span>patrones GoF (Observer, Facade, Singleton) + arquitectura MVC</span></div>
+  <div><b>28 / 101</b><span>imágenes de Martín que ya usa el juego</span></div>
+  <div><b>2</b><span>partes pendientes: dominio/personaje y música/sonido</span></div>
+</div>
+
+<div class="idea"><span class="h">La idea fuerza</span><span class="ce">La vista (Luca) y el dominio (pendiente) no se conocen: los dos dependen de un contrato de interfaces</span> (<code>Juego</code>, <code>ObservadorJuego</code>, <code>EstadoJuego</code>). <span class="ve">Por eso cada uno puede trabajar por separado y el dominio se enchufa cambiando una sola línea en <code>Main</code></span>.</div>
+
+<h2 class="sub"><span class="n">1.1</span>Cómo leer este apunte</h2>
+<table class="leyenda">
+  <tr><th>Color</th><th>Qué marca</th></tr>
+  <tr><td><span class="fl">Flúor y negrita</span></td><td>Texto literal de la consigna del profesor (Prof. Pepe). Es lo más importante.</td></tr>
+  <tr><td><span class="na">Naranja</span></td><td>Rótulos y conceptos que ordenan el texto.</td></tr>
+  <tr><td><span class="am">Amarillo</span></td><td>Definiciones.</td></tr>
+  <tr><td><span class="ce">Celeste</span></td><td>Explicación técnica: cómo y por qué funciona.</td></tr>
+  <tr><td><span class="ve">Verde</span></td><td>Lo que está bien hecho, buenas prácticas, ventajas.</td></tr>
+  <tr><td><span class="ro">Rojo</span></td><td>Advertencias, riesgos, cosas a mejorar.</td></tr>
+  <tr><td><span class="vi">Violeta</span></td><td>Ampliación tomada de la bibliografía (GoF), no de lo que hay en el proyecto.</td></tr>
+  <tr><td><span class="ci">Cian</span></td><td>Rótulo de ejercicio resuelto.</td></tr>
+</table>
+<p>En las listas de chequeo: <span class="ok">✓ se cumple</span> <span class="med">⚠ a medias / revisar</span> <span class="no">✗ no se cumple todavía</span>. Las referencias tipo <code>vista/Imagenes.java:29</code> son <span class="ce">archivo y número de línea dentro de <code>src/main/java/sokoban/</code></span>. <span class="ce">En los recuadros de código, los comentarios en dorado se agregaron para esta guía y no están en el archivo original.</span></p>
+
+<!-- ═══════════════════════════ 2 ═══════════════════════════ -->
+<h1 class="sec"><span class="n">2</span>Cómo se lee un diagrama de clases</h1>
+<div class="baj">Lo mínimo para leer cualquier diagrama del proyecto sin perderse: la caja de cada clase, los símbolos y, sobre todo, hacia dónde apuntan las flechas.</div>
+
+<h2 class="sub"><span class="n">2.1</span>La caja de una clase</h2>
+<dl class="def">
+  <dt>Tres compartimentos</dt>
+  <dd><span class="am">Arriba el nombre; en el medio los atributos (lo que la clase guarda); abajo los métodos (lo que la clase hace).</span> <span class="ce">Si un compartimento está vacío igual se dibuja la rayita.</span></dd>
+  <dt>Visibilidad</dt>
+  <dd><span class="am"><code>+</code> público (lo usa cualquiera), <code>-</code> privado (solo la clase), <code>#</code> protegido (la clase y sus hijas).</span></dd>
+  <dt>Subrayado y cursiva</dt>
+  <dd><span class="am">Subrayado = <code>static</code>: pertenece a la clase y no a cada objeto</span> (por ejemplo <code>obtenerInstancia()</code>). <span class="am">Cursiva = abstracto: un método sin código</span>, <span class="ce">como todos los de una interfaz</span>.</dd>
+  <dt>Estereotipos «…»</dt>
+  <dd><span class="am">Dicen qué tipo de cosa es: «interface», «enumeration», «record».</span> <span class="ce">En los diagramas de patrones, la etiqueta dorada arriba de la caja dice el <b>rol</b> que cumple esa clase en el patrón.</span></dd>
+  <dt>Colores de las cajas</dt>
+  <dd><span class="na">Autoría:</span> <span class="ce">azul = Luca, verde = Martín, amarillo = integración, gris punteado = pendiente.</span></dd>
+</dl>
+
+<h2 class="sub"><span class="n">2.2</span>Las flechas</h2>
+<p><span class="ce">Regla general: <b>la flecha sale de la clase que depende y apunta a la que conoce</b>.</span> <span class="ve">Si dudás, preguntate «¿quién tiene el código que menciona a quién?»: la flecha sale de ese archivo.</span></p>
+<figure><img src="../uml/0-como-leer-flechas.svg" alt="Cómo leer las flechas"><figcaption>docs/uml/0-como-leer-flechas · cada fila es un ejemplo real del proyecto.</figcaption></figure>
+
+<h2 class="sub"><span class="n">2.3</span>Errores típicos al leer o dibujar</h2>
+<ul>
+  <li><span class="ro">Dibujar la flecha al revés.</span> <span class="ce"><code>PantallaJuego</code> conoce a <code>Juego</code>, no al revés: la flecha va de <code>PantallaJuego</code> hacia <code>Juego</code>.</span></li>
+  <li><span class="ro">Confundir herencia con realización.</span> <span class="ce">Herencia (<code>extends</code>) es línea llena; realización (<code>implements</code>, con una interfaz) es punteada. Las dos terminan en triángulo hueco.</span></li>
+  <li><span class="ro">Confundir composición con agregación.</span> <span class="ce">Composición (◆ lleno): el todo crea a la parte y la parte no vive sin él. Agregación (◇ vacío): el todo tiene a la parte pero se la dieron de afuera.</span></li>
+  <li><span class="ro">Poner asociación donde solo hay un uso pasajero.</span> <span class="ce">Si la otra clase aparece solo dentro de un método (se crea o se recibe y no se guarda), es dependencia (punteada), no asociación.</span></li>
+</ul>
+
+<!-- ═══════════════════════════ 3 ═══════════════════════════ -->
+<div class="junto"><h1 class="sec"><span class="n">3</span>El mapa del proyecto</h1>
+<div class="baj">Antes de entrar en las clases, la foto desde lejos: qué paquetes hay, quién hizo cada uno y quién depende de quién.</div>
+<figure><img src="../uml/1-vista-general.svg" alt="Vista general"><figcaption>docs/uml/1-vista-general · todas las flechas llegan al CONTRATO.</figcaption></figure></div>
+
+<table>
+  <tr><th>Paquete</th><th>Qué contiene</th><th>Autor</th><th>Estado</th></tr>
+  <tr><td><code>sokoban</code></td><td><span class="ce">Main: arranca el programa y conecta las piezas.</span></td><td>Luca</td><td><span class="ok">✓ listo</span></td></tr>
+  <tr><td><code>sokoban.vista</code></td><td><span class="ce">Todo lo que se ve: ventana, menú, partida, HUD, tablero, carteles, imágenes.</span></td><td>Luca (+ <code>Epoca</code> en la integración)</td><td><span class="ok">✓ listo</span></td></tr>
+  <tr><td><code>sokoban.modelo</code></td><td><span class="ce">El contrato entre la vista y el dominio: 2 interfaces, 1 record y 1 enum.</span></td><td>Luca</td><td><span class="ok">✓ listo</span></td></tr>
+  <tr><td><code>sokoban.prueba</code></td><td><span class="ce">JuegoDePrueba: un Sokoban mínimo para probar la vista.</span></td><td>Luca</td><td><span class="med">⚠ provisorio</span></td></tr>
+  <tr><td><code>assets/</code></td><td><span class="ce">101 imágenes: personaje, cajas, pisos, paredes, fondos, HUD.</span></td><td>Martín</td><td><span class="ok">✓ listo (28 en uso)</span></td></tr>
+  <tr><td>dominio y personaje</td><td><span class="ce">Tablero, jugador, cajas, niveles .txt, deshacer, puntaje.</span></td><td>—</td><td><span class="no">✗ pendiente</span></td></tr>
+  <tr><td>música y sonido</td><td><span class="ce">Efectos por acción y música de fondo.</span></td><td>—</td><td><span class="no">✗ pendiente</span></td></tr>
+</table>
+
+<div class="idea"><span class="h">Para validar</span><span class="ve">Ningún archivo de <code>sokoban.modelo</code> ni de <code>sokoban.prueba</code> importa algo de <code>sokoban.vista</code>.</span> <span class="ce">Si algún día aparece un <code>import sokoban.vista…</code> en el dominio, se rompió la arquitectura.</span> <span class="ve">Comprobalo buscando «import sokoban.vista» en esos paquetes: hoy no aparece ninguno.</span></div>
+
+<!-- ═══════════════════════════ 4 ═══════════════════════════ -->
+<h1 class="sec"><span class="n">4</span>Qué pasa cuando jugás</h1>
+<div class="baj">El diagrama de clases muestra la estructura; el de secuencia muestra el orden de las llamadas. Seguir una jugada de punta a punta es la mejor forma de entender el diseño.</div>
+
+<h2 class="sub"><span class="n">4.1</span>El arranque</h2>
+<pre class="cod" data-archivo="Main.java" data-desde="18">public static void main(String[] args) {
+    SwingUtilities.invokeLater(() -> {          // todo Swing corre en un solo hilo (EDT)
+        Juego juego = new JuegoDePrueba();      // ÚNICA línea que conoce la clase concreta
+        new VentanaPrincipal(juego).setVisible(true);
+    });
+}</pre>
+<p><span class="ce"><code>Main</code> es el único lugar que dice <code>new JuegoDePrueba()</code>; el resto del programa recibe un <code>Juego</code> (la interfaz).</span> <span class="ve">Cuando llegue el dominio se cambia esta línea y nada más.</span> <span class="ce"><code>VentanaPrincipal</code> crea el menú y la pantalla de juego, y la pantalla de juego crea el HUD y el tablero y los registra como observadores.</span></p>
+
+<h2 class="sub"><span class="n">4.2</span>Apretar una flecha, paso a paso</h2>
+<div class="dos">
+<figure><img src="../uml/7-secuencia-mover.svg" alt="Secuencia al mover"><figcaption>docs/uml/7-secuencia-mover</figcaption></figure>
+<div>
+<ol>
+  <li><span class="ce"><code>PantallaJuego</code> recibe la tecla y la traduce con el mapa <code>TECLAS</code> en <code>Direccion.DERECHA</code></span> (<code>vista/PantallaJuego.java:56</code>).</li>
+  <li><span class="ce">Gira el personaje: <code>tablero.mirarHacia(DERECHA)</code></span> <span class="ce">(usa el sprite <code>player_right</code> de Martín).</span></li>
+  <li><span class="ce">Le pide al juego <code>mover(DERECHA)</code>: es lo único que la vista sabe hacer con el dominio.</span></li>
+  <li><span class="ce">El juego valida el movimiento (paredes, cajas, empuje) y, si cambió algo, llama a <code>notificar()</code>.</span></li>
+  <li><span class="na">Observer:</span> <span class="ce"><code>notificar()</code> recorre la lista y llama <code>actualizar(estado)</code> en el HUD y en el tablero; cada uno se redibuja solo.</span></li>
+  <li><span class="ce"><code>PantallaJuego</code> pide <code>getEstado()</code>; si <code>completado()</code> es verdadero, muestra el cartel de resultado</span> (<code>vista/PantallaJuego.java:75</code>).</li>
+</ol>
+<p><span class="ve">Fijate que en ningún paso la vista toca el tablero del dominio: solo pide y recibe una foto (<code>EstadoJuego</code>).</span></p>
+</div>
+</div>
+
+<!-- ═══════════════════════════ 5 ═══════════════════════════ -->
+<h1 class="sec"><span class="n">5</span>Clase por clase</h1>
+<div class="baj">Qué hace cada clase, con quién se relaciona y qué mirar para validarla. Está ordenado por paquete, de afuera (lo que se ve) hacia adentro (el contrato).</div>
+
+<h2 class="sub"><span class="n">5.1</span>Vista · <code>sokoban.vista</code> (Luca)</h2>
+<table>
+  <tr><th style="width:24mm">Clase</th><th>Qué hace</th><th style="width:44mm">Relaciones clave</th><th style="width:46mm">Mirá esto para validarla</th></tr>
+  <tr><td><b>VentanaPrincipal</b><br><span class="pie-nota">extiende JFrame</span></td><td><span class="ce">La ventana. Tiene el menú y la partida, y cambia entre ellos con un <code>CardLayout</code>.</span></td><td>◆ MenuPrincipal, ◆ PantallaJuego</td><td><span class="ve">Las pantallas no se conocen entre sí: se avisan con callbacks (<code>this::jugar</code>, <code>this::mostrarMenu</code>).</span></td></tr>
+  <tr><td><b>MenuPrincipal</b><br><span class="pie-nota">extiende JPanel</span></td><td><span class="ce">Menú con un botón por nivel y Salir, sobre el fondo de 1985.</span></td><td>◆ Cartel, usa Imagenes</td><td><span class="ve">Recibe <code>IntConsumer</code> y <code>Runnable</code>: no sabe quién lo contiene (bajo acoplamiento).</span></td></tr>
+  <tr><td><b>PantallaJuego</b><br><span class="pie-nota">extiende JPanel</span></td><td><span class="ce">La partida: HUD arriba, tablero al centro. Traduce teclas en movimientos y muestra pausa y resultado.</span></td><td>→ Juego, ◆ PanelHUD, ◆ PanelTablero, crea Cartel</td><td><span class="ro">Es la clase con más tareas (armar, teclado, carteles).</span> <span class="ce">Ver SRP en la sección 11.</span></td></tr>
+  <tr><td><b>PanelHUD</b><br><span class="pie-nota">extiende JPanel</span></td><td><span class="ce">Indicadores de nivel, movimientos y empujes, y botones Deshacer, Reiniciar y Pausa.</span></td><td>implementa ObservadorJuego, usa Juego e Imagenes</td><td><span class="ve">Los botones no toman el foco, así las flechas siempre mueven al jugador</span> (<code>vista/PanelHUD.java:82</code>).</td></tr>
+  <tr><td><b>PanelTablero</b><br><span class="pie-nota">extiende JPanel</span></td><td><span class="ce">Dibuja el tablero celda por celda con las imágenes de la época, y el personaje mirando hacia donde se movió.</span></td><td>implementa ObservadorJuego, → Epoca, → Direccion, usa Imagenes</td><td><span class="ve">Los símbolos están en el mapa <code>CAPAS</code>: un elemento nuevo es una línea más, sin <code>switch</code></span> (<code>:35</code>).</td></tr>
+  <tr><td><b>Cartel</b><br><span class="pie-nota">extiende JPanel</span></td><td><span class="ce">Recuadro reutilizable con título, mensaje y botones.</span></td><td>lo usan el menú, la pausa y el resultado</td><td><span class="ve">Evita código duplicado: los tres carteles son la misma clase.</span></td></tr>
+  <tr><td><b>Imagenes</b><br><span class="pie-nota">«Singleton»</span></td><td><span class="ce">Caché de imágenes: cada PNG se lee del disco o del .jar una sola vez.</span></td><td>la usan Menu, HUD y Tablero; lee assets/</td><td><span class="na">Ver sección 9 (Singleton).</span></td></tr>
+  <tr><td><b>Epoca</b><br><span class="pie-nota">enum · integración</span></td><td><span class="ce">Fondo, piso y pared de cada época (1955, 1985, 2015). Los niveles las van rotando.</span></td><td>la usa PanelTablero</td><td><span class="ve">Una época nueva es una constante más (OCP).</span> <span class="ce"><code>Math.floorMod</code> evita índices negativos.</span></td></tr>
+</table>
+
+<div class="junto"><h2 class="sub"><span class="n">5.2</span>Contrato · <code>sokoban.modelo</code> (Luca)</h2>
+<table>
+  <tr><th style="width:24mm">Clase</th><th>Qué hace</th><th style="width:44mm">Relaciones clave</th><th style="width:46mm">Mirá esto para validarla</th></tr>
+  <tr><td><b>Juego</b><br><span class="pie-nota">interface</span></td><td><span class="ce">Todo lo que la vista le puede pedir al dominio: iniciar nivel, mover, deshacer, reiniciar, pedir el estado y registrar observadores.</span></td><td>Facade y sujeto del Observer</td><td><span class="ce">El comentario de <code>modelo/Juego.java:10</code> fija la regla: después de cada cambio hay que avisar a los observadores.</span></td></tr>
+  <tr><td><b>ObservadorJuego</b><br><span class="pie-nota">interface</span></td><td><span class="ce">Un solo método: <code>actualizar(EstadoJuego)</code>.</span></td><td>la implementan PanelHUD y PanelTablero</td><td><span class="ve">Un método solo: cumple ISP.</span></td></tr>
+  <tr><td><b>EstadoJuego</b><br><span class="pie-nota">record (DTO)</span></td><td><span class="ce">La foto del nivel: nivel, movimientos, empujes, deshacer usados, puntaje, si ganó y el tablero como líneas de texto.</span></td><td>lo devuelve Juego y lo recibe cada observador</td><td><span class="ve">Es inmutable: <code>record</code> + <code>List.copyOf</code></span> (<code>modelo/EstadoJuego.java:16</code>).</td></tr>
+  <tr><td><b>Direccion</b><br><span class="pie-nota">enum</span></td><td><span class="ce">ARRIBA, ABAJO, IZQUIERDA, DERECHA; cada una sabe cuánto se mueve en filas y columnas.</span></td><td>la usan PantallaJuego, PanelTablero y Juego</td><td><span class="ve">Evita «primitive obsession» (no se usan números o textos sueltos)</span> <span class="ce">y es Experto en información (GRASP).</span></td></tr>
+</table></div>
+
+<div class="junto"><h2 class="sub"><span class="n">5.3</span>Arranque y prueba (Luca)</h2>
+<table>
+  <tr><th style="width:24mm">Clase</th><th>Qué hace</th><th style="width:44mm">Relaciones clave</th><th style="width:46mm">Mirá esto para validarla</th></tr>
+  <tr><td><b>Main</b></td><td><span class="ce">Crea el juego y la ventana. Es la «raíz de composición»: el único lugar que conoce las clases concretas.</span></td><td>crea VentanaPrincipal y JuegoDePrueba</td><td><span class="ve">Usa <code>SwingUtilities.invokeLater</code>, como pide Swing.</span></td></tr>
+  <tr><td><b>JuegoDePrueba</b><br><span class="pie-nota">provisorio</span></td><td><span class="ce">Un Sokoban mínimo de 3 niveles (paredes, pisos, destinos y cajas normales) para probar la interfaz.</span></td><td>implementa Juego, ◇ ObservadorJuego, ◆ Foto</td><td><span class="ro">No cumple las reglas del deshacer (15 / 5 / 3) ni tiene cajas especiales: no hace falta, porque lo reemplaza el dominio.</span></td></tr>
+  <tr><td><b>Foto</b><br><span class="pie-nota">record interno</span></td><td><span class="ce">Copia del tablero y contadores para poder deshacer.</span></td><td>la guarda JuegoDePrueba en un historial</td><td><span class="vi">Se parece a un Memento (GoF) simplificado</span>, <span class="ce">pero no está planteado como patrón.</span></td></tr>
+</table></div>
+
+<!-- ═══════════════════════════ 6 ═══════════════════════════ -->
+<section class="ancha">
+<h1 class="sec"><span class="n">6</span>Diagrama de clases completo</h1>
+<figure><img src="../uml/2-diagrama-completo.svg" alt="Diagrama completo"><figcaption>docs/uml/2-diagrama-completo · es vectorial: hacé zoom en el PDF para leer los métodos. Los «puentecitos» marcan líneas que se cruzan sin conectarse.</figcaption></figure>
+</section>
+
+<!-- ═══════════════════════════ 7 ═══════════════════════════ -->
+<h1 class="sec salto"><span class="n">7</span>Patrón Observer</h1>
+<div class="baj">Sirve para que el HUD y el tablero se actualicen solos cada vez que cambia la partida, sin que el dominio sepa que existen.</div>
+
+<dl class="def">
+  <dt>Definición</dt>
+  <dd><span class="am">Observer es un patrón de comportamiento que define una dependencia de uno a muchos entre objetos: cuando un objeto (el sujeto) cambia de estado, todos sus dependientes (los observadores) son notificados y se actualizan automáticamente.</span></dd>
+  <dt>El problema que resuelve acá</dt>
+  <dd><span class="ce">Después de cada movimiento hay que redibujar el HUD y el tablero, y mañana también hacer sonar un efecto.</span> <span class="ro">Si el dominio llamara directamente a <code>PanelHUD</code> y <code>PanelTablero</code>, el dominio dependería de la vista (y de Swing).</span> <span class="ve">Con Observer el dominio solo conoce la interfaz <code>ObservadorJuego</code>.</span></dd>
+</dl>
+
+<figure><img src="../uml/3-patron-observer.svg" alt="Observer"><figcaption>docs/uml/3-patron-observer · seguí los números del 1 al 4.</figcaption></figure>
+
+<table>
+  <tr><th>Rol en el patrón (GoF)</th><th>Clase del proyecto</th><th>Dónde</th></tr>
+  <tr><td><span class="na">Subject (sujeto)</span></td><td><code>Juego</code> (<code>agregarObservador</code>)</td><td><code>modelo/Juego.java:27</code></td></tr>
+  <tr><td><span class="na">ConcreteSubject</span></td><td><code>JuegoDePrueba</code> (mañana el dominio)</td><td><code>prueba/JuegoDePrueba.java:147</code></td></tr>
+  <tr><td><span class="na">Observer</span></td><td><code>ObservadorJuego</code></td><td><code>modelo/ObservadorJuego.java:7</code></td></tr>
+  <tr><td><span class="na">ConcreteObserver</span></td><td><code>PanelHUD</code>, <code>PanelTablero</code> (mañana el sonido)</td><td><code>vista/PanelHUD.java:26</code>, <code>vista/PanelTablero.java:25</code></td></tr>
+  <tr><td><span class="na">Estado que viaja</span></td><td><code>EstadoJuego</code> (modelo «push»)</td><td><code>modelo/EstadoJuego.java:12</code></td></tr>
+</table>
+
+<pre class="cod" data-archivo="prueba/JuegoDePrueba.java" data-desde="142">@Override
+public void agregarObservador(ObservadorJuego observador) {
+    observadores.add(observador);                  // guarda la INTERFAZ, no PanelHUD
+}
+
+private void notificar() {
+    EstadoJuego estado = getEstado();              // una sola foto para todos
+    observadores.forEach(observador -> observador.actualizar(estado));
+}</pre>
+
+<div class="junto"><h2 class="sub"><span class="n">7.1</span>Lista de chequeo</h2>
+<table>
+  <tr><th style="width:6mm">#</th><th>Pregunta</th><th style="width:52mm">Dónde mirar</th><th style="width:18mm">Estado</th></tr>
+  <tr><td>1</td><td>¿Hay una interfaz de observador con un método de aviso?</td><td><code>ObservadorJuego.actualizar</code></td><td><span class="ok">✓</span></td></tr>
+  <tr><td>2</td><td>¿El sujeto permite registrar observadores?</td><td><code>Juego.agregarObservador</code></td><td><span class="ok">✓</span></td></tr>
+  <tr><td>3</td><td>¿El sujeto guarda una lista del tipo interfaz (no de clases concretas)?</td><td><code>List&lt;ObservadorJuego&gt;</code> en JuegoDePrueba</td><td><span class="ok">✓</span></td></tr>
+  <tr><td>4</td><td>¿Avisa después de <b>cada</b> cambio?</td><td><code>notificar()</code> al final de <code>iniciarNivel</code>, <code>mover</code> y <code>deshacer</code> (<code>reiniciar</code> llama a <code>iniciarNivel</code>)</td><td><span class="ok">✓</span></td></tr>
+  <tr><td>5</td><td>¿El sujeto ignora quiénes son los observadores?</td><td>JuegoDePrueba no importa nada de <code>sokoban.vista</code></td><td><span class="ok">✓</span></td></tr>
+  <tr><td>6</td><td>¿Se puede sumar un observador sin modificar el sujeto?</td><td>Ver el ejercicio resuelto (sección 13)</td><td><span class="ok">✓</span></td></tr>
+  <tr><td>7</td><td>¿Se puede dar de baja un observador?</td><td>No existe <code>quitarObservador</code></td><td><span class="med">⚠</span></td></tr>
+  <tr><td>8</td><td>¿Está garantizado que el dominio real va a notificar?</td><td>Solo lo dice un comentario en <code>Juego.java</code></td><td><span class="med">⚠</span></td></tr>
+</table></div>
+
+<h2 class="sub"><span class="n">7.2</span>Veredicto</h2>
+<p><span class="ve">Bien aplicado: están los cuatro roles, el sujeto depende solo de la interfaz y sumar un observador no obliga a tocar nada.</span> Para defenderlo, conviene saber estos matices:</p>
+<ul>
+  <li><span class="vi">En el GoF el sujeto también tiene <code>detach</code> (dar de baja).</span> <span class="ce">Acá no hace falta porque el HUD y el tablero viven toda la ejecución</span>; <span class="ro">si algún día se crean y destruyen pantallas, habría que agregar <code>quitarObservador</code>.</span></li>
+  <li><span class="ro">Cada implementación de <code>Juego</code> tiene que acordarse de llamar a <code>notificar()</code>: si el dominio se olvida, la pantalla no se actualiza.</span> <span class="ve">Una mejora posible es una clase abstracta (por ejemplo <code>JuegoObservable</code>) que ya traiga la lista y <code>notificar()</code>, para que el dominio herede eso hecho.</span></li>
+  <li><span class="ce">Es un Observer «push»: el sujeto manda el estado completo.</span> <span class="ve">Como <code>EstadoJuego</code> es inmutable, ningún observador puede cambiarlo por accidente.</span></li>
+  <li><span class="ce"><code>PantallaJuego</code> no es observador: después de mover consulta <code>getEstado()</code> para ver si ganó.</span> <span class="ve">Es válido (consulta directa)</span>, <span class="ro">pero si el dominio terminara un nivel por otro camino (por ejemplo, una caja que resbala sola), el cartel no aparecería.</span></li>
+</ul>
+
+<!-- ═══════════════════════════ 8 ═══════════════════════════ -->
+<h1 class="sec"><span class="n">8</span>Patrón Facade</h1>
+<div class="baj">Sirve para que la vista hable con el dominio a través de una sola puerta simple, sin conocer las piezas que hay detrás.</div>
+
+<dl class="def">
+  <dt>Definición</dt>
+  <dd><span class="am">Facade es un patrón estructural que proporciona una interfaz unificada y simple a un conjunto de interfaces de un subsistema, para que el subsistema sea más fácil de usar.</span></dd>
+  <dt>El problema que resuelve acá</dt>
+  <dd><span class="ce">Mover al jugador en el dominio real implica mirar el tablero, empujar la caja, ver si es frágil o si resbala, abrir muros con la caja llave, guardar el historial y sumar el puntaje.</span> <span class="ve">La vista solo dice <code>juego.mover(Direccion.DERECHA)</code>.</span></dd>
+</dl>
+
+<figure><img src="../uml/4-patron-facade.svg" alt="Facade"><figcaption>docs/uml/4-patron-facade · el subsistema todavía no existe (gris).</figcaption></figure>
+
+<table>
+  <tr><th>Rol en el patrón (GoF)</th><th>Clase del proyecto</th><th>Dónde</th></tr>
+  <tr><td><span class="na">Client</span></td><td><code>PantallaJuego</code>, <code>PanelHUD</code>, <code>VentanaPrincipal</code></td><td>usan solo métodos de <code>Juego</code></td></tr>
+  <tr><td><span class="na">Facade</span></td><td><code>Juego</code> (interfaz) + la clase que la implemente</td><td><code>modelo/Juego.java:13</code></td></tr>
+  <tr><td><span class="na">Subsystem classes</span></td><td>Tablero, jugador, cajas, niveles, historial, puntaje</td><td><span class="no">✗ pendiente (dominio)</span></td></tr>
+</table>
+
+<div class="junto"><h2 class="sub"><span class="n">8.1</span>Lista de chequeo</h2>
+<table>
+  <tr><th style="width:6mm">#</th><th>Pregunta</th><th style="width:52mm">Dónde mirar</th><th style="width:18mm">Estado</th></tr>
+  <tr><td>1</td><td>¿Hay un punto de entrada único y con pocas operaciones?</td><td><code>Juego</code>: 7 métodos</td><td><span class="ok">✓</span></td></tr>
+  <tr><td>2</td><td>¿Los clientes usan solo la fachada?</td><td>La vista no importa nada del dominio</td><td><span class="ok">✓</span></td></tr>
+  <tr><td>3</td><td>¿Hay detrás un subsistema de varias clases?</td><td>Hoy <code>JuegoDePrueba</code> hace todo en una clase</td><td><span class="no">✗ todavía</span></td></tr>
+  <tr><td>4</td><td>¿La fachada delega en el subsistema en vez de resolver todo?</td><td>Se valida con el dominio real</td><td><span class="med">⚠ pendiente</span></td></tr>
+  <tr><td>5</td><td>¿La interfaz tiene una sola responsabilidad?</td><td><code>agregarObservador</code> mezcla «fachada» y «sujeto»</td><td><span class="med">⚠</span></td></tr>
+</table></div>
+
+<h2 class="sub"><span class="n">8.2</span>Veredicto</h2>
+<ul>
+  <li><span class="ve">La puerta (la interfaz) está bien diseñada: es chica, clara y protege a la vista de los cambios del dominio</span> <span class="ce">(GRASP «Variaciones protegidas»).</span></li>
+  <li><span class="ro">Hoy el patrón está a medias: una fachada sin subsistema detrás es solo una interfaz.</span> <span class="ce">Se completa cuando el dominio implemente <code>Juego</code> con una clase que coordine <code>Tablero</code>, <code>Jugador</code>, las cajas, etc.</span> <span class="ve">Avisale a quien hace el dominio que su clase principal tiene que <b>delegar</b>, no hacer todo.</span></li>
+  <li><span class="vi">En el GoF la fachada suele ser una clase concreta.</span> <span class="ce">Acá es una interfaz más una clase que la implementa: se combina Facade con DIP</span>, <span class="ve">lo que permite tener <code>JuegoDePrueba</code> mientras tanto.</span></li>
+  <li><span class="ro">Si te preguntan por ISP:</span> <span class="ce"><code>Juego</code> podría dividirse en <code>Juego</code> (acciones) y <code>JuegoObservable</code> (registrar observadores).</span> <span class="ve">Con 7 métodos no es grave, pero es bueno saberlo.</span></li>
+</ul>
+
+<!-- ═══════════════════════════ 9 ═══════════════════════════ -->
+<h1 class="sec"><span class="n">9</span>Patrón Singleton</h1>
+<div class="baj">Sirve para que el menú, el HUD y el tablero compartan una única caché de imágenes, y cada archivo se lea una sola vez.</div>
+
+<dl class="def">
+  <dt>Definición</dt>
+  <dd><span class="am">Singleton es un patrón creacional que garantiza que una clase tenga una única instancia y proporciona un punto de acceso global a ella.</span></dd>
+  <dt>El problema que resuelve acá</dt>
+  <dd><span class="ce">El tablero se redibuja en cada movimiento y usa decenas de imágenes.</span> <span class="ro">Leerlas del disco cada vez sería lento</span>, <span class="ve">y tener una caché por pantalla duplicaría memoria. Con una caché única, cada PNG se lee una vez.</span></dd>
+</dl>
+
+<figure><img src="../uml/5-patron-singleton.svg" alt="Singleton"><figcaption>docs/uml/5-patron-singleton</figcaption></figure>
+
+<pre class="cod" data-archivo="vista/Imagenes.java" data-desde="18">public final class Imagenes {                     // final: nadie puede heredarla
+
+    private static final String CARPETA = "assets/";
+
+    private static Imagenes instancia;            // 1. la única instancia
+
+    private final Map&lt;String, Image&gt; cache = new HashMap&lt;&gt;();
+
+    private Imagenes() {                          // 2. constructor privado
+    }
+
+    public static Imagenes obtenerInstancia() {   // 3. acceso global
+        if (instancia == null) {                  //    se crea la primera vez (lazy)
+            instancia = new Imagenes();
+        }
+        return instancia;
+    }</pre>
+
+<div class="junto"><h2 class="sub"><span class="n">9.1</span>Lista de chequeo</h2>
+<table>
+  <tr><th style="width:6mm">#</th><th>Pregunta</th><th style="width:52mm">Dónde mirar</th><th style="width:18mm">Estado</th></tr>
+  <tr><td>1</td><td>¿El constructor es privado?</td><td><code>vista/Imagenes.java:26</code></td><td><span class="ok">✓</span></td></tr>
+  <tr><td>2</td><td>¿Hay un atributo <code>static</code> con la única instancia?</td><td><code>vista/Imagenes.java:22</code></td><td><span class="ok">✓</span></td></tr>
+  <tr><td>3</td><td>¿Hay un método <code>static</code> de acceso que la crea si no existe?</td><td><code>vista/Imagenes.java:29</code></td><td><span class="ok">✓</span></td></tr>
+  <tr><td>4</td><td>¿La clase es <code>final</code>?</td><td><code>vista/Imagenes.java:18</code></td><td><span class="ok">✓</span></td></tr>
+  <tr><td>5</td><td>¿Realmente hace falta una sola instancia?</td><td>Sí: es una caché compartida</td><td><span class="ok">✓</span></td></tr>
+  <tr><td>6</td><td>¿Es seguro con varios hilos?</td><td>No está sincronizado</td><td><span class="med">⚠ ver abajo</span></td></tr>
+</table></div>
+
+<h2 class="sub"><span class="n">9.2</span>Veredicto</h2>
+<ul>
+  <li><span class="ve">Bien aplicado y bien justificado: tiene las tres piezas y un motivo real (caché compartida).</span></li>
+  <li><span class="ce">No es seguro con varios hilos, pero en Swing todo el dibujo corre en un único hilo (el EDT)</span> <span class="ve">y <code>Main</code> arranca con <code>invokeLater</code>, así que hoy no hay riesgo.</span> <span class="ro">Si el sonido se carga en otro hilo, no debería usar esta clase.</span></li>
+  <li><span class="ro">Críticas que te pueden hacer: es un estado global y dificulta los tests.</span> <span class="ce">La alternativa sería crear una sola <code>Imagenes</code> en <code>Main</code> y pasarla por constructor.</span> <span class="ve">Para una caché de solo lectura, el Singleton es defendible.</span></li>
+  <li><span class="ce">En GRASP, <code>Imagenes</code> es una «Fabricación pura»: no representa nada del juego, existe para resolver un tema técnico.</span></li>
+</ul>
+
+<!-- ═══════════════════════════ 10 ═══════════════════════════ -->
+<h1 class="sec"><span class="n">10</span>MVC y el DTO <code>EstadoJuego</code></h1>
+<div class="baj">MVC no es un patrón GoF sino una forma de ordenar la aplicación: separa las reglas del juego (modelo) de lo que se ve (vista) y de cómo entran las acciones (controlador).</div>
+
+<dl class="def">
+  <dt>Definición</dt>
+  <dd><span class="am">MVC (Modelo-Vista-Controlador) divide la aplicación en el modelo, que tiene los datos y las reglas; la vista, que los muestra; y el controlador, que recibe las acciones del usuario y las traduce en operaciones sobre el modelo.</span></dd>
+  <dt>DTO</dt>
+  <dd><span class="am">Un DTO (objeto de transferencia de datos) es un objeto simple, sin lógica, que solo lleva datos de una capa a otra.</span> <span class="ce">Acá es <code>EstadoJuego</code>: la vista recibe una foto del nivel y nunca un <code>Tablero</code> o una <code>Caja</code> del dominio.</span></dd>
+</dl>
+
+<figure><img src="../uml/6-mvc.svg" alt="MVC"><figcaption>docs/uml/6-mvc</figcaption></figure>
+
+<div class="junto"><h2 class="sub"><span class="n">10.1</span>Lista de chequeo</h2>
+<table>
+  <tr><th style="width:6mm">#</th><th>Pregunta</th><th style="width:52mm">Dónde mirar</th><th style="width:18mm">Estado</th></tr>
+  <tr><td>1</td><td>¿El modelo no conoce a la vista?</td><td>Sin imports de <code>sokoban.vista</code> en modelo ni prueba</td><td><span class="ok">✓</span></td></tr>
+  <tr><td>2</td><td>¿La vista recibe datos inmutables?</td><td><code>record</code> + <code>List.copyOf</code></td><td><span class="ok">✓</span></td></tr>
+  <tr><td>3</td><td>¿La vista modifica el modelo solo a través de operaciones?</td><td>Solo llama métodos de <code>Juego</code></td><td><span class="ok">✓</span></td></tr>
+  <tr><td>4</td><td>¿Está claro quién es el controlador?</td><td>Repartido: ver abajo</td><td><span class="med">⚠</span></td></tr>
+</table></div>
+<ul>
+  <li><span class="ce">En Swing es normal que el «controlador de entrada» (teclas y botones) viva dentro de los paneles: <code>PantallaJuego</code> traduce las flechas y <code>PanelHUD</code> los botones.</span></li>
+  <li><span class="ce">El «Controlador» de GRASP (la clase que recibe los pedidos del sistema y coordina el dominio) va a ser la clase del dominio que implemente <code>Juego</code>.</span> <span class="ve">Si te preguntan «¿dónde está el controlador?», explicá los dos niveles.</span></li>
+  <li><span class="ro">El tablero viaja como texto con un carácter por celda, y no alcanza para dos cosas en la misma celda</span> <span class="ce">(caja llave sobre cerrojo, jugador sobre piso resbaladizo, caja frágil dañada).</span> <span class="ve">Hay que acordar con el dominio si se suman símbolos o se mandan dos capas (terreno y objetos).</span></li>
+</ul>
+
+<!-- ═══════════════════════════ 11 ═══════════════════════════ -->
+<h1 class="sec"><span class="n">11</span>SOLID y GRASP, con evidencia</h1>
+<div class="baj">Cada principio con el lugar exacto del código que lo muestra, y también dónde está flojo: en la defensa suma más reconocer un límite que exagerar.</div>
+
+<div class="junto"><h2 class="sub"><span class="n">11.1</span>SOLID</h2>
+<table>
+  <tr><th style="width:28mm">Principio</th><th>Dónde se ve</th><th>Dónde está flojo</th><th style="width:14mm">Estado</th></tr>
+  <tr><td><span class="na">SRP</span> · una sola responsabilidad</td><td><span class="ve">Cada clase hace una cosa: <code>Cartel</code> dibuja carteles, <code>Imagenes</code> carga imágenes, <code>Epoca</code> sabe el estilo de cada época.</span></td><td><span class="ro"><code>PantallaJuego</code> arma la partida, maneja el teclado y muestra los carteles.</span> <span class="ce">Se podría separar el teclado en otra clase.</span></td><td><span class="med">⚠</span></td></tr>
+  <tr><td><span class="na">OCP</span> · abierto a extensión, cerrado a modificación</td><td><span class="ve">Nuevo observador, nuevo símbolo (<code>CAPAS</code>) o nueva época (<code>Epoca</code>) sin tocar la lógica existente.</span></td><td><span class="ro">Una tecla que no sea dirección obliga a editar <code>configurarTeclado()</code>.</span></td><td><span class="ok">✓</span></td></tr>
+  <tr><td><span class="na">LSP</span> · sustitución de Liskov</td><td><span class="ve"><code>JuegoDePrueba</code> y el dominio real son intercambiables detrás de <code>Juego</code>.</span></td><td><span class="ce">Se valida del todo cuando exista el dominio (tiene que notificar igual).</span></td><td><span class="ok">✓</span></td></tr>
+  <tr><td><span class="na">ISP</span> · interfaces chicas</td><td><span class="ve"><code>ObservadorJuego</code> tiene un solo método.</span></td><td><span class="ro"><code>Juego</code> mezcla acciones con el registro de observadores.</span></td><td><span class="ok">✓</span></td></tr>
+  <tr><td><span class="na">DIP</span> · depender de abstracciones</td><td><span class="ve">La vista depende de interfaces; solo <code>Main</code> conoce las clases concretas.</span></td><td><span class="ce">La vista sí depende de Swing, que es lo esperable.</span></td><td><span class="ok">✓</span></td></tr>
+</table></div>
+
+<h2 class="sub"><span class="n">11.2</span>GRASP</h2>
+<table>
+  <tr><th style="width:34mm">Patrón GRASP</th><th>Dónde se ve en el proyecto</th><th style="width:14mm">Estado</th></tr>
+  <tr><td><span class="na">Experto en información</span></td><td><span class="ce"><code>Direccion</code> sabe cuánto se mueve; <code>Epoca</code> sabe qué piso y pared le tocan.</span></td><td><span class="ok">✓</span></td></tr>
+  <tr><td><span class="na">Creador</span></td><td><span class="ce"><code>VentanaPrincipal</code> crea sus pantallas; <code>PantallaJuego</code> crea el HUD y el tablero que contiene.</span></td><td><span class="ok">✓</span></td></tr>
+  <tr><td><span class="na">Controlador</span></td><td><span class="ce">Será la clase del dominio que implemente <code>Juego</code>.</span></td><td><span class="no">✗ pendiente</span></td></tr>
+  <tr><td><span class="na">Bajo acoplamiento</span></td><td><span class="ve">Las pantallas se avisan con <code>Runnable</code> / <code>IntConsumer</code>; la vista solo conoce interfaces.</span></td><td><span class="ok">✓</span></td></tr>
+  <tr><td><span class="na">Alta cohesión</span></td><td><span class="ve">Clases cortas con una sola tarea (ninguna pasa de ~120 líneas, salvo la provisoria).</span></td><td><span class="ok">✓</span></td></tr>
+  <tr><td><span class="na">Polimorfismo</span></td><td><span class="ce">El juego llama <code>actualizar</code> sin saber si es el HUD, el tablero o el sonido.</span></td><td><span class="ok">✓</span></td></tr>
+  <tr><td><span class="na">Fabricación pura</span></td><td><span class="ce"><code>Imagenes</code>: no es parte del juego, resuelve la carga de archivos.</span></td><td><span class="ok">✓</span></td></tr>
+  <tr><td><span class="na">Indirección / Variaciones protegidas</span></td><td><span class="ve"><code>Juego</code> se interpone entre vista y dominio y protege a la vista de sus cambios.</span></td><td><span class="ok">✓</span></td></tr>
+</table>
+
+<!-- ═══════════════════════════ 12 ═══════════════════════════ -->
+<h1 class="sec"><span class="n">12</span>Lo que falta y los riesgos</h1>
+<div class="baj">Lo que todavía no está, en orden de importancia, para que nadie se lleve una sorpresa cerca de la entrega.</div>
+
+<table>
+  <tr><th style="width:48mm">Tema</th><th>Qué hay que hacer</th><th style="width:20mm">Prioridad</th></tr>
+  <tr><td><span class="na">Dominio y personaje</span></td><td><span class="ce">Implementar <code>Juego</code>: tablero, jugador, cajas normal / frágil / llave, piso resbaladizo, cerrojos y muros, niveles en .txt, puntaje.</span></td><td><span class="no">alta</span></td></tr>
+  <tr><td><span class="na">Reglas del deshacer</span></td><td><span class="fl">«Se permite deshacer los últimos 15 movimientos realizados por el jugador.»</span> <span class="ce">Cada uso vuelve 5 movimientos, con un máximo de tres usos consecutivos.</span></td><td><span class="no">alta</span></td></tr>
+  <tr><td><span class="na">Dos funcionalidades extra</span></td><td><span class="fl">«Cada equipo debe, necesariamente, incorporar dos funcionalidades adicionales al juego que impliquen la aplicación de patrones de diseño.»</span> <span class="ro">Todavía no están definidas.</span></td><td><span class="no">alta</span></td></tr>
+  <tr><td><span class="na">Celdas con dos cosas</span></td><td><span class="ro">El formato de un carácter por celda no alcanza (ver sección 10).</span> <span class="ve">Acordarlo antes de unir el dominio.</span></td><td><span class="med">media</span></td></tr>
+  <tr><td><span class="na">Sonido</span></td><td><span class="ce">Java reproduce WAV sin librerías extra; un observador más (ver sección 13).</span> <span class="ro">Romper una caja o abrir un cerrojo no se deduce del estado: hay que acordar un dato más.</span></td><td><span class="med">media</span></td></tr>
+  <tr><td><span class="na">StarUML</span></td><td><span class="fl">«Diagrama de clases en StarUML»</span> <span class="ce">Estos diagramas sirven para revisar, pero la entrega pide StarUML.</span></td><td><span class="med">media</span></td></tr>
+  <tr><td><span class="na">Licencias y uso de IA</span></td><td><span class="ce">Anotar el origen y la licencia de cada imagen y sonido, y declarar el uso de IA en el informe.</span></td><td><span class="med">media</span></td></tr>
+</table>
+
+<h2 class="sub"><span class="n">12.1</span>Ideas para las dos funcionalidades con patrones</h2>
+<p><span class="ce">Son sugerencias para discutir en el grupo; cada una nombra el patrón que aplicaría.</span></p>
+<ul>
+  <li><span class="na">Command + Memento para el deshacer.</span> <span class="ce">Cada movimiento es un objeto comando que se guarda en una pila limitada a 15, y el estado anterior se guarda como memento.</span> <span class="ve">Encaja con la regla de los 15 / 5 / 3.</span></li>
+  <li><span class="na">State para la partida.</span> <span class="ce">Estados «jugando», «en pausa» y «nivel completado», cada uno con lo que permite hacer.</span></li>
+  <li><span class="na">Strategy para el puntaje.</span> <span class="ce">Distintos criterios de puntaje intercambiables (por movimientos, por tiempo, por empujes).</span></li>
+  <li><span class="na">Factory Method para leer niveles.</span> <span class="ce">Crea la celda o la caja correcta a partir del carácter del archivo .txt.</span></li>
+</ul>
+
+<!-- ═══════════════════════════ 13 ═══════════════════════════ -->
+<h1 class="sec"><span class="n">13</span>Ejercicio resuelto: sumar el sonido sin tocar nada</h1>
+<div class="baj">Un ejemplo concreto de por qué Observer + OCP valen la pena: el sonido entra al juego como una clase nueva y una línea en Main.</div>
+
+<p><span class="ci">EJERCICIO RESUELTO</span> <span class="na">Consigna:</span> <span class="ce">hacer que suene un efecto al moverse, al empujar, al deshacer y al ganar, sin modificar ninguna clase de la vista ni del dominio.</span></p>
+<p><span class="na">Resolución:</span> <span class="ce">el sonido es otro observador. Compara el estado nuevo con el anterior para saber qué pasó.</span> <span class="ro">Es un ejemplo para entender el patrón: la versión real la hace quien se ocupa del sonido.</span></p>
+<pre class="cod" data-archivo="ejemplo (no está en el repo)" data-desde="1">public class ReproductorSonido implements ObservadorJuego {
+    private EstadoJuego anterior;
+
+    @Override
+    public void actualizar(EstadoJuego estado) {
+        if (anterior != null &amp;&amp; estado.nivel() == anterior.nivel()) {
+            if (estado.completado() &amp;&amp; !anterior.completado()) {
+                reproducir("victoria");
+            } else if (estado.undosUsados() &gt; anterior.undosUsados()) {
+                reproducir("deshacer");
+            } else if (estado.empujes() &gt; anterior.empujes()) {
+                reproducir("empujar");
+            } else if (estado.movimientos() &gt; anterior.movimientos()) {
+                reproducir("paso");
+            }
+        }
+        anterior = estado;
+    }
+
+    private void reproducir(String nombre) {
+        // abrir assets/sonidos/&lt;nombre&gt;.wav con javax.sound.sampled.Clip
+    }
+}
+
+// En Main, una línea:
+juego.agregarObservador(new ReproductorSonido());</pre>
+<ul>
+  <li><span class="ve">No se modificó <code>Juego</code>, ni <code>JuegoDePrueba</code>, ni ninguna pantalla: eso es OCP.</span></li>
+  <li><span class="ce">El juego la llama sin saber que es un sonido: eso es Polimorfismo (GRASP).</span></li>
+  <li><span class="ro">Romper una caja frágil o abrir un cerrojo no se ve en <code>EstadoJuego</code>: para esos sonidos hay que sumar un dato al estado o un aviso aparte.</span></li>
+</ul>
+
+<!-- ═══════════════════════════ 14 ═══════════════════════════ -->
+<h1 class="sec"><span class="n">14</span>Autoevaluación</h1>
+<div class="baj">Tapá la columna de la derecha y respondé de memoria antes de mirar. Es la forma que más ayuda a llegar bien a la defensa.</div>
+<table>
+  <tr><th style="width:52%">Pregunta</th><th>Respuesta</th></tr>
+  <tr><td>¿Por qué la vista puede funcionar antes de que exista el dominio?</td><td>Porque depende de la interfaz <code>Juego</code> y no de una clase concreta (DIP); mientras tanto la implementa <code>JuegoDePrueba</code>.</td></tr>
+  <tr><td>¿Qué cambia en el código cuando llegue el dominio?</td><td>Una línea en <code>Main</code> (<code>new JuegoDePrueba()</code> por la clase real) y se borra el paquete <code>prueba</code>.</td></tr>
+  <tr><td>En el Observer del proyecto, ¿quién es el sujeto y quiénes los observadores?</td><td>Sujeto: <code>Juego</code> (hoy <code>JuegoDePrueba</code>). Observadores: <code>PanelHUD</code> y <code>PanelTablero</code>.</td></tr>
+  <tr><td>¿Qué pasa si el dominio se olvida de llamar a <code>notificar()</code>?</td><td>El juego cambia pero la pantalla no se actualiza. La regla solo está escrita en un comentario.</td></tr>
+  <tr><td>¿Por qué <code>EstadoJuego</code> es un <code>record</code> con <code>List.copyOf</code>?</td><td>Para que sea inmutable: ningún observador puede modificar lo que reciben los demás.</td></tr>
+  <tr><td>¿Cuáles son las tres piezas de un Singleton y dónde están?</td><td>Atributo <code>static</code> con la instancia, constructor privado y método <code>static</code> de acceso: <code>Imagenes.java</code>, líneas 22, 26 y 29.</td></tr>
+  <tr><td>¿Por qué el Facade está «a medias» hoy?</td><td>Porque falta el subsistema: <code>JuegoDePrueba</code> hace todo en una sola clase.</td></tr>
+  <tr><td>¿Qué diferencia hay entre la flecha ◆ de <code>PantallaJuego</code> a <code>PanelHUD</code> y la punteada a <code>Cartel</code>?</td><td>◆ composición: lo crea y lo contiene toda la partida. Punteada: dependencia, lo crea en un método y no lo guarda.</td></tr>
+  <tr><td>¿Dónde está el controlador del MVC?</td><td>La entrada (teclas y botones) está en <code>PantallaJuego</code> y <code>PanelHUD</code>; el controlador GRASP será la clase del dominio que implemente <code>Juego</code>.</td></tr>
+  <tr><td>¿Cómo se suma el sonido sin romper OCP?</td><td>Con una clase que implemente <code>ObservadorJuego</code>, registrada en <code>Main</code> con <code>agregarObservador</code>.</td></tr>
+</table>
+<p><span class="ve">Repasala en varias sesiones separadas (por ejemplo a los 1, 3, 7 y 14 días) en vez de todo junto la noche anterior.</span></p>
+
+<!-- ═══════════════════════════ 15 ═══════════════════════════ -->
+<h2 class="sub"><span class="n">15</span>Cómo mantener actualizados los diagramas</h2>
+<ul>
+  <li><span class="ce">Diagramas de clases: <code>python3 docs/uml/fuentes/diagramas.py</code> (las clases están en <code>clases.py</code> y la ubicación de cada caja y flecha en <code>diagramas.py</code>).</span></li>
+  <li><span class="ce">Diagrama de secuencia: <code>docs/uml/fuentes/7-secuencia-mover.puml</code> (PlantUML).</span></li>
+  <li><span class="ce">Esta guía: <code>node docs/guia/generar-pdf.js</code> a partir de <code>docs/guia/guia.html</code>.</span></li>
+  <li><span class="ve">Cuando lleguen el dominio y el sonido, se reemplazan las cajas grises por las clases reales y se marcan con su autor.</span></li>
+</ul>
+<p class="pie-nota">Esta guía y los diagramas se hicieron con asistencia de IA a partir del código del repositorio, y conviene declararlo en el informe técnico. El equipo es responsable de revisarlos y entenderlos.</p>
+
+<script>
+// Numera las líneas de los bloques de código y pinta los comentarios en oro.
+document.querySelectorAll("pre.cod").forEach(pre => {
+  const desde = parseInt(pre.dataset.desde || "1", 10);
+  const lineas = pre.innerHTML.split("\n");
+  const html = lineas.map((l, i) => {
+    const m = l.match(/^(.*?)(\s*\/\/.*)$/);
+    const cuerpo = m ? m[1] + '<span class="cm">' + m[2] + "</span>" : l;
+    return '<span class="ln">' + (desde + i) + "</span>" + cuerpo;
+  }).join("\n");
+  pre.innerHTML = (pre.dataset.archivo ? '<span class="tit">' + pre.dataset.archivo + "</span>" : "") + html;
+});
+</script>
+</body>
+</html>

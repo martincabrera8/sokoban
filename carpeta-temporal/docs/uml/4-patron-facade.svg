@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 760" width="1500" height="760" font-family="Inter, Arial, sans-serif">
+<style>text{white-space:pre}</style>
+<rect width="1500" height="760" fill="#FFFFFF"/>
+<text x="30" y="40" font-size="22" font-weight="700" fill="#6E1A2C">Patrón Facade (estructural)</text>
+<text x="30" y="62" font-size="12.5" fill="#6B6B6B">La vista habla con UNA sola interfaz simple (Juego). Atrás, el dominio coordina todas sus piezas sin que la vista se entere.</text>
+<path d="M 266.0 305.0 L 520.0 305.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="509.0,299.0 520.0,305.0 509.0,311.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<rect x="306.796875" y="296.0" width="172.40625" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="393.0" y="308.5" font-size="10.5" text-anchor="middle" fill="#3A332E">juego.mover(dir) / iniciarNivel(n)</text>
+<text x="504" y="299.0" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
+<path d="M 337.0 500.4 L 470.0 500.4 L 470.0 373.6 L 520.0 373.6" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="509.0,367.6 520.0,373.6 509.0,379.6" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<rect x="393.25" y="461" width="153.5" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="470" y="473.5" font-size="10.5" text-anchor="middle" fill="#3A332E">juego.deshacer() / reiniciar()</text>
+<path d="M 1080.0 133.0 L 1000.0 133.0 L 1000.0 289.1 L 875.0 289.1" fill="none" stroke="#7B3FA0" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polygon points="875.0,289.1 890.0,297.1 890.0,281.1" fill="#FFFFFF" stroke="#7B3FA0" stroke-width="1.6"/>
+<path d="M 1080.0 359.0 L 1000.0 359.0 L 1000.0 289.1 L 875.0 289.1" fill="none" stroke="#A0A0A0" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polygon points="875.0,289.1 890.0,297.1 890.0,281.1" fill="#FFFFFF" stroke="#A0A0A0" stroke-width="1.6"/>
+<path d="M 1228.5 418.0 L 1228.5 469.0 L 1245.0 469.0 L 1245.0 520.0" fill="none" stroke="#A0A0A0" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="1251.0,509.0 1245.0,520.0 1239.0,509.0" fill="none" stroke="#A0A0A0" stroke-width="1.6"/>
+<rect x="1200.78125" y="434.5" width="55.4375" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="1228.5" y="447.0" font-size="10.5" text-anchor="middle" fill="#A0A0A0">coordina</text>
+<g class="caja" id="PantallaJuego">
+<rect x="50" y="231" width="50.546875" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="58" y="243" font-size="10.5" font-weight="600" fill="#7A5A12">Cliente</text>
+<rect x="50" y="250" width="216" height="110" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="158.0" y="268" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">PantallaJuego</text>
+<text x="158.0" y="282" text-anchor="middle" font-size="10.5" fill="#7B3FA0">extiende JPanel</text>
+<line x1="50" y1="289" x2="266" y2="289" stroke="#6C8EBF" stroke-width="1"/>
+<text x="59.0" y="306.5" font-size="12" fill="#1E1A17">- juego: Juego</text>
+<line x1="50" y1="316" x2="266" y2="316" stroke="#6C8EBF" stroke-width="1"/>
+<text x="59.0" y="333.5" font-size="12" fill="#1E1A17">+ iniciar(nivel: int): void</text>
+<text x="59.0" y="350.5" font-size="12" fill="#1E1A17">- mover(direccion: Direccion): void</text>
+</g>
+<g class="caja" id="PanelHUD">
+<rect x="50" y="451" width="50.546875" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="58" y="463" font-size="10.5" font-weight="600" fill="#7A5A12">Cliente</text>
+<rect x="50" y="470" width="287" height="76" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="193.5" y="488" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">PanelHUD</text>
+<text x="193.5" y="502" text-anchor="middle" font-size="10.5" fill="#7B3FA0">extiende JPanel</text>
+<line x1="50" y1="509" x2="337" y2="509" stroke="#6C8EBF" stroke-width="1"/>
+<line x1="50" y1="519" x2="337" y2="519" stroke="#6C8EBF" stroke-width="1"/>
+<text x="59.0" y="536.5" font-size="12" fill="#1E1A17">+ PanelHUD(juego: Juego, alPausar: Runnable)</text>
+</g>
+<g class="caja" id="Juego">
+<rect x="520" y="211" width="105.125" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="528" y="223" font-size="10.5" font-weight="600" fill="#7A5A12">Fachada (Facade)</text>
+<rect x="520" y="230" width="355" height="169" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="697.5" y="247" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«interface»</text>
+<text x="697.5" y="262" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17" font-style="italic">Juego</text>
+<line x1="520" y1="270" x2="875" y2="270" stroke="#6C8EBF" stroke-width="1"/>
+<text x="529.0" y="287.5" font-size="12" fill="#1E1A17" font-style="italic">+ getCantidadNiveles(): int</text>
+<text x="529.0" y="304.5" font-size="12" fill="#1E1A17" font-style="italic">+ iniciarNivel(numero: int): void</text>
+<text x="529.0" y="321.5" font-size="12" fill="#1E1A17" font-style="italic">+ mover(direccion: Direccion): void</text>
+<text x="529.0" y="338.5" font-size="12" fill="#1E1A17" font-style="italic">+ deshacer(): void</text>
+<text x="529.0" y="355.5" font-size="12" fill="#1E1A17" font-style="italic">+ reiniciar(): void</text>
+<text x="529.0" y="372.5" font-size="12" fill="#1E1A17" font-style="italic">+ getEstado(): EstadoJuego</text>
+<text x="529.0" y="389.5" font-size="12" fill="#1E1A17" font-style="italic">+ agregarObservador(observador: ObservadorJuego): void</text>
+</g>
+<g class="caja" id="JuegoDePrueba">
+<rect x="1080" y="91" width="164.75" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="1088" y="103" font-size="10.5" font-weight="600" fill="#7A5A12">Fachada concreta (provisoria)</text>
+<rect x="1080" y="110" width="139" height="46" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="1149.5" y="128" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">JuegoDePrueba</text>
+<line x1="1080" y1="136" x2="1219" y2="136" stroke="#6C8EBF" stroke-width="1"/>
+<line x1="1080" y1="146" x2="1219" y2="146" stroke="#6C8EBF" stroke-width="1"/>
+</g>
+<g class="caja" id="ControladorJuego">
+<rect x="1080" y="281" width="145.4375" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="1088" y="293" font-size="10.5" font-weight="600" fill="#7A5A12">Fachada concreta (la real)</text>
+<rect x="1080" y="300" width="297" height="118" rx="6" fill="#F5F5F5" stroke="#9E9E9E" stroke-width="1.4" stroke-dasharray="6 4"/>
+<text x="1228.5" y="317" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«pendiente»</text>
+<text x="1228.5" y="332" text-anchor="middle" font-size="14" font-weight="600" fill="#6B6B6B">ControladorJuego</text>
+<line x1="1080" y1="340" x2="1377" y2="340" stroke="#9E9E9E" stroke-width="1"/>
+<text x="1089.0" y="357.5" font-size="12" fill="#6B6B6B">nombre provisorio · reemplaza a JuegoDePrueba</text>
+<text x="1089.0" y="374.5" font-size="12" fill="#6B6B6B">tablero, jugador, cajas normal /</text>
+<text x="1089.0" y="391.5" font-size="12" fill="#6B6B6B">frágil / llave, niveles .txt,</text>
+<text x="1089.0" y="408.5" font-size="12" fill="#6B6B6B">deshacer 15 / 5 / 3, puntaje</text>
+</g>
+<g class="caja" id="Sub">
+<rect x="1080" y="520" width="330" height="101" rx="6" fill="#F5F5F5" stroke="#9E9E9E" stroke-width="1.4" stroke-dasharray="6 4"/>
+<text x="1245.0" y="537" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«pendiente · nombres de ejemplo»</text>
+<text x="1245.0" y="552" text-anchor="middle" font-size="14" font-weight="600" fill="#6B6B6B">Subsistema del dominio</text>
+<line x1="1080" y1="560" x2="1410" y2="560" stroke="#9E9E9E" stroke-width="1"/>
+<text x="1089.0" y="577.5" font-size="12" fill="#6B6B6B">Tablero, Jugador, Caja (normal / frágil / llave),</text>
+<text x="1089.0" y="594.5" font-size="12" fill="#6B6B6B">LectorDeNiveles (.txt), Historial (deshacer),</text>
+<text x="1089.0" y="611.5" font-size="12" fill="#6B6B6B">Puntaje…</text>
+</g>
+<text x="990" y="300" font-size="11" font-weight="400" fill="#7B3FA0" text-anchor="end">implementan</text>
+<path d="M 50 620 L 938 620 L 950 632 L 950 700 L 50 700 Z" fill="#FFFDF5" stroke="#B8892A" stroke-width="1.2"/>
+<text x="60" y="638" font-size="12" font-weight="700" fill="#6E1A2C">Qué gana el proyecto</text>
+<text x="60" y="656" font-size="11.5" fill="#1E1A17">Para la vista, mover al jugador es UNA llamada: juego.mover(Direccion.DERECHA). La fachada real tendrá que mirar</text>
+<text x="60" y="672" font-size="11.5" fill="#1E1A17">el tablero, empujar la caja, ver si es frágil o resbala, guardar el historial y sumar el puntaje. <tspan font-weight="700">La vista no se entera.</tspan></text>
+<text x="60" y="688" font-size="11.5" fill="#1E1A17">Hoy JuegoDePrueba hace todo junto (no hay subsistema): el patrón <tspan font-weight="700">se termina de validar cuando llegue el dominio.</tspan></text>
+</svg>
