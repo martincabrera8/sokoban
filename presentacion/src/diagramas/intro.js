@@ -135,7 +135,7 @@ export default {
     composer.setPixelRatio(renderer.getPixelRatio());
     composer.setSize(W, H);
     composer.addPass(new RenderPass(escena, camara));
-    const bloom = new UnrealBloomPass(new THREE.Vector2(W, H), 0.9, 0.55, 0.78);
+    const bloom = new UnrealBloomPass(new THREE.Vector2(W, H), 0.7, 0.5, 0.86);
     composer.addPass(bloom);
     composer.addPass(new OutputPass());
 
@@ -166,7 +166,7 @@ export default {
     if (c.sin3d) { tl.to([c.cineA, c.cineB], { scaleY: 0, duration: 0.8 }, 1.5).to(c.bajada, { autoAlpha: 1, duration: 0.6 }, 1.6); return; }
     const { camara, mira, pj, n, letras } = c;
     const pose = (en, valores, dur = 0.2, ease = "power2.out") => tl.to(pj.pose, { ...valores, duration: dur, ease, onUpdate: pj.aplicar }, en);
-    const prender = (l, v) => { l.material.color.lerpColors(c.apagado, c.prendido, v); l.material.emissiveIntensity = v * 0.9; };
+    const prender = (l, v) => { l.material.color.lerpColors(c.apagado, c.prendido, v); l.material.emissiveIntensity = v * 0.55; };
 
     // Cámara: arranca rasante y se aleja
     tl.fromTo(camara.position, { x: 6.5, y: 0.45, z: 3.2 }, { x: 1.6, y: 1.9, z: 11.5, duration: 3.2, ease: "power2.inOut" }, 0)
@@ -198,15 +198,15 @@ export default {
     const llega = 3.95 + CORRIDA * 0.7 - 0.12;
     const brote = { p: 0 };
     const pos = c.chispas.geometry.attributes.position;
-    tl.to(c.matDestino, { emissiveIntensity: 0.9, duration: 0.3 }, llega)
-      .to(c.luzDestino, { intensity: 14, duration: 0.3 }, llega)
+    tl.to(c.matDestino, { emissiveIntensity: 0.5, duration: 0.3 }, llega)
+      .to(c.luzDestino, { intensity: 4, duration: 0.3 }, llega)
       .fromTo(c.destello, { autoAlpha: 0 }, { autoAlpha: 0.55, duration: 0.08, yoyo: true, repeat: 1 }, llega)
       .fromTo(brote, { p: 0 }, { p: 1, duration: 1.4, ease: "power1.out", onUpdate: () => {
         c.vel.forEach(([vx, vy, vz], i) => pos.setXYZ(i, X_DESTINO + vx * brote.p, ALTO_LETRA + vy * brote.p - 3.2 * brote.p * brote.p, vz * brote.p));
         pos.needsUpdate = true;
         c.chispas.material.opacity = brote.p > 0 ? 1 - brote.p : 0;
       } }, llega)
-      .to(c.foco, { intensity: 34, duration: 0.8 }, llega + 0.1)
+      .to(c.foco, { intensity: 16, duration: 0.8 }, llega + 0.1)
       .to(mira, { x: -1.2, y: 0.75, duration: 1.6, ease: "power2.inOut" }, llega)
       .to(camara.position, { x: -0.9, y: 1.8, z: 11.6, duration: 1.6, ease: "power2.inOut" }, llega);
     letras.slice().reverse().forEach((l, i) => {
@@ -238,7 +238,7 @@ export default {
       c.camara.position.y += Math.cos(tt * 0.17) * 0.0011;
       c.polvo.rotation.y = tt * 0.02;
       c.polvo.position.y = Math.sin(tt * 0.3) * 0.15;
-      c.letras.forEach((l, i) => { l.material.emissiveIntensity = 0.8 + Math.sin(tt * (0.6 + i * 0.07) + i) * 0.12; });
+      c.letras.forEach((l, i) => { l.material.emissiveIntensity = 0.5 + Math.sin(tt * (0.6 + i * 0.07) + i) * 0.1; });
       c.pj.cabeza.rotation.y = Math.sin(tt * 0.5) * 0.25;
     };
     gsap.ticker.add(tick);
