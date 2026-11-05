@@ -1,0 +1,18 @@
+/* Cierre: velo para el título, rótulos de cada parte anclados a su caja y el equipo que se enciende al final */
+.cierre__velo { position: absolute; inset: calc(var(--ey, 0px) * -1) calc(var(--ex, 0px) * -1); pointer-events: none;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--fondo-hondo) 92%, transparent) 0%, color-mix(in srgb, var(--fondo-hondo) 70%, transparent) 30%, transparent 52%),
+    linear-gradient(0deg, color-mix(in srgb, var(--fondo-hondo) 92%, transparent) 0%, color-mix(in srgb, var(--fondo-hondo) 50%, transparent) 30%, transparent 48%); }
+.cierre__anclas { position: absolute; inset: 0; pointer-events: none; }
+.cierre__ancla { position: absolute; left: var(--ax, -999px); top: var(--ay, -999px); transform: translate(-50%, -100%); }
+.cierre__chip { display: flex; flex-direction: column; align-items: center; gap: 2px; white-space: nowrap; padding: 8px 16px 9px; border-radius: var(--radio-chico);
+  background: color-mix(in srgb, var(--fondo-hondo) 88%, transparent); border: 1px solid var(--linea-media); box-shadow: var(--sombra-cerca);
+  font-size: 22px; line-height: 1.2; color: var(--tinta-2); }
+.cierre__chip b { font-size: 24px; font-weight: 600; color: var(--tinta); }
+.cierre__chip--listo { border-color: var(--acento); box-shadow: 0 0 22px var(--acento-suave), var(--sombra-cerca); }
+.cierre__chip--listo b { color: var(--titulo); }
+.cierre__chip--proximo { border-color: var(--pendiente); box-shadow: 0 0 26px var(--pendiente-suave), var(--sombra-cerca); }
+.cierre__chip--proximo span { color: var(--pendiente); font-weight: 600; }
+.cierre__equipo { --luz: 0; color: color-mix(in oklab, var(--titulo) calc(var(--luz) * 100%), var(--tinta-3));
+  text-shadow: 0 0 calc(var(--luz) * 22px) color-mix(in srgb, var(--acento) calc(var(--luz) * 60%), transparent); }
+.cierre__ancla--abajo { transform: translate(-50%, 6px); }

@@ -1,0 +1,51 @@
+/* ── Arquitectura: tres placas en 3D ── */
+.arq__capa { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+.arq__capa > * { position: absolute; left: 0; top: 0; will-change: transform, opacity; opacity: 0; }
+
+/* Nombre de cada clase, pegado al frente de su bloque */
+.arq__clase { translate: -50% -50%; display: flex; flex-direction: column; align-items: center; padding: 3px 12px 4px; border-radius: 6px; white-space: nowrap;
+  background: color-mix(in srgb, var(--fondo-hondo) 84%, transparent); border: 1px solid var(--linea-media); }
+.arq__clase-nombre { font-family: var(--f-mono); font-size: 22px; line-height: 1.2; color: var(--tinta); }
+.arq__clase-tipo { font-size: 22px; line-height: 1.1; color: var(--tinta-3); }
+.arq__clase--acento { border-color: var(--acento); }
+.arq__clase--acento .arq__clase-nombre { color: var(--titulo); font-weight: 500; }
+.arq__clase--exito, .arq__clase--pendiente { translate: -50% 0; margin-top: 10px; }
+.arq__clase--exito { border-color: var(--exito); }
+.arq__clase--pendiente { border-color: var(--acento); }
+
+/* Rótulo de cada capa, con su guía hasta la esquina de la placa */
+.arq__rotulo { display: flex; align-items: center; gap: 18px; translate: 0 -50%; }
+.arq__guia { width: var(--guia, 0px); height: 0; border-top: 2px solid var(--tinta-3); opacity: .7; }
+.arq__rotulo-cuerpo { position: relative; width: 460px; }
+.arq__capa-nombre { font-family: var(--f-display); font-size: 36px; color: var(--titulo); line-height: 1.1; }
+.arq__capa-dato { font-size: var(--t-dato); color: var(--tinta-2); line-height: 1.3; }
+.arq__capa-dato--nuevo { position: absolute; left: 0; top: 40px; color: var(--acento); }
+.arq__sin-cambios { display: inline-block; margin-top: 6px; padding: 2px 12px; border-radius: 999px; font-size: 22px; font-weight: 600;
+  color: var(--exito); border: 1px solid var(--exito); background: color-mix(in srgb, var(--exito) 12%, transparent); }
+
+/* Lo que viaja por los conductos */
+.arq__mensaje { translate: calc(-100% - 26px) -50%; padding: 4px 12px; border-radius: 6px; font-family: var(--f-mono); font-size: 22px; white-space: nowrap; color: var(--titulo);
+  background: color-mix(in srgb, var(--fondo-hondo) 88%, transparent); border: 1px solid var(--acento); }
+.arq__mensaje--estado { translate: 26px -50%; color: var(--exito); border-color: var(--exito); }
+.arq__mensaje--no { translate: 24px -240%; font-family: var(--f-texto); font-weight: 600; color: var(--tinta); border-color: var(--e1955); }
+
+/* Main.java, arriba a la derecha */
+.arq__main { position: absolute; right: var(--margen); top: 92px; padding: 16px 24px 18px; border-radius: var(--radio);
+  background: color-mix(in srgb, var(--superficie) 92%, transparent); border: 1px solid var(--linea-media); box-shadow: var(--sombra-caja);
+  font-family: var(--f-mono); font-size: var(--t-codigo); line-height: 1.6; }
+.arq__main-archivo { font-size: 22px; color: var(--tinta-3); margin-bottom: 4px; }
+.arq__main-linea { position: relative; white-space: nowrap; color: var(--tinta); }
+.arq__main-comentario { color: var(--tinta-3); }
+.arq__main-despues { position: absolute; left: 0; top: 0; }
+.arq__main-cambia { --marca: 0; margin: 0 -12px; padding: 0 12px; border-radius: 6px; background: color-mix(in srgb, var(--acento) calc(var(--marca) * 16%), transparent);
+  box-shadow: inset 4px 0 0 color-mix(in srgb, var(--acento) calc(var(--marca) * 100%), transparent); }
+.arq__main-hueco { position: relative; display: inline-block; width: 13ch; height: 1.6em; vertical-align: bottom; }
+.arq__main-clase { position: absolute; left: 0; top: 0; color: var(--titulo); }
+.arq__main-nuevo { color: var(--acento); }
+
+/* Sin WebGL */
+.arq__respaldo { position: absolute; left: var(--margen); top: 400px; display: flex; flex-direction: column; gap: 30px; }
+.arq__velo { position: absolute; inset: calc(var(--ey, 0px) * -1) calc(var(--ex, 0px) * -1); pointer-events: none;
+  background:
+    radial-gradient(60% 40% at 22% 10%, color-mix(in srgb, var(--fondo-hondo) 85%, transparent), transparent 75%),
+    linear-gradient(90deg, transparent 66%, color-mix(in srgb, var(--fondo-hondo) 70%, transparent) 76%); }

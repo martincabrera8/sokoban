@@ -1,0 +1,26 @@
+/* ── UML: el plano en la mesa 3D ── */
+.uml__velo { position: absolute; inset: calc(var(--ey, 0px) * -1) auto calc(var(--ey, 0px) * -1) calc(var(--ex, 0px) * -1); width: calc(900px + var(--ex, 0px)); pointer-events: none;
+  background: linear-gradient(90deg, var(--fondo-hondo) 0%, color-mix(in srgb, var(--fondo-hondo) 96%, transparent) 64%, color-mix(in srgb, var(--fondo-hondo) 60%, transparent) 82%, transparent 100%); }
+
+.uml__zona { width: 500px; }
+.uml__nombre { font-family: var(--f-display); font-size: 52px; line-height: 1.05; color: var(--titulo); }
+.uml__detalle { margin: 16px 0 0; font-size: var(--t-cuerpo); line-height: 1.4; color: var(--tinta-2); }
+
+.uml__mini { width: 340px; height: var(--alto, 250px); }
+.uml__mini-svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.uml__mini-hoja { fill: color-mix(in srgb, var(--papel) 14%, transparent); stroke: var(--linea-media); stroke-width: 6; }
+.uml__mini-caja { opacity: .9; }
+.uml__mini-marco { fill: color-mix(in srgb, var(--acento) 12%, transparent); stroke: var(--acento); stroke-width: 16; }
+
+.uml__capa { display: flex; align-items: center; gap: 14px; width: 500px; height: 68px; padding: 8px 18px 8px 12px; white-space: nowrap;
+  background: color-mix(in srgb, var(--superficie) 94%, transparent); border: 1px solid var(--linea-media); border-radius: var(--radio-chico); box-shadow: var(--sombra-caja); will-change: transform; }
+.uml__guias { pointer-events: none; }
+.uml__guia { stroke: var(--linea); stroke-width: 2; opacity: .55; }
+.uml__punta { fill: var(--acento); stroke: var(--fondo-hondo); stroke-width: 3; }
+.uml__muestra { width: 30px; height: 30px; flex: none; border-radius: 6px; background: var(--relleno); border: 2px solid var(--borde); }
+.uml__capa-texto { display: flex; flex-direction: column; font-size: 22px; line-height: 1.25; color: var(--tinta-2); }
+.uml__capa-texto b { font-size: var(--t-dato); color: var(--tinta); font-weight: 700; }
+.uml__capa-cuenta { margin-left: auto; font-family: var(--f-display); font-size: 48px; line-height: 1; color: var(--acento); font-variant-numeric: tabular-nums; }
+
+.uml__respaldo { background: var(--papel); border-radius: var(--radio); overflow: hidden; }
+.uml__respaldo svg { width: 100%; height: 100%; }

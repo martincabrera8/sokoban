@@ -1,0 +1,38 @@
+/* ── Facade: una caja con una sola puerta y el dominio detrás ── */
+.fac__velo { position: absolute; inset: calc(var(--ey, 0px) * -1) calc(var(--ex, 0px) * -1); pointer-events: none; z-index: 1;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--fondo-hondo) 94%, transparent) 0%, color-mix(in srgb, var(--fondo-hondo) 78%, transparent) 25%, transparent 42%),
+    linear-gradient(90deg, color-mix(in srgb, var(--fondo-hondo) 70%, transparent) 0%, transparent 32%); }
+
+.fac__ancla { position: absolute; left: 0; top: 0; z-index: 2; pointer-events: none;
+  transform: translate(calc(var(--ax, -2000) * 1px), calc(var(--ay, -2000) * 1px)) translate(var(--ox, -50%), var(--oy, -50%)); }
+.fac__ancla--llamada { z-index: 4; }
+.fac__ancla--hoy { --oy: -100%; }
+.fac__ancla--dominio { --oy: 24px; }
+.fac__ancla--cartel { z-index: 3; }
+
+.fac__cliente, .fac__cartel { --golpe: 0; background: linear-gradient(180deg, var(--superficie-2), var(--superficie)); border: 1px solid var(--linea-media);
+  border-radius: var(--radio); box-shadow: var(--sombra-caja), 0 0 0 calc(var(--golpe) * 2px) var(--acento), 0 0 calc(var(--golpe) * 36px) color-mix(in srgb, var(--acento) 45%, transparent); }
+.fac__cliente { z-index: 2; width: 400px; padding: 18px 24px 20px; border-color: color-mix(in srgb, var(--linea) calc(30% + var(--vida, 0) * 12%), transparent); }
+.fac__rotulo { margin: 0 0 6px; font-size: 22px; letter-spacing: .06em; text-transform: uppercase; color: var(--tinta-3); font-weight: 600; }
+.fac__rotulo b { color: var(--titulo); text-transform: none; letter-spacing: 0; font-family: var(--f-display); font-size: 34px; font-weight: 600; margin-left: 4px; }
+.fac__nombre { margin: 0; font-family: var(--f-display); font-size: 32px; color: var(--titulo); font-weight: 600; }
+.fac__ultima { display: inline-block; margin-top: 10px; font-family: var(--f-mono); font-size: 22px; color: var(--tinta-2); }
+
+.fac__cartel { width: 660px; padding: 18px 26px 20px; }
+.fac__metodos { margin: 6px 0 0; padding: 0; list-style: none; columns: 2; column-gap: 20px; font-family: var(--f-mono); font-size: 22px; line-height: 1.6; color: var(--tinta-3); }
+.fac__metodos li { --golpe: 0; break-inside: avoid; white-space: nowrap; border-radius: 4px; padding: 0 4px;
+  background: color-mix(in srgb, var(--acento) calc(var(--golpe) * 26%), transparent); }
+.fac__metodos b { font-weight: 500; color: color-mix(in srgb, var(--acento) calc(var(--golpe) * 100%), var(--tinta)); }
+
+.fac__llamada { display: block; padding: 6px 14px; border-radius: var(--radio-chico); white-space: nowrap; font-family: var(--f-mono); font-size: 24px; color: var(--fondo-hondo);
+  background: var(--acento); box-shadow: 0 0 24px var(--brillo), var(--sombra-lejos); }
+.fac__llamada--vuelta { background: var(--exito); box-shadow: 0 0 24px color-mix(in srgb, var(--exito) 60%, transparent), var(--sombra-lejos); }
+
+.fac__hoy, .fac__dominio { margin: 0; padding: 10px 18px; border-radius: var(--radio-chico); font-size: 24px; color: var(--tinta-2); text-align: center;
+  background: color-mix(in srgb, var(--fondo-hondo) 88%, transparent); border: 1px solid var(--linea-media); box-shadow: var(--sombra-lejos); white-space: nowrap; }
+.fac__hoy b, .fac__dominio b { color: var(--titulo); font-weight: 600; }
+.fac__dominio { white-space: normal; width: 760px; border: 1px dashed var(--pendiente); }
+.fac__dominio b { color: var(--pendiente); }
+.fac__pieza { display: flex; align-items: center; gap: 8px; margin: 0; padding: 4px 12px 4px 6px; border-radius: 999px; white-space: nowrap; font-size: 22px; color: var(--tinta);
+  background: color-mix(in srgb, var(--fondo-hondo) 86%, transparent); border: 1px dashed var(--pendiente); }
+.fac__pieza img { width: 28px; height: 28px; image-rendering: pixelated; }

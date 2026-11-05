@@ -1,0 +1,14 @@
+{
+  "name": "presentacion-sokoban",
+  "private": true,
+  "description": "Presentación del Sokoban: fuentes y armado del HTML offline",
+  "scripts": { "build": "python3 build.py" },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "gsap": "^3.13.0",
+    "three": "^0.170.0",
+    "@fontsource/pixelify-sans": "^5.1.0",
+    "@fontsource/atkinson-hyperlegible-next": "^5.2.0",
+    "@fontsource/jetbrains-mono": "^5.1.0"
+  }
+}

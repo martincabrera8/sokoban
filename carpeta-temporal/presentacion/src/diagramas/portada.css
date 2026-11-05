@@ -1,0 +1,13 @@
+/* Portada: velo para el título sobre el 3D y años anclados a cada tercio del almacén */
+.portada__velo { position: absolute; inset: calc(var(--ey, 0px) * -1) calc(var(--ex, 0px) * -1); pointer-events: none;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--fondo-hondo) 94%, transparent) 0%, color-mix(in srgb, var(--fondo-hondo) 82%, transparent) 30%, color-mix(in srgb, var(--fondo-hondo) 35%, transparent) 50%, transparent 64%),
+    linear-gradient(0deg, color-mix(in srgb, var(--fondo-hondo) 70%, transparent) 0%, transparent 30%); }
+.portada__anclas { position: absolute; inset: 0; pointer-events: none; }
+.portada__ancla { position: absolute; left: var(--ax, -999px); top: var(--ay, -999px); transform: translate(-50%, -100%); }
+.portada__anio { font-family: var(--f-texto); font-weight: 700; letter-spacing: .04em; font-size: 28px; line-height: 1; padding: 8px 14px 9px; border-radius: var(--radio-chico);
+  background: color-mix(in srgb, var(--fondo-hondo) 86%, transparent); border: 1px solid currentColor;
+  box-shadow: 0 0 24px color-mix(in srgb, currentColor 40%, transparent), var(--sombra-cerca); }
+.portada__anio--1955 { color: color-mix(in srgb, var(--e1955) 70%, var(--tinta)); }
+.portada__anio--1985 { color: color-mix(in srgb, var(--e1985) 70%, var(--tinta)); }
+.portada__anio--2015 { color: color-mix(in srgb, var(--e2015) 70%, var(--tinta)); }
