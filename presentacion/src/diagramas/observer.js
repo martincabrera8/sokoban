@@ -47,14 +47,14 @@ function crearJuego() {
 
 function cartel(lienzo, { x, y, w, h }, rotulo, fantasma) {
   const c = el("div", "cartel pos dim" + (fantasma ? " cartel--fantasma" : ""), lienzo, { vars: { x, y, w, h } });
-  el("p", "cartel__rotulo", c, { texto: rotulo });
+  el("p", "cartel__rotulo cartel__rotulo--clase", c, { texto: rotulo });
   return c;
 }
 
 export default {
   montar(lienzo) {
     const juego = crearJuego();
-    const sujeto = cartel(lienzo, { x: 120, y: 420, w: 570, h: 470 }, "Juego: el sujeto, en simulación");
+    const sujeto = cartel(lienzo, { x: 120, y: 400, w: 570, h: 540 }, "Juego: el sujeto, en simulación");
     const estado = el("pre", "estado", sujeto);
     const hud = cartel(lienzo, { x: 1000, y: 420, w: 470, h: 196 }, "PanelHUD: observador");
     const fila = el("div", "hud", hud);
@@ -65,14 +65,14 @@ export default {
     });
     const tab = cartel(lienzo, { x: 1000, y: 640, w: 470, h: 352 }, "PanelTablero: observador");
     const dibujo = tableroPixel(tab, NIVEL_PRUEBA, { b: 52, x: 26, y: 62, epoca: 2015 });
-    const sonido = cartel(lienzo, { x: 1540, y: 420, w: 300, h: 196 }, "ReproductorSonido", true);
+    const sonido = cartel(lienzo, { x: 1500, y: 420, w: 340, h: 196 }, "ReproductorSonido", true);
     el("p", "anclado__detalle", sonido, { texto: "Pendiente. Se suma con una línea en Main." });
 
     const svg = s("svg", { class: "svg", viewBox: "0 0 1920 1080", "aria-hidden": "true" }, lienzo);
     const conectores = {
       hud: s("path", { class: "conector", d: `M${ORIGEN.x},${ORIGEN.y} C850,${ORIGEN.y} 840,518 1000,518` }, svg),
       tablero: s("path", { class: "conector", d: `M${ORIGEN.x},${ORIGEN.y} C850,${ORIGEN.y} 840,816 1000,816` }, svg),
-      sonido: s("path", { class: "conector conector--fantasma", d: `M${ORIGEN.x},${ORIGEN.y} C850,${ORIGEN.y} 850,396 1010,396 L1490,396 C1515,396 1515,518 1540,518` }, svg),
+      sonido: s("path", { class: "conector conector--fantasma", d: `M${ORIGEN.x},${ORIGEN.y} C850,${ORIGEN.y} 850,396 1010,396 L1450,396 C1475,396 1475,518 1500,518` }, svg),
     };
     const fotos = Object.keys(conectores).map(() => el("div", "paquete", lienzo));
     gsap.set(fotos, { autoAlpha: 0 });

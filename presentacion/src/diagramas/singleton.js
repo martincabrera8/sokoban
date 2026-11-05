@@ -7,7 +7,7 @@ gsap.registerPlugin(DrawSVGPlugin);
 
 /* Tres clientes piden imágenes a la única caché. La primera vez la caché lee el archivo; después responde sola. */
 const CLIENTES = ["MenuPrincipal", "PanelHUD", "PanelTablero"];
-const BOVEDA = { x: 600, y: 420 }, DISCO = { x: 1200, y: 420 };
+const BOVEDA = { x: 600, y: 420 }, DISCO = { x: 1330, y: 420 };
 const numero = (n) => n.toLocaleString("es-AR");
 
 export default {
@@ -28,7 +28,7 @@ export default {
     el("p", "cartel__rotulo", disco, { texto: "assets/ en disco" });
     const estante = el("div", "boveda__grilla", disco);
     const archivos = USADAS.map((k) => { const r = el("div", "ranura ranura--llena", estante); pixel(k, r, ""); return r; });
-    const cuentas = el("div", "cuentas pos", lienzo, { vars: { x: 1200, y: 860 } });
+    const cuentas = el("div", "cuentas pos", lienzo, { vars: { x: 1330, y: 800 } });
     const pedidos = el("div", "", cuentas);
     const nPedidos = el("div", "cifra cifra--chica cifra--exito", pedidos, { texto: "0" });
     el("span", "cifra__unidad", pedidos, { texto: "pedidos a la caché (simulados)" });

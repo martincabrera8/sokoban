@@ -16,8 +16,8 @@ export const PARTES = [
   { nombre: "Arte", quien: "Martín", detalle: "101 imágenes en assets/", listo: true },
   { nombre: "Interfaz Swing", quien: "Luca", detalle: "13 archivos Java: menú, HUD, tablero, carteles", listo: true },
   { nombre: "Integración", quien: "Martín y Luca", detalle: "épocas y personaje en 4 direcciones", listo: true },
-  { nombre: "Dominio y personaje", quien: "pendiente", detalle: "", listo: false },
-  { nombre: "Música y sonido", quien: "pendiente", detalle: "", listo: false },
+  { nombre: "Dominio y personaje", quien: "pendiente", detalle: "lo tiene hecho un compañero, falta subirlo", listo: false },
+  { nombre: "Música y sonido", quien: "pendiente", detalle: "la tiene hecha otro compañero, falta subirla", listo: false },
 ];
 
 /** Imágenes que hoy usa el juego (28). Fuente: rutas en src/main/java/sokoban/vista/*.java. */

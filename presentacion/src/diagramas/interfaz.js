@@ -9,7 +9,7 @@ gsap.registerPlugin(DrawSVGPlugin);
 const LUGAR = {
   menu: { x: 120, y: 620, w: 420 },
   partida: { x: 720, y: 430, w: 480 },
-  pausa: { x: 800, y: 840, w: 300 },
+  pausa: { x: 800, y: 770, w: 300 },
   completado: { x: 1360, y: 560, w: 400 },
   resultados: { x: 1480, y: 96, w: 340 },
 };
@@ -33,12 +33,13 @@ export default {
       const path = s("path", { d: tr.d, class: tr.rama ? "camino__rama" : "" }, svg);
       const pt = puntoEn(path, tr.f);
       const g = s("g", {}, svg);
-      const ancho = tr.txt.length * 9.6 + 20;
-      s("rect", { class: "camino__fondo", x: pt.x - ancho / 2, y: pt.y - 16, width: ancho, height: 30, rx: 6 }, g);
-      const t = s("text", { x: pt.x, y: pt.y + 6, "text-anchor": "middle" }, g);
+      const ancho = tr.txt.length * 11.5 + 24;
+      s("rect", { class: "camino__fondo", x: pt.x - ancho / 2, y: pt.y - 19, width: ancho, height: 36, rx: 8 }, g);
+      const t = s("text", { x: pt.x, y: pt.y + 7, "text-anchor": "middle" }, g);
       t.textContent = tr.txt;
       return { path, g };
     });
+    const svgEtiquetas = s("svg", { class: "camino", viewBox: "0 0 1920 1080", "aria-hidden": "true" });
     const capturas = PANTALLAS.map((pa) => {
       const l = LUGAR[pa.clave];
       const cap = el("figure", "captura pos dim", lienzo, { vars: { x: l.x, y: l.y, w: l.w } });
@@ -46,6 +47,8 @@ export default {
       const pie = el("figcaption", "captura__pie pos", lienzo, { texto: pa.nombre, vars: { x: l.x, y: l.y + alto(pa.clave) + 12 } });
       return { cap, pie, clave: pa.clave };
     });
+    lienzo.appendChild(svgEtiquetas);
+    tramos.forEach((tr) => svgEtiquetas.appendChild(tr.g));
     const viajero = el("div", "ficha ficha--viajero", lienzo, { vars: { b: 40 } });
     pixel("characters/player_right", viajero, "");
     gsap.set(viajero, { autoAlpha: 0 });

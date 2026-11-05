@@ -21,7 +21,7 @@ export default {
     svg.setAttribute("aria-label", "Diagrama de clases completo del Sokoban");
     svg.setAttribute("viewBox", COMPLETO.join(" "));
     plano.appendChild(svg);
-    const lista = el("div", "zonas pos", lienzo, { vars: { x: 120, y: 640 } });
+    const lista = el("div", "zonas pos", lienzo, { vars: { x: 142, y: 540 } });
     const filas = ZONAS.map((z) => {
       const f = el("div", "zona", lista);
       el("div", "zona__nombre", f, { texto: z.nombre });

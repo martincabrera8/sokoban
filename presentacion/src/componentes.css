@@ -9,7 +9,7 @@ img { display: block; }
   transform: translate(-50%, -50%) scale(var(--escala, 1));
   perspective: 2200px; overflow: hidden; background: var(--fondo); }
 .escenario::after { content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: radial-gradient(120% 90% at 70% 10%, transparent 55%, rgb(3 8 20 / .55)); }
+  background: radial-gradient(130% 100% at 50% 40%, transparent 60%, rgb(3 8 20 / .25)); }
 .slide { position: absolute; inset: 0; visibility: hidden; transform-style: preserve-3d; backface-visibility: hidden;
   background: var(--fondo); }
 .slide.activa { visibility: visible; }
@@ -34,6 +34,7 @@ img { display: block; }
 /* ── Cartel (el panel del juego, con oficio) ── */
 .cartel { position: absolute; background: linear-gradient(180deg, var(--superficie-2), var(--superficie));
   border: 1px solid var(--linea-media); border-radius: var(--radio); box-shadow: var(--sombra-caja); padding: 26px 30px; }
+.cartel__rotulo.cartel__rotulo--clase { text-transform: none; letter-spacing: 0; }
 .cartel__rotulo { margin: 0 0 12px; font-size: var(--t-dato); color: var(--tinta-3); letter-spacing: .06em; text-transform: uppercase; font-weight: 600; }
 .cartel__titulo { margin: 0; font-family: var(--f-display); font-size: 38px; color: var(--titulo); font-weight: 600; }
 .cartel--fantasma { background: transparent; border-style: dashed; border-color: var(--tinta-3); box-shadow: none; }
@@ -74,7 +75,7 @@ img { display: block; }
 .escena3d canvas { display: block; width: 100%; height: 100%; }
 .escena3d__respaldo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .velo-portada { position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(90deg, rgb(11 22 48 / .92) 0%, rgb(11 22 48 / .55) 38%, transparent 62%); }
+  background: linear-gradient(90deg, rgb(11 22 48 / .95) 0%, rgb(11 22 48 / .8) 45%, transparent 72%); }
 .velo-portada--abajo { background: linear-gradient(180deg, rgb(11 22 48 / .85) 0%, transparent 34%, transparent 62%, rgb(11 22 48 / .9) 100%); }
 .epoca { width: 760px; }
 .epoca__anio { font-family: var(--f-display); font-size: var(--t-cifra); line-height: 1; }
@@ -84,9 +85,9 @@ img { display: block; }
 .equipo-linea { margin: 30px 0 0; font-size: var(--t-dato); color: var(--tinta-3); letter-spacing: .02em; }
 
 /* ── Estantes del arte ── */
-.estante { position: absolute; left: var(--margen); display: flex; align-items: center; gap: 8px; }
+.estante { position: absolute; left: var(--margen); width: 1680px; display: flex; align-items: center; gap: 8px; }
 .estante__nombre { width: 210px; flex: none; font-family: var(--f-mono); font-size: var(--t-dato); color: var(--tinta-2); }
-.estante__cuenta { margin-left: 18px; font-size: var(--t-dato); color: var(--tinta-3); white-space: nowrap; }
+.estante__cuenta { margin-left: auto; font-size: var(--t-dato); color: var(--tinta-3); white-space: nowrap; }
 .estante__cuenta b { color: var(--acento); font-weight: 600; }
 .estante__fila { display: flex; flex-wrap: wrap; gap: 6px; }
 .miniatura { width: 44px; height: 44px; border-radius: 4px; background: var(--superficie); border: 1px solid var(--linea-suave); padding: 2px; }
@@ -104,7 +105,7 @@ img { display: block; }
 .camino { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
 .camino path { fill: none; stroke: var(--linea); stroke-width: 3; stroke-linecap: round; opacity: .7; }
 .camino .camino__rama { stroke-dasharray: 10 10; }
-.camino text { fill: var(--tinta-2); font-size: 19px; font-family: var(--f-texto); }
+.camino text { fill: var(--tinta-2); font-size: 22px; font-family: var(--f-texto); }
 .camino__fondo { fill: var(--fondo); }
 
 /* ── SVG de los diagramas ── */
@@ -116,7 +117,7 @@ img { display: block; }
 .placa--dominio .placa__cara { fill: transparent; stroke: var(--tinta-3); stroke-dasharray: 8 8; }
 .placa__lado { fill: var(--superficie); stroke: var(--linea-suave); }
 .placa__nombre { font-family: var(--f-display); font-size: 34px; fill: var(--titulo); }
-.placa__dato { font-size: 21px; fill: var(--tinta-2); }
+.placa__dato { font-size: 24px; fill: var(--tinta-2); }
 .bloque__cara { fill: var(--pendiente-suave); stroke: var(--pendiente); stroke-width: 1.5; }
 .bloque--real .bloque__cara { fill: var(--superficie-2); stroke: var(--exito); }
 .bloque__texto { font-size: 21px; fill: var(--tinta); }
@@ -128,7 +129,7 @@ img { display: block; }
 .lider { stroke: var(--tinta-3); stroke-width: 1.5; }
 
 /* ── Observer: estado en vivo y HUD ── */
-.estado { font-family: var(--f-mono); font-size: var(--t-dato); line-height: 1.75; color: var(--tinta-2); }
+.estado { margin: 0; font-family: var(--f-mono); font-size: 22px; line-height: 1.45; color: var(--tinta-2); }
 .estado b { color: var(--exito); font-weight: 500; font-variant-numeric: tabular-nums; }
 .estado__cambio { color: var(--acento); }
 .hud { display: flex; gap: 18px; }
@@ -140,7 +141,7 @@ img { display: block; }
 /* ── Facade: puerta ── */
 .puerta { position: absolute; transform-style: preserve-3d; }
 .puerta__hoja { position: absolute; inset: 0; transform-origin: 0 50%; backface-visibility: hidden; }
-.metodo { font-family: var(--f-mono); font-size: 21px; color: var(--tinta-2); line-height: 1.85; }
+.metodo { font-family: var(--f-mono); font-size: 24px; color: var(--tinta-2); line-height: 1.85; }
 .metodo b { color: var(--titulo); font-weight: 500; }
 .pieza { position: absolute; display: flex; align-items: center; gap: 14px; padding: 12px 18px 12px 12px; border-radius: 12px;
   border: 1px dashed var(--pendiente); background: var(--pendiente-suave); font-size: var(--t-dato); color: var(--tinta); }
@@ -164,8 +165,8 @@ img { display: block; }
 .nodo__icono img { width: 100%; height: 100%; }
 .nodo--listo .nodo__icono { border-color: var(--acento); }
 .nodo--cerrado .nodo__icono { border-style: dashed; border-color: var(--pendiente); background: var(--superficie); }
-.nodo__nombre { font-size: var(--t-dato); line-height: 1.3; color: var(--tinta); font-weight: 600; }
-.nodo__estado { font-size: 18px; color: var(--tinta-3); }
+.nodo__nombre { font-size: 22px; line-height: 1.3; color: var(--tinta); font-weight: 600; }
+.nodo__estado { font-size: 22px; color: var(--tinta-3); }
 .nodo--listo .nodo__estado { color: var(--acento); }
 
 .solo-lector { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
@@ -185,11 +186,12 @@ img { display: block; }
 .paquete-codigo { position: absolute; left: 0; top: 0; z-index: 4; }
 .boveda__codigo { margin-top: 18px; }
 .cuentas { display: flex; gap: 72px; }
+.cuentas .cifra { font-family: var(--f-texto); font-weight: 700; }
 
 /* ── UML y cerrojos ── */
 .zonas { display: flex; flex-direction: column; gap: 22px; width: 560px; }
-.zona { position: relative; padding-left: 22px; }
-.zona::before { content: ""; position: absolute; left: 0; top: 4px; bottom: 4px; width: 4px; border-radius: 2px; background: var(--acento); opacity: var(--marco, 0); }
+.zona { position: relative; }
+.zona::before { content: ""; position: absolute; left: -22px; top: 4px; bottom: 4px; width: 4px; border-radius: 2px; background: var(--acento); opacity: var(--marco, 0); }
 .zona__nombre { font-family: var(--f-display); font-size: 34px; color: var(--titulo); }
 .placa__rotulo { font-family: var(--f-display); font-size: 36px; color: var(--titulo); }
 .nodo__icono { position: relative; }

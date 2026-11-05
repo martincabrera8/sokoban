@@ -9,8 +9,8 @@ const CLIENTES = [
   { nombre: "VentanaPrincipal", llamadas: ["getCantidadNiveles()"] },
 ];
 const METODOS = ["getCantidadNiveles()", "iniciarNivel(numero)", "mover(direccion)", "deshacer()", "reiniciar()", "getEstado()", "agregarObservador(o)"];
-const PUERTA = { x: 640, y: 420, w: 440, h: 560 };
-const MARCO = { x: 760, y: 420, w: 1040, h: 560 };
+const PUERTA = { x: 640, y: 360, w: 460, h: 600 };
+const MARCO = { x: 760, y: 360, w: 1040, h: 600 };
 
 export default {
   montar(lienzo) {
@@ -45,7 +45,7 @@ export default {
       .fromTo(hoja, { autoAlpha: 0, y: 30 }, { autoAlpha: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.8)
       .set(piezas.map((p) => p.pz), { autoAlpha: 0 }, 0);
     tl.addLabel("p1");
-    tl.to(hoja, { rotationY: -58, transformPerspective: 1400, duration: 1.2, ease: "power3.inOut" }, "p1")
+    tl.to(hoja, { rotationY: -38, transformPerspective: 1400, duration: 1.2, ease: "power3.inOut" }, "p1")
       .fromTo(piezas.map((p) => p.pz), { autoAlpha: 0, x: -30 }, { autoAlpha: 1, x: 0, duration: 0.45, stagger: 0.07, ease: "power2.out" }, "p1+=0.5");
   },
 
@@ -53,7 +53,7 @@ export default {
     return eventos(() => {
       const cl = gsap.utils.random(clientes);
       llamada.textContent = gsap.utils.random(cl.llamadas);
-      const abierta = gsap.getProperty(hoja, "rotationY") < -40;
+      const abierta = gsap.getProperty(hoja, "rotationY") < -25;
       const tl = gsap.timeline();
       tl.set(llamada, { x: 540, y: cl.y, autoAlpha: 1 })
         .to(llamada, { x: PUERTA.x + 30, y: PUERTA.y + 270, duration: 0.7, ease: "power2.inOut" });

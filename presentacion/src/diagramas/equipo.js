@@ -35,7 +35,7 @@ export default {
       const rot = el("div", "anclado", lienzo, { vars: { x: xBorde + 64, y: yc - 26 } });
       rot.classList.add("pos");
       el("span", "chip " + (p.listo ? "chip--listo" : "chip--pendiente"), rot, { texto: p.nombre });
-      el("span", "anclado__detalle", rot, { texto: p.listo ? `  ${p.quien}: ${p.detalle}` : "  pendiente: la tienen hecha dos compañeros" });
+      el("span", "anclado__detalle", rot, { texto: p.listo ? `  ${p.quien}: ${p.detalle}` : `  ${p.detalle}` });
       return { linea, rot, listo: p.listo };
     });
     return { tab, jugador, listas, pendientes, vacios, filas };

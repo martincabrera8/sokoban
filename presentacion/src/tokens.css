@@ -13,7 +13,7 @@
   /* Texto */
   --tinta: #EBF8FF;
   --tinta-2: #B9C8DA;
-  --tinta-3: #8193AE;
+  --tinta-3: #9DAEC8;
   --titulo: #F8E4A5;
 
   /* Roles */
@@ -51,8 +51,8 @@
   --t-titulo: 72px;
   --t-bajada: 31px;
   --t-cuerpo: 26px;
-  --t-rotulo: 21px;
-  --t-dato: 22px;
+  --t-rotulo: 24px;
+  --t-dato: 26px;
   --t-cifra: 96px;
   --t-codigo: 22px;
 

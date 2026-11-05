@@ -208,7 +208,7 @@ export default {
       } }, llega)
       .to(c.foco, { intensity: 34, duration: 0.8 }, llega + 0.1)
       .to(mira, { x: -1.2, y: 0.75, duration: 1.6, ease: "power2.inOut" }, llega)
-      .to(camara.position, { x: -0.6, y: 1.7, z: 10.4, duration: 1.6, ease: "power2.inOut" }, llega);
+      .to(camara.position, { x: -0.9, y: 1.8, z: 11.6, duration: 1.6, ease: "power2.inOut" }, llega);
     letras.slice().reverse().forEach((l, i) => {
       tl.to(l.luz, { v: 1, duration: 0.45, ease: "power2.out", onUpdate: () => prender(l, l.luz.v) }, llega + 0.05 + i * 0.09)
         .fromTo(l.g.scale, { y: 1 }, { y: 1.12, duration: 0.12, yoyo: true, repeat: 1 }, llega + 0.05 + i * 0.09);
