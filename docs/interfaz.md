@@ -2,7 +2,7 @@
 
 Esta parte del trabajo es solo la **interfaz gráfica** del Sokoban: menú principal, pantalla de juego con HUD y los carteles de pausa, nivel completado y resultados. Usa los diseños del grupo (fondos, íconos del HUD y sprites).
 
-El dominio (tablero, cajas, jugador, niveles, deshacer, puntaje y sonidos) lo hace el resto del equipo detrás de la interfaz `Juego`. Mientras tanto, `JuegoDePrueba` simula un Sokoban mínimo de dos niveles para ver cómo responde la interfaz.
+El dominio (tablero, cajas, jugador, niveles, deshacer, puntaje y sonidos) lo hace el resto del equipo detrás de la interfaz `Juego`. Mientras tanto, `JuegoDePrueba` simula un Sokoban mínimo de tres niveles (uno por época) para ver cómo responde la interfaz.
 
 ![Partida](capturas/2-partida.png)
 
@@ -30,7 +30,9 @@ Requisito: **Java 17 o superior**. Siempre se ejecuta desde la **raíz del repos
 
 ## Diseño
 
-El diagrama de clases está en [`uml/diagrama-interfaz-sokoban.drawio`](uml/diagrama-interfaz-sokoban.drawio) (se abre con [diagrams.net](https://app.diagrams.net)) y en imagen en [`uml/diagrama-interfaz-sokoban.png`](uml/diagrama-interfaz-sokoban.png).
+El diagrama de clases de la interfaz está en [`uml/diagrama-interfaz-sokoban.drawio`](uml/diagrama-interfaz-sokoban.drawio) (se abre con [diagrams.net](https://app.diagrams.net)) y en imagen en [`uml/diagrama-interfaz-sokoban.png`](uml/diagrama-interfaz-sokoban.png). Es la versión anterior a la integración con el arte de Martín.
+
+> El diagrama **actualizado y completo** de todo el proyecto, con la autoría de cada parte, está en [`uml/diagrama-completo.png`](uml/diagrama-completo.png). Ver [`integracion.md`](integracion.md).
 
 ![Diagrama de clases](uml/diagrama-interfaz-sokoban.png)
 
@@ -43,7 +45,8 @@ El diagrama de clases está en [`uml/diagrama-interfaz-sokoban.drawio`](uml/diag
 | | `MenuPrincipal` | Menú de selección de nivel y Salir. |
 | | `PantallaJuego` | Arma la partida, traduce las teclas en movimientos y muestra los carteles de pausa y resultado. |
 | | `PanelHUD` | Indicadores de nivel, movimientos y empujes, y botones Deshacer, Reiniciar y Pausa. |
-| | `PanelTablero` | Dibuja el tablero con las imágenes del grupo sobre el fondo de la época del nivel. |
+| | `PanelTablero` | Dibuja el tablero con las imágenes del grupo (piso, pared y fondo de la época del nivel) y el personaje mirando hacia donde se movió. |
+| | `Epoca` | Enumerado: fondo, piso y pared de cada época (1955, 1985, 2015). Los niveles las van rotando. |
 | | `Cartel` | Recuadro reutilizable con título, mensaje y botones (menú, pausa, resultados). |
 | | `Imagenes` | Carga las imágenes una sola vez y las comparte. |
 | `sokoban.modelo` | `Juego` | Contrato con el dominio: lo que la vista le puede pedir. |
@@ -81,7 +84,7 @@ El diagrama de clases está en [`uml/diagrama-interfaz-sokoban.drawio`](uml/diag
   - **Números mágicos**: están reemplazados por constantes.
   - El único constructor largo es el del `record` `EstadoJuego`, que es un DTO.
 
-> En el UML se muestran las constantes que definen comportamiento (`TECLAS`, `CAPAS`, `FONDOS`) y se omiten las de estilo (colores, fuentes, tamaños), los getters y los métodos que solo implementan la interfaz (`actualizar` en los observadores), según las reglas de la cátedra.
+> En el UML se muestran las constantes que definen comportamiento (`TECLAS`, `CAPAS`, `SPRITES_JUGADOR`) y se omiten las de estilo (colores, fuentes, tamaños), los getters y los métodos que solo implementan la interfaz (`actualizar` en los observadores), según las reglas de la cátedra.
 
 ## Cómo agregar algo nuevo
 
@@ -90,6 +93,7 @@ El diagrama de clases está en [`uml/diagrama-interfaz-sokoban.drawio`](uml/diag
 | Una opción en un cartel (menú, pausa, resultado) | Una entrada más en el mapa de opciones de `MenuPrincipal` o `PantallaJuego`. |
 | Una tecla | Una línea en `PantallaJuego.configurarTeclado()` (o en `TECLAS` si es una dirección). |
 | Un elemento del tablero | Su símbolo en `PanelTablero.CAPAS` y su imagen en `assets/` (raíz del repo). |
+| Una época nueva (fondo, piso y pared) | Una constante más en `Epoca`. |
 | Un dato en el HUD (por ejemplo, tiempo) | El campo en `EstadoJuego` y un indicador más en `PanelHUD.actualizar()`. |
 | Algo que reaccione a cada movimiento (por ejemplo, sonido) | Una clase que implemente `ObservadorJuego`, registrada con `juego.agregarObservador(...)`. |
 | Una pantalla nueva | Un panel más en el `CardLayout` de `VentanaPrincipal`. |
@@ -113,7 +117,7 @@ El diagrama de clases está en [`uml/diagrama-interfaz-sokoban.drawio`](uml/diag
 
 Los símbolos extra (`F`, `L`, `~`, `C`, `X`, `O`) son una propuesta y hay que acordarlos con el dominio. Si el nivel se lee de otro formato (no TXT), el dominio igual le pasa a la vista estas líneas de texto, así que la interfaz no cambia.
 
-Las imágenes se toman de la carpeta `assets/` del repositorio (`backgrounds`, `boxes`, `characters`, `goals`, `tiles`, `ui`); la interfaz usa 21 de ellas y no duplica ninguna.
+Las imágenes se toman de la carpeta `assets/` del repositorio (`backgrounds`, `boxes`, `characters`, `goals`, `tiles`, `ui`); la interfaz usa 28 de ellas y no duplica ninguna.
 
 ## Uso de herramientas de IA
 

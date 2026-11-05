@@ -1,0 +1,329 @@
+@startuml diagrama-completo
+' Sokoban: diagrama de clases COMPLETO del estado actual del repositorio.
+' Colores por autor:
+'   azul     = Luca (interfaz gráfica Swing)
+'   verde    = Martín (arte y recursos en assets/)
+'   amarillo = integración Luca + Martín (esta etapa)
+'   gris     = pendiente: dominio/personaje y música/sonido (todavía no subidos)
+' Se genera con:  java -jar plantuml.jar docs/uml/diagrama-completo.puml
+' Reglas de la cátedra: se omiten constantes de estilo (colores, fuentes, tamaños),
+' getters y los métodos que solo implementan una interfaz (actualizar en los observadores).
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam linetype polyline
+set separator none
+top to bottom direction
+skinparam nodesep 40
+skinparam ranksep 60
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 12
+skinparam packageStyle rectangle
+skinparam class {
+  BorderColor #333333
+  ArrowColor #333333
+  BackgroundColor<<Luca>> #DAE8FC
+  BackgroundColor<<Martin>> #D5E8D4
+  BackgroundColor<<Integracion>> #FFF2CC
+  BackgroundColor<<Pendiente>> #F5F5F5
+  BorderColor<<Pendiente>> #999999
+  FontColor<<Pendiente>> #666666
+  AttributeFontColor<<Pendiente>> #666666
+  BackgroundColor<<Swing>> #FFFFFF
+  BorderColor<<Swing>> #999999
+}
+hide <<Luca>> stereotype
+hide <<Martin>> stereotype
+hide <<Integracion>> stereotype
+
+title Sokoban: diagrama de clases completo (estado al 05/11/2026)
+
+' ===================== Arranque =====================
+package "sokoban" {
+  class Main <<Luca>> {
+    - Main()
+    + {static} main(args: String[]): void
+  }
+}
+
+' ===================== Vista (Luca) =====================
+package "sokoban.vista" {
+  class VentanaPrincipal <<Luca>> {
+    - pantallas: CardLayout
+    - contenido: JPanel
+    - pantallaJuego: PantallaJuego
+    + VentanaPrincipal(juego: Juego)
+    - mostrarMenu(): void
+    - jugar(nivel: int): void
+  }
+
+  class MenuPrincipal <<Luca>> {
+    + MenuPrincipal(cantidadNiveles: int, alElegirNivel: IntConsumer, alSalir: Runnable)
+    # paintComponent(g: Graphics): void
+  }
+
+  class PantallaJuego <<Luca>> {
+    - {static} TECLAS: Map<Integer, Direccion>
+    - juego: Juego
+    - volverAlMenu: Runnable
+    - tablero: PanelTablero
+    + PantallaJuego(juego: Juego, volverAlMenu: Runnable)
+    + iniciar(nivel: int): void
+    - configurarTeclado(): void
+    - asignarTecla(tecla: int, accion: Runnable): void
+    - mover(direccion: Direccion): void
+    - pausar(): void
+    - mostrarResultado(estado: EstadoJuego): void
+    - mostrarCartel(titulo: String, mensaje: String, opciones: Map<String, Runnable>): void
+  }
+
+  class PanelHUD <<Luca>> {
+    - nivel: JLabel
+    - movimientos: JLabel
+    - empujes: JLabel
+    + PanelHUD(juego: Juego, alPausar: Runnable)
+    - {static} crearIndicador(ruta: String, valor: int): Icon
+    - {static} crearBoton(ruta: String, descripcion: String, accion: Runnable): JButton
+  }
+
+  class PanelTablero <<Luca>> {
+    - {static} SPRITES_JUGADOR: Map<Direccion, String>
+    - {static} CAPAS: Map<Character, List<String>>
+    - tablero: List<String>
+    - epoca: Epoca
+    - orientacion: Direccion
+    + mirarHacia(direccion: Direccion): void
+    # paintComponent(g: Graphics): void
+    - dibujarCelda(g: Graphics, simbolo: char, x: int, y: int, tamano: int): void
+    - rutaDe(capa: String): String
+  }
+
+  class Cartel <<Luca>> {
+    + {static} FONDO: Color
+    + Cartel(titulo: String, mensaje: String, opciones: Map<String, Runnable>)
+    # paintComponent(g: Graphics): void
+    - {static} crearEtiqueta(texto: String, fuente: Font, color: Color): JLabel
+    - {static} crearBoton(texto: String, accion: Runnable): JButton
+  }
+
+  class Imagenes <<Luca>> <<Singleton>> {
+    - {static} CARPETA: String
+    - {static} instancia: Imagenes
+    - cache: Map<String, Image>
+    - Imagenes()
+    + {static} obtenerInstancia(): Imagenes
+    + obtener(ruta: String): Image
+    + dibujarFondo(g: Graphics, ruta: String, ancho: int, alto: int): void
+    - cargar(ruta: String): Image
+  }
+
+  enum Epoca <<Integracion>> {
+    HILL_VALLEY_1955
+    MALL_1985
+    FUTURO_2015
+    --
+    + {static} PISO: String
+    + {static} PARED: String
+    - fondo: String
+    - piso: String
+    - pared: String
+    --
+    + {static} delNivel(nivel: int): Epoca
+    + resolver(capa: String): String
+  }
+}
+
+' ===================== Contrato vista-dominio (Luca) =====================
+package "sokoban.modelo" {
+  interface Juego <<Luca>> <<Facade>> {
+    + getCantidadNiveles(): int
+    + iniciarNivel(numero: int): void
+    + mover(direccion: Direccion): void
+    + deshacer(): void
+    + reiniciar(): void
+    + getEstado(): EstadoJuego
+    + agregarObservador(observador: ObservadorJuego): void
+  }
+
+  interface ObservadorJuego <<Luca>> <<Observer>> {
+    + actualizar(estado: EstadoJuego): void
+  }
+
+  class EstadoJuego <<Luca>> <<record>> {
+    - nivel: int
+    - movimientos: int
+    - empujes: int
+    - undosUsados: int
+    - puntaje: int
+    - completado: boolean
+    - tablero: List<String>
+  }
+
+  enum Direccion <<Luca>> {
+    ARRIBA
+    ABAJO
+    IZQUIERDA
+    DERECHA
+    --
+    - deltaFila: int
+    - deltaColumna: int
+  }
+}
+
+' ===================== Provisorio (Luca) =====================
+package "sokoban.prueba (provisorio)" {
+  class JuegoDePrueba <<Luca>> {
+    - {static} NIVELES: List<List<String>>
+    - observadores: List<ObservadorJuego>
+    - historial: Deque<Foto>
+    - nivel: int
+    - celdas: char[][]
+    - destinos: boolean[][]
+    - filaJugador: int
+    - columnaJugador: int
+    - movimientos: int
+    - empujes: int
+    - undosUsados: int
+    - notificar(): void
+    - leerSimbolo(simbolo: char, fila: int, columna: int): void
+    - estaCompleto(): boolean
+    - dibujarTablero(): List<String>
+    - simbolo(fila: int, columna: int): char
+    - {static} copiar(origen: char[][]): char[][]
+  }
+  class Foto <<Luca>> <<record>> {
+    - celdas: char[][]
+    - filaJugador: int
+    - columnaJugador: int
+    - movimientos: int
+    - empujes: int
+  }
+}
+
+' ===================== Pendiente: dominio / personaje =====================
+package "Pendiente: dominio y personaje (Sokoban)" #FAFAFA {
+  class ControladorJuego <<Pendiente>> {
+    nombre provisorio
+    ..
+    reemplaza a JuegoDePrueba
+    tablero, jugador, cajas (normal,
+    frágil, llave), niveles .txt,
+    deshacer (15 / 5 / 3), puntaje
+  }
+}
+
+' ===================== Pendiente: música y sonido =====================
+package "Pendiente: música y sonido" #FAFAFA {
+  class ReproductorSonido <<Pendiente>> {
+    nombre provisorio
+    ..
+    efectos: mover, empujar,
+    deshacer, romper, victoria
+  }
+  class Musica <<Pendiente>> {
+    nombre provisorio
+    ..
+    música de fondo (por época)
+  }
+}
+
+' ===================== Recursos (Martín) =====================
+package "assets/  (arte de Martín, 101 PNG)" #F3FAF1 {
+  class "characters/" as RChar <<Martin>> <<recursos>> {
+    player_up / down / left / right
+    usadas 4 de 4
+  }
+  class "backgrounds/" as RBack <<Martin>> <<recursos>> {
+    hill_valley_1955 / mall_1985 / future_2015
+    usadas 3 de 3
+  }
+  class "boxes/" as RBox <<Martin>> <<recursos>> {
+    box_wood, caja_llave,
+    caja_fragil_intacta / danada / rota, ...
+    usadas 3 de 8
+  }
+  class "goals/" as RGoal <<Martin>> <<recursos>> {
+    goal, goal_placed, casilla_destino
+    usadas 2 de 3
+  }
+  class "tiles/" as RTile <<Martin>> <<recursos>> {
+    floor_* / wall_* por época, resbaladizo,
+    cerrojo, muro abierto/cerrado, sets 1955/1985/2015
+    usadas 10 de 69
+  }
+  class "ui/" as RUi <<Martin>> <<recursos>> {
+    botones undo / restart / pause,
+    indicadores nivel / movimientos / empujes, ...
+    usadas 6 de 17
+  }
+}
+
+' --------------------- Swing ---------------------
+class JFrame <<Swing>>
+class JPanel <<Swing>>
+
+' ===================== Relaciones =====================
+Main ..> VentanaPrincipal : <<crea>>
+Main ..> JuegoDePrueba : <<crea>>
+Main ..> ControladorJuego : <<creará>>
+
+VentanaPrincipal -up-|> JFrame
+MenuPrincipal -up-|> JPanel
+PantallaJuego -up-|> JPanel
+PanelHUD -up-|> JPanel
+PanelTablero -up-|> JPanel
+Cartel -up-|> JPanel
+
+VentanaPrincipal *-- "1" MenuPrincipal
+VentanaPrincipal *-- "1" PantallaJuego
+MenuPrincipal *-- "1" Cartel
+PantallaJuego ..> Cartel : <<crea>>
+PantallaJuego *-- "1" PanelHUD
+PantallaJuego *-- "1" PanelTablero
+PantallaJuego --> "1" Juego
+PantallaJuego ..> Direccion : TECLAS
+
+PanelHUD ..|> ObservadorJuego
+PanelTablero ..|> ObservadorJuego
+PanelHUD ..> Juego : deshacer / reiniciar
+PanelTablero --> "1" Epoca
+PanelTablero --> "1" Direccion : orientacion
+
+MenuPrincipal ..> Imagenes : <<usa>>
+PanelHUD ..> Imagenes : <<usa>>
+PanelTablero ..> Imagenes : <<usa>>
+Imagenes --> "0..1" Imagenes : instancia
+
+Juego ..> ObservadorJuego : <<notifica>>
+Juego ..> EstadoJuego
+ObservadorJuego ..> EstadoJuego
+
+JuegoDePrueba ..|> Juego
+JuegoDePrueba o--> "0..*" ObservadorJuego : observadores
+JuegoDePrueba *-- "0..*" Foto : historial
+
+ControladorJuego ..|> Juego
+ReproductorSonido ..|> ObservadorJuego
+Main ..> ReproductorSonido : <<registrará>>
+Main ..> Musica : <<creará>>
+
+Imagenes ..> RChar : <<lee>>
+Imagenes ..> RBack : <<lee>>
+Imagenes ..> RBox : <<lee>>
+Imagenes ..> RGoal : <<lee>>
+Imagenes ..> RTile : <<lee>>
+Imagenes ..> RUi : <<lee>>
+
+legend right
+  <b>Autoría</b>
+  |<#DAE8FC>      | Luca: interfaz gráfica Swing |
+  |<#D5E8D4>      | Martín: arte y recursos (assets/) |
+  |<#FFF2CC>      | Integración Luca + Martín (asistida por IA) |
+  |<#F5F5F5>      | Pendiente: dominio/personaje y música/sonido |
+  ""PanelTablero"" y ""PantallaJuego"" (Luca) se ajustaron en la integración
+  para usar los sprites del personaje y los pisos/paredes de cada época.
+  <b>Patrones</b>: Observer (Juego/ObservadorJuego), Facade (Juego),
+  Singleton (Imagenes), MVC + DTO (EstadoJuego).
+endlegend
+
+@enduml

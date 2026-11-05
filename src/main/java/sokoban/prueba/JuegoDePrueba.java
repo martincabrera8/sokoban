@@ -11,7 +11,7 @@ import sokoban.modelo.Juego;
 import sokoban.modelo.ObservadorJuego;
 
 /**
- * PROVISORIO: ejemplo acotado de Juego (2 niveles chicos) solo para ver cómo
+ * PROVISORIO: ejemplo acotado de Juego (3 niveles chicos, uno por época) solo para ver cómo
  * reacciona la interfaz. No es parte del trabajo de la interfaz: lo reemplaza el
  * controlador del dominio que hace el resto del equipo.
  * Solo maneja paredes, pisos, destinos y cajas normales.
@@ -29,7 +29,12 @@ public class JuegoDePrueba implements Juego {
                     "#  #  #",
                     "# $#  #",
                     "#  @  #",
-                    "#######"));
+                    "#######"),
+            List.of("########",
+                    "#  .   #",
+                    "# $##$ #",
+                    "#   @ .#",
+                    "########"));
 
     private static final char PARED = '#';
     private static final char PISO = ' ';
