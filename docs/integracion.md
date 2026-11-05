@@ -4,10 +4,10 @@ Este documento junta las partes que ya están en el repositorio, dice quién hiz
 
 ## Diagrama de clases completo
 
-![Diagrama de clases completo](uml/diagrama-completo.png)
+![Diagrama de clases completo](uml/2-diagrama-completo.png)
 
-- Fuente editable: [`uml/diagrama-completo.puml`](uml/diagrama-completo.puml) (PlantUML). Vectorial: [`uml/diagrama-completo.svg`](uml/diagrama-completo.svg).
-- Para regenerarlo: `java -jar plantuml.jar docs/uml/diagrama-completo.puml` (hace falta [PlantUML](https://plantuml.com/download) y Graphviz).
+- Vectorial: [`uml/2-diagrama-completo.svg`](uml/2-diagrama-completo.svg). Además hay diagramas chicos por patrón, la vista general, cómo leer las flechas y un diagrama de secuencia (todos en [`uml/`](uml/)), y la [guía explicativa en PDF](guia/Guia-del-proyecto-Sokoban.pdf).
+- Para regenerarlos: `python3 docs/uml/fuentes/diagramas.py` (las clases están en `clases.py`; la posición de cada caja y el recorrido de cada flecha, en `diagramas.py`). El de secuencia es PlantUML: `docs/uml/fuentes/7-secuencia-mover.puml`. La guía se regenera con `node docs/guia/generar-pdf.js`.
 - Colores: **azul = Luca**, **verde = Martín**, **amarillo = integración**, **gris = pendiente**.
 
 ## Quién hizo qué
@@ -69,7 +69,7 @@ Verificado: `mvn package` compila sin errores y el juego se probó en pantalla (
 3. `getEstado()` devuelve el tablero con los símbolos de la tabla de [`interfaz.md`](interfaz.md#integración-con-el-dominio-para-el-resto-del-equipo) (o con dos capas, si se elige la opción **b**).
 4. Niveles en `.txt`: se recomienda la carpeta `niveles/` en la raíz. Para meterlos en el `.jar` se agrega otro `<resource>` en `pom.xml`, igual que el de `assets/`.
 5. En `Main` se cambia `new JuegoDePrueba()` por la clase real y se borra el paquete `sokoban.prueba`. **No se toca ninguna clase de la vista.**
-6. Se actualiza `docs/uml/diagrama-completo.puml`: el bloque gris *Pendiente: dominio y personaje* se reemplaza por las clases reales.
+6. Se actualizan los diagramas: las clases nuevas van en `docs/uml/fuentes/clases.py` y se ubican en `diagramas.py`, reemplazando las cajas grises *pendiente*.
 
 ## Cómo se suma la música y los efectos de sonido
 

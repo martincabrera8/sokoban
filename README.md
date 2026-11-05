@@ -27,5 +27,6 @@ Controles: **flechas** para mover, **Esc** para pausar y botones de deshacer, re
 ## Documentación
 
 - [Integración, autoría y lo que falta](docs/integracion.md)
-- [Diagrama de clases completo](docs/uml/diagrama-completo.png) (fuente: [`diagrama-completo.puml`](docs/uml/diagrama-completo.puml))
+- **[Guía del proyecto (PDF)](docs/guia/Guia-del-proyecto-Sokoban.pdf)**: cada clase y cada patrón explicados, con listas de chequeo para validarlos
+- Diagramas UML en [`docs/uml/`](docs/uml/): [cómo leer las flechas](docs/uml/0-como-leer-flechas.png), [vista general](docs/uml/1-vista-general.png), [diagrama completo](docs/uml/2-diagrama-completo.png), [Observer](docs/uml/3-patron-observer.png), [Facade](docs/uml/4-patron-facade.png), [Singleton](docs/uml/5-patron-singleton.png), [MVC](docs/uml/6-mvc.png) y [secuencia al mover](docs/uml/7-secuencia-mover.png)
 - [Interfaz gráfica: diseño, patrones y cómo conectar el dominio](docs/interfaz.md)

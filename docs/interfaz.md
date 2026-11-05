@@ -32,7 +32,7 @@ Requisito: **Java 17 o superior**. Siempre se ejecuta desde la **raíz del repos
 
 El diagrama de clases de la interfaz está en [`uml/diagrama-interfaz-sokoban.drawio`](uml/diagrama-interfaz-sokoban.drawio) (se abre con [diagrams.net](https://app.diagrams.net)) y en imagen en [`uml/diagrama-interfaz-sokoban.png`](uml/diagrama-interfaz-sokoban.png). Es la versión anterior a la integración con el arte de Martín.
 
-> El diagrama **actualizado y completo** de todo el proyecto, con la autoría de cada parte, está en [`uml/diagrama-completo.png`](uml/diagrama-completo.png). Ver [`integracion.md`](integracion.md).
+> El diagrama **actualizado y completo** de todo el proyecto, con la autoría de cada parte, está en [`uml/2-diagrama-completo.png`](uml/2-diagrama-completo.png). Ver [`integracion.md`](integracion.md).
 
 ![Diagrama de clases](uml/diagrama-interfaz-sokoban.png)
 
