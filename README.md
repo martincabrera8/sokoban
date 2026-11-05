@@ -24,6 +24,10 @@ Controles: **flechas** para mover, **Esc** para pausar y botones de deshacer, re
 | Dominio y personaje | — | Pendiente |
 | Música y sonido | — | Pendiente |
 
+## Presentación
+
+[`presentacion/dist/presentacion-sokoban.html`](presentacion/dist/presentacion-sokoban.html): presentación animada en 2D y 3D, offline (abrir con Chrome o Edge y F11). Teclas y cómo editarla en [`presentacion/README.md`](presentacion/README.md).
+
 ## Documentación
 
 - [Integración, autoría y lo que falta](docs/integracion.md)

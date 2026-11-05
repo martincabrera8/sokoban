@@ -1,0 +1,213 @@
+/* Cada componente se define una vez; los diagramas solo usan estas clases. */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--fondo-hondo); overflow: hidden; }
+body { font-family: var(--f-texto); color: var(--tinta); -webkit-font-smoothing: antialiased; }
+img { display: block; }
+
+/* ── Escenario 1920×1080 escalado ── */
+.escenario { position: fixed; left: 50%; top: 50%; width: 1920px; height: 1080px; transform-origin: 50% 50%;
+  transform: translate(-50%, -50%) scale(var(--escala, 1));
+  perspective: 2200px; overflow: hidden; background: var(--fondo); }
+.escenario::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(120% 90% at 70% 10%, transparent 55%, rgb(3 8 20 / .55)); }
+.slide { position: absolute; inset: 0; visibility: hidden; transform-style: preserve-3d; backface-visibility: hidden;
+  background: var(--fondo); }
+.slide.activa { visibility: visible; }
+.lienzo { position: absolute; inset: 0; }
+.oculto-todo .slide { opacity: 0; }
+
+.notas { display: none; }
+
+/* ── Cabecera: rótulo + título + bajada, un solo bloque ── */
+.cab { position: absolute; left: var(--margen); top: 92px; width: var(--ancho-lectura); z-index: 3; }
+.cab--abajo { top: auto; bottom: 120px; }
+.cab--angosta { width: 560px; }
+.rotulo { margin: 0 0 14px; font-size: var(--t-rotulo); letter-spacing: .08em; text-transform: uppercase; color: var(--tinta-3); font-weight: 600; }
+.titulo { margin: 0; font-family: var(--f-display); font-weight: 600; font-size: var(--t-titulo); line-height: 1.02; color: var(--titulo); letter-spacing: -.01em; }
+.titulo--portada { font-size: var(--t-portada); line-height: .9; letter-spacing: -.02em; }
+.bajada { margin: 20px 0 0; font-size: var(--t-bajada); line-height: 1.4; color: var(--tinta-2); max-width: 34em; }
+.bajada b { color: var(--tinta); font-weight: 600; }
+.bajada code, .codigo { font-family: var(--f-mono); font-size: .86em; color: var(--titulo); background: var(--superficie-2);
+  padding: .08em .35em; border-radius: 6px; }
+.palabra { display: inline-block; }
+
+/* ── Cartel (el panel del juego, con oficio) ── */
+.cartel { position: absolute; background: linear-gradient(180deg, var(--superficie-2), var(--superficie));
+  border: 1px solid var(--linea-media); border-radius: var(--radio); box-shadow: var(--sombra-caja); padding: 26px 30px; }
+.cartel__rotulo { margin: 0 0 12px; font-size: var(--t-dato); color: var(--tinta-3); letter-spacing: .06em; text-transform: uppercase; font-weight: 600; }
+.cartel__titulo { margin: 0; font-family: var(--f-display); font-size: 38px; color: var(--titulo); font-weight: 600; }
+.cartel--fantasma { background: transparent; border-style: dashed; border-color: var(--tinta-3); box-shadow: none; }
+.cartel--fantasma .cartel__titulo { color: var(--tinta-3); }
+
+/* ── Cifra con unidad ── */
+.cifra { font-family: var(--f-display); font-size: var(--t-cifra); line-height: 1; color: var(--acento); font-variant-numeric: tabular-nums; }
+.cifra__unidad { display: block; margin-top: 8px; font-family: var(--f-texto); font-size: var(--t-dato); color: var(--tinta-2); line-height: 1.35; }
+.cifra--chica { font-size: 56px; }
+.cifra--exito { color: var(--exito); }
+
+/* ── Chips y rótulos anclados ── */
+.chip { display: inline-flex; align-items: center; gap: 10px; padding: 8px 14px; border-radius: 999px; font-size: var(--t-dato);
+  background: var(--superficie-2); border: 1px solid var(--linea-suave); color: var(--tinta); white-space: nowrap; box-shadow: var(--sombra-cerca); }
+.chip--listo { border-color: var(--acento); color: var(--tinta); }
+.chip--pendiente { border-style: dashed; border-color: var(--pendiente); color: var(--pendiente); background: var(--pendiente-suave); }
+.chip--codigo { font-family: var(--f-mono); font-size: var(--t-dato); color: var(--titulo); border-radius: 8px; }
+.anclado { position: absolute; font-size: var(--t-dato); color: var(--tinta-2); line-height: 1.3; }
+.anclado b { color: var(--tinta); font-weight: 600; }
+
+/* ── Baldosas pixel art ── */
+.pixel { image-rendering: pixelated; image-rendering: crisp-edges; }
+.tablero { position: absolute; display: grid; gap: 0; grid-template-columns: repeat(var(--cols), var(--b)); grid-auto-rows: var(--b); border-radius: 6px; overflow: visible; filter: drop-shadow(0 22px 34px rgb(3 8 20 / .6)); }
+.tablero img { width: 100%; height: 100%; }
+.ficha { position: absolute; left: 0; top: 0; width: var(--b, var(--baldosa)); height: var(--b, var(--baldosa)); will-change: transform; }
+.ficha img { width: 100%; height: 100%; }
+.ficha--jugador img { transform: translateY(calc(var(--vida, 0) * -2px)); }
+.caja-etiqueta { position: absolute; left: 50%; top: 100%; transform: translate(-50%, 8px); }
+.ficha::after { content: ""; position: absolute; inset: -4px; border: 3px solid var(--acento); border-radius: 6px; opacity: var(--marco, 0); }
+.ficha--jugador::after { display: none; }
+.ficha--en-destino { --marco: 1; }
+.destino-vacio { opacity: calc(.72 + var(--vida, 0) * .28); }
+.anclado__detalle { color: var(--tinta-2); font-size: var(--t-dato); }
+.anclado--ancho { width: 760px; }
+
+/* ── Escena 3D ── */
+.escena3d { position: absolute; inset: 0; }
+.escena3d canvas { display: block; width: 100%; height: 100%; }
+.escena3d__respaldo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.velo-portada { position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(90deg, rgb(11 22 48 / .92) 0%, rgb(11 22 48 / .55) 38%, transparent 62%); }
+.velo-portada--abajo { background: linear-gradient(180deg, rgb(11 22 48 / .85) 0%, transparent 34%, transparent 62%, rgb(11 22 48 / .9) 100%); }
+.epoca { width: 760px; }
+.epoca__anio { font-family: var(--f-display); font-size: var(--t-cifra); line-height: 1; }
+.epoca__anio--1955 { color: var(--e1955); }
+.epoca__anio--1985 { color: var(--e1985); }
+.epoca__anio--2015 { color: var(--e2015); }
+.equipo-linea { margin: 30px 0 0; font-size: var(--t-dato); color: var(--tinta-3); letter-spacing: .02em; }
+
+/* ── Estantes del arte ── */
+.estante { position: absolute; left: var(--margen); display: flex; align-items: center; gap: 8px; }
+.estante__nombre { width: 210px; flex: none; font-family: var(--f-mono); font-size: var(--t-dato); color: var(--tinta-2); }
+.estante__cuenta { margin-left: 18px; font-size: var(--t-dato); color: var(--tinta-3); white-space: nowrap; }
+.estante__cuenta b { color: var(--acento); font-weight: 600; }
+.estante__fila { display: flex; flex-wrap: wrap; gap: 6px; }
+.miniatura { width: 44px; height: 44px; border-radius: 4px; background: var(--superficie); border: 1px solid var(--linea-suave); padding: 2px; }
+.miniatura img { width: 100%; height: 100%; object-fit: contain; }
+.miniatura--ancha { width: 112px; }
+.miniatura { position: relative; }
+.miniatura--usada::after { content: ""; position: absolute; inset: -3px; border: 2px solid var(--acento); border-radius: 6px; opacity: var(--marco, 0); }
+.estante__fila--ancha { max-width: 1160px; }
+
+/* ── Capturas de la interfaz ── */
+.captura { position: absolute; border-radius: 10px; overflow: hidden; border: 1px solid var(--linea-media); box-shadow: var(--sombra-caja);
+  background: var(--superficie); transform-origin: 0 0; }
+.captura img { width: 100%; height: auto; }
+.captura__pie { position: absolute; font-size: var(--t-dato); color: var(--tinta); font-weight: 600; white-space: nowrap; }
+.camino { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
+.camino path { fill: none; stroke: var(--linea); stroke-width: 3; stroke-linecap: round; opacity: .7; }
+.camino .camino__rama { stroke-dasharray: 10 10; }
+.camino text { fill: var(--tinta-2); font-size: 19px; font-family: var(--f-texto); }
+.camino__fondo { fill: var(--fondo); }
+
+/* ── SVG de los diagramas ── */
+.svg { position: absolute; inset: 0; overflow: visible; }
+.svg text { font-family: var(--f-texto); }
+.placa__cara { stroke: var(--linea-media); stroke-width: 1.5; }
+.placa--vista .placa__cara { fill: var(--superficie-2); }
+.placa--contrato .placa__cara { fill: var(--superficie-2); stroke: var(--acento); }
+.placa--dominio .placa__cara { fill: transparent; stroke: var(--tinta-3); stroke-dasharray: 8 8; }
+.placa__lado { fill: var(--superficie); stroke: var(--linea-suave); }
+.placa__nombre { font-family: var(--f-display); font-size: 34px; fill: var(--titulo); }
+.placa__dato { font-size: 21px; fill: var(--tinta-2); }
+.bloque__cara { fill: var(--pendiente-suave); stroke: var(--pendiente); stroke-width: 1.5; }
+.bloque--real .bloque__cara { fill: var(--superficie-2); stroke: var(--exito); }
+.bloque__texto { font-size: 21px; fill: var(--tinta); }
+.pilar { stroke: var(--linea); stroke-width: 2; stroke-dasharray: 3 7; opacity: .6; }
+.particula { fill: var(--exito); }
+.conector { fill: none; stroke: var(--linea); stroke-width: 2.5; opacity: .55; }
+.conector--fantasma { stroke: var(--tinta-3); stroke-dasharray: 8 9; }
+.onda { fill: var(--acento); }
+.lider { stroke: var(--tinta-3); stroke-width: 1.5; }
+
+/* ── Observer: estado en vivo y HUD ── */
+.estado { font-family: var(--f-mono); font-size: var(--t-dato); line-height: 1.75; color: var(--tinta-2); }
+.estado b { color: var(--exito); font-weight: 500; font-variant-numeric: tabular-nums; }
+.estado__cambio { color: var(--acento); }
+.hud { display: flex; gap: 18px; }
+.hud__indicador { position: relative; width: 112px; height: 112px; }
+.hud__indicador img { width: 100%; height: 100%; }
+.hud__numero { position: absolute; left: 0; right: 0; top: 56%; text-align: center; font-family: var(--f-mono); font-weight: 700;
+  font-size: 27px; color: var(--exito); background: var(--superficie); margin: 0 22px; line-height: 1.15; border-radius: 3px; }
+
+/* ── Facade: puerta ── */
+.puerta { position: absolute; transform-style: preserve-3d; }
+.puerta__hoja { position: absolute; inset: 0; transform-origin: 0 50%; backface-visibility: hidden; }
+.metodo { font-family: var(--f-mono); font-size: 21px; color: var(--tinta-2); line-height: 1.85; }
+.metodo b { color: var(--titulo); font-weight: 500; }
+.pieza { position: absolute; display: flex; align-items: center; gap: 14px; padding: 12px 18px 12px 12px; border-radius: 12px;
+  border: 1px dashed var(--pendiente); background: var(--pendiente-suave); font-size: var(--t-dato); color: var(--tinta); }
+.pieza img { width: 48px; height: 48px; }
+
+/* ── Singleton: bóveda ── */
+.boveda__grilla { display: grid; grid-template-columns: repeat(7, 52px); gap: 8px; margin-top: 18px; }
+.ranura { width: 52px; height: 52px; border-radius: 6px; border: 1px dashed var(--linea-suave); background: var(--fondo); padding: 4px; }
+.ranura img { width: 100%; height: 100%; object-fit: contain; }
+.ranura--llena { border: 1px solid var(--linea-media); background: var(--superficie); }
+.paquete { position: absolute; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 4px; background: var(--exito); }
+.paquete--lectura { background: var(--acento); }
+
+/* ── Plano UML ── */
+.plano { position: absolute; border-radius: var(--radio); overflow: hidden; background: var(--papel); box-shadow: var(--sombra-caja); }
+.plano svg { display: block; width: 100%; height: 100%; }
+
+/* ── Cerrojos ── */
+.nodo { position: absolute; width: 180px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
+.nodo__icono { width: 96px; height: 96px; border-radius: 16px; padding: 12px; background: var(--superficie-2); border: 1px solid var(--linea-suave); box-shadow: var(--sombra-caja); }
+.nodo__icono img { width: 100%; height: 100%; }
+.nodo--listo .nodo__icono { border-color: var(--acento); }
+.nodo--cerrado .nodo__icono { border-style: dashed; border-color: var(--pendiente); background: var(--superficie); }
+.nodo__nombre { font-size: var(--t-dato); line-height: 1.3; color: var(--tinta); font-weight: 600; }
+.nodo__estado { font-size: 18px; color: var(--tinta-3); }
+.nodo--listo .nodo__estado { color: var(--acento); }
+
+.solo-lector { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.cartel__titulo--chico { font-size: 30px; }
+
+/* ── Intro ── */
+.intro__bajada { width: 1920px; margin: 0; text-align: center; font-size: var(--t-bajada); color: var(--tinta-2); letter-spacing: .04em; }
+.intro__respaldo { width: 1920px; text-align: center; font-family: var(--f-display); font-size: var(--t-intro); color: var(--titulo); }
+.cine { position: absolute; left: 0; right: 0; height: 104px; background: var(--fondo-hondo); z-index: 4; transform: scaleY(0); }
+.cine--arriba { top: 0; transform-origin: 50% 0; }
+.cine--abajo { bottom: 0; transform-origin: 50% 100%; }
+.destello { position: absolute; inset: 0; background: radial-gradient(60% 60% at 58% 62%, var(--brillo), transparent 70%); opacity: 0; pointer-events: none; z-index: 3; }
+
+/* ── Facade y Singleton ── */
+.marco__rotulo { margin-left: 340px; }
+.pieza::after { content: ""; position: absolute; inset: -3px; border: 2px solid var(--acento); border-radius: 14px; opacity: var(--marco, 0); }
+.paquete-codigo { position: absolute; left: 0; top: 0; z-index: 4; }
+.boveda__codigo { margin-top: 18px; }
+.cuentas { display: flex; gap: 72px; }
+
+/* ── UML y cerrojos ── */
+.zonas { display: flex; flex-direction: column; gap: 22px; width: 560px; }
+.zona { position: relative; padding-left: 22px; }
+.zona::before { content: ""; position: absolute; left: 0; top: 4px; bottom: 4px; width: 4px; border-radius: 2px; background: var(--acento); opacity: var(--marco, 0); }
+.zona__nombre { font-family: var(--f-display); font-size: 34px; color: var(--titulo); }
+.placa__rotulo { font-family: var(--f-display); font-size: 36px; color: var(--titulo); }
+.nodo__icono { position: relative; }
+.nodo__icono::after { content: ""; position: absolute; inset: -6px; border: 3px solid var(--acento); border-radius: 20px; opacity: var(--marco, 0); }
+.nodo--cerrado .nodo__icono { transform: scale(calc(1 + var(--vida, 0) * .03)); }
+.ficha--viajero { z-index: 3; }
+.chip--despues { position: absolute; left: 0; top: 34px; }
+
+/* Ubicación por variables: va al final para ganarle a la posición por defecto de cada componente. */
+.pos { position: absolute; left: var(--x, 0); top: var(--y, 0); }
+.dim { width: var(--w, auto); height: var(--h, auto); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; animation-delay: 0s !important; transition-duration: .001ms !important; }
+}
+
+/* ── Transiciones propias ── */
+.mosaico { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(16, 1fr); grid-template-rows: repeat(9, 1fr); pointer-events: none; z-index: 20; }
+.mosaico i { display: block; background: var(--superficie-2); border: 1px solid var(--linea-suave); border-radius: 6px; transform: scale(0); }
+.portal-anillo { position: absolute; left: 50%; top: 55%; width: 760px; height: 760px; margin: -380px 0 0 -380px; border-radius: 50%; pointer-events: none; z-index: 20;
+  border: 6px solid var(--acento); box-shadow: 0 0 60px 10px var(--brillo), inset 0 0 60px 10px var(--brillo); opacity: 0; }
