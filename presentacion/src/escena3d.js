@@ -205,7 +205,7 @@ export function crearEscena(contenedor, { encuadre = 0, bajar = 0, epocaFija = n
     vida() {
       const tick = (tt) => { deriva.x = Math.sin(tt * 0.17) * 0.35; deriva.y = Math.sin(tt * 0.23 + 1.3) * 0.2; };
       gsap.ticker.add(tick);
-      const rebote = jugador ? gsap.to(pj.cabeza.rotation, { y: 0.35, duration: 1.6, ease: "sine.inOut", yoyo: true, repeat: -1 }) : null;
+      const rebote = jugador ? eventos(() => gsap.to(pj.cabeza.rotation, { y: gsap.utils.random(-0.45, 0.45), duration: gsap.utils.random(0.4, 0.9), ease: "sine.inOut" }), [1.2, 3.5]) : null;
       const amague = eventos(() => {
         if (!pendiente) return;
         gsap.fromTo(pendiente.position, { x: pendiente.position.x }, { x: "+=0.06", duration: 0.12, yoyo: true, repeat: 1, ease: "power1.inOut" });

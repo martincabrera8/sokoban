@@ -110,6 +110,7 @@ const TRANSICIONES = {
 
 function mostrar(i, dir, construido) {
   if (i < 0 || i >= slides.length || i === actual) return;
+  if (reducido()) construido = true;
   ocupado = true;
   const anterior = est;
   const prevEl = anterior ? anterior.slide : null;
