@@ -1,6 +1,5 @@
 package sokoban.modelo;
 
-/** Direcciones en las que se puede mover el jugador. Cada una sabe cuánto se desplaza. */
 public enum Direccion {
 
     ARRIBA(-1, 0),

@@ -36,9 +36,14 @@ public class PanelTablero extends JPanel implements ObservadorJuego {
             Map.entry('$', List.of(PISO, "boxes/box_wood")),
             Map.entry('*', List.of(PISO, "goals/goal_placed")),
             Map.entry('F', List.of(PISO, "boxes/caja_fragil_intacta")),
+            Map.entry('f', List.of(PISO, "boxes/caja_fragil_danada")),
+            Map.entry('G', List.of(PISO, DESTINO, "boxes/caja_fragil_intacta")),
+            Map.entry('g', List.of(PISO, DESTINO, "boxes/caja_fragil_danada")),
             Map.entry('L', List.of(PISO, "boxes/caja_llave")),
+            Map.entry('K', List.of(PISO, DESTINO, "boxes/caja_llave")),
             Map.entry('~', List.of("tiles/terreno_resbaladizo")),
             Map.entry('C', List.of("tiles/cerrojo_cerrado")),
+            Map.entry('c', List.of("tiles/cerrojo_abierto")),
             Map.entry('X', List.of("tiles/muro_cerrado")),
             Map.entry('O', List.of("tiles/muro_abierto")));
 
