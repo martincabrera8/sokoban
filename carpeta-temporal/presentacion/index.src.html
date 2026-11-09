@@ -21,7 +21,7 @@
       <p class="rotulo">Sokoban, avance del trabajo integrador</p>
       <h2 class="titulo titulo--portada">Un almacén que cambia de época</h2>
       <p class="bajada">1955, 1985 y 2015 en el mismo tablero. Esto es lo que ya funciona y lo que falta.</p>
-      <p class="equipo-linea">Martín, Luca y dos integrantes más</p>
+      <p class="equipo-linea">Martín, Luca, Pedro, Lucía y Mora</p>
     </header>
     <aside class="notas"><p>Presentamos el avance del trabajo integrador: un Sokoban en Java Swing con un giro propio, el almacén cambia de época en cada nivel.</p><p>Lo que se ve es el tablero real del juego armado con las baldosas de Martín: pisos y paredes de 1955 a la izquierda, 1985 al centro y 2015 a la derecha.</p></aside>
   </section>
@@ -29,20 +29,20 @@
   <section class="slide" data-diagrama="equipo" data-t="baldosas" aria-label="El equipo">
     <div class="lienzo"></div>
     <header class="cab">
-      <h2 class="titulo">Tres cajas de cinco</h2>
-      <p class="bajada">Cada parte del trabajo es una caja. El arte, la interfaz y su integración ya están en su destino; el dominio y la música llegan cuando sus autores suban su parte.</p>
+      <h2 class="titulo">Cinco cajas, cinco destinos</h2>
+      <p class="bajada">Cada parte del trabajo es una caja. Arte, interfaz, integración, dominio y sonido ya están en el repositorio y funcionan juntos.</p>
     </header>
-    <aside class="notas"><p>Martín hizo el arte (104 imágenes). Luca hizo la interfaz gráfica en Swing (13 archivos Java). Entre los dos se integró: el tablero usa el piso y la pared de cada época y el personaje mira hacia donde se mueve.</p><p>Faltan dos partes que tienen hechas dos compañeros y todavía no subieron: el dominio con el personaje, y la música y los sonidos.</p></aside>
+    <aside class="notas"><p>Martín hizo el arte (104 imágenes). Luca hizo la interfaz gráfica en Swing (13 archivos Java). Entre los dos se integró: el tablero usa el piso y la pared de cada época y el personaje mira hacia donde se mueve.</p><p>Las dos cajas que se materializan son lo último que llegó: Pedro y Lucía subieron el dominio con el personaje (las tres cajas, hielo, cerrojos y deshacer) y Mora el sonido (14 efectos propios y la tecla M para silenciar). Las dos entraron el 9/11.</p></aside>
   </section>
 
   <section class="slide" data-diagrama="arte" data-t="profundidad" aria-label="El arte">
     <div class="lienzo"></div>
     <header class="cab">
       <p class="rotulo">Martín</p>
-      <h2 class="titulo">104 imágenes, 28 en juego</h2>
-      <p class="bajada">De las 76 sin usar, 54 son variantes de piso y pared por época; el resto (cajas frágiles rotas, cerrojo abierto, flechas) espera al dominio.</p>
+      <h2 class="titulo">104 imágenes, 30 en juego</h2>
+      <p class="bajada">De las 74 sin usar, 54 son variantes de piso y pared por época; el resto son cajas, flechas, botones y carteles de reserva.</p>
     </header>
-    <aside class="notas"><p>Cada estante es una carpeta de assets. Las imágenes encendidas son las 28 que el juego ya carga; el resto queda para las cajas frágiles, la caja llave, los cerrojos y los muros abiertos o cerrados, que llegan con el dominio.</p></aside>
+    <aside class="notas"><p>Cada estante es una carpeta de assets. Las imágenes encendidas son las 30 que el juego carga hoy, con las que sumó el dominio: caja frágil sana y dañada, caja llave, cerrojo cerrado y abierto, muro cerrado y abierto, y el hielo.</p></aside>
   </section>
 
   <section class="slide" data-diagrama="epocas" data-t="portal" aria-label="Las tres épocas">
@@ -60,18 +60,18 @@
     <header class="cab">
       <p class="rotulo">Luca</p>
       <h2 class="titulo">Cinco pantallas, un recorrido</h2>
-      <p class="bajada">Menú, partida, pausa, nivel completado y resultados, hechos en Swing. Hasta que llegue el dominio, un juego de prueba de tres niveles mueve todo.</p>
+      <p class="bajada">Menú, partida, pausa, nivel completado y resultados, hechos en Swing. Primero las movió un juego de prueba; hoy las mueve el dominio real.</p>
     </header>
-    <aside class="notas"><p>Son capturas reales del juego. Desde el menú se elige el nivel; en la partida, Esc pausa; al poner todas las cajas en su destino aparece el cartel con movimientos, empujes, deshacer usados y puntaje; en el último nivel, los resultados.</p><p>El HUD muestra nivel, movimientos y empujes, y tiene los botones de deshacer y reiniciar que pide la consigna.</p></aside>
+    <aside class="notas"><p>Son capturas reales del juego. Desde el menú se elige el nivel; en la partida, Esc pausa; al poner todas las cajas en su destino aparece el cartel con movimientos, empujes, deshacer usados y puntaje; en el último nivel, los resultados.</p><p>El HUD muestra nivel, movimientos y empujes, y tiene los botones de deshacer y reiniciar que pide la consigna. Las capturas son del juego de prueba con el que se armó la interfaz; con el dominio real se ven igual.</p></aside>
   </section>
 
   <section class="slide" data-diagrama="arquitectura" data-t="profundidad" aria-label="Arquitectura">
     <div class="lienzo"></div>
     <header class="cab">
       <h2 class="titulo">La vista no toca el dominio</h2>
-      <p class="bajada">Las dos partes hablan a través de un contrato de cuatro tipos. Cuando llegue el dominio, en <code>Main</code> cambia una sola línea.</p>
+      <p class="bajada">La vista solo conoce el contrato <code>Juego</code>. El dominio y después el sonido se enchufaron por debajo: en <code>Main</code> cambió una línea.</p>
     </header>
-    <aside class="notas"><p>Arriba la vista, en el medio el contrato (Juego, ObservadorJuego, EstadoJuego y Direccion) y abajo quien lo implementa. Hoy es JuegoDePrueba; mañana, la clase del dominio (ControladorJuego es un nombre de ejemplo).</p><p>Es inversión de dependencias (DIP) y MVC: la vista recibe una foto inmutable del estado y nunca un tablero o una caja.</p></aside>
+    <aside class="notas"><p>Arriba la vista, en el medio el contrato (Juego, ObservadorJuego, EstadoJuego y Direccion) y abajo quien lo implementa. Primero fue JuegoDePrueba; ahora es JuegoSokoban, el dominio de Pedro y Lucía, envuelto por JuegoConSonido, el sonido de Mora.</p><p>Es inversión de dependencias (DIP) y MVC: la vista recibe una foto inmutable del estado y nunca un tablero o una caja. Por eso el dominio y el sonido entraron sin tocar el contrato. La vista solo sumó 5 líneas en PanelTablero para dibujar los símbolos nuevos (caja dañada, cerrojo y muro abiertos); el sonido no tocó la vista.</p></aside>
   </section>
 
   <section class="slide" data-diagrama="observer" data-t="empuje" aria-label="Patrón Observer">
@@ -81,7 +81,7 @@
       <h2 class="titulo">Un movimiento, todos se enteran</h2>
       <p class="bajada">Cada vez que el jugador se mueve, el juego le manda una foto del estado a cada observador. El HUD y el tablero se redibujan solos.</p>
     </header>
-    <aside class="notas"><p>El tablero de la izquierda juega solo con las reglas del juego de prueba: es una simulación en vivo. Cada movimiento dispara notificar(), que recorre la lista de observadores y llama a actualizar(estado).</p><p>El sonido se suma como un observador más, con una línea más como las de PantallaJuego, sin tocar nada de lo que existe.</p></aside>
+    <aside class="notas"><p>El tablero juega solo: es una simulación en vivo con las reglas del juego sobre un nivel de prueba. Cada movimiento dispara notificar(), que recorre la lista de observadores y llama a actualizar(estado). En JuegoSokoban es igual: PantallaJuego suscribe al HUD y al tablero.</p><p>El sonido no es un observador: necesita saber qué acción pasó, así que envuelve al juego (Decorator). Lo vemos más adelante.</p></aside>
   </section>
 
   <section class="slide" data-diagrama="facade" data-t="baldosas" aria-label="Patrón Facade">
@@ -89,9 +89,9 @@
     <header class="cab">
       <p class="rotulo">Patrón Facade</p>
       <h2 class="titulo">Una sola puerta</h2>
-      <p class="bajada">La vista solo pide cosas como <code>mover(DERECHA)</code>. Detrás, el dominio va a coordinar tablero, cajas, historial y puntaje sin que la vista se entere. Hoy lo resuelve JuegoDePrueba solo.</p>
+      <p class="bajada">La vista solo pide cosas como <code>mover(DERECHA)</code>. Detrás, <code>JuegoSokoban</code> coordina nivel, cajas, motor e historial sin que la vista se entere.</p>
     </header>
-    <aside class="notas"><p>La interfaz Juego tiene siete métodos y es todo lo que la vista conoce. El patrón se completa cuando el dominio implemente Juego con una clase que delegue en sus piezas; hoy JuegoDePrueba hace todo en una sola clase.</p></aside>
+    <aside class="notas"><p>La interfaz Juego tiene siete métodos y es todo lo que la vista conoce. Primero la cumplía JuegoDePrueba, una sola clase que hacía todo. Ahora JuegoSokoban la implementa y reparte cada pedido entre CargadorNivel, EstadoNivel, el motor, el jugador, las cajas y el historial.</p><p>Las llamadas siguen entrando por la misma puerta: la vista no se enteró del cambio. El último paso muestra el sonido, que envuelve a la fachada sin cambiarla.</p></aside>
   </section>
 
   <section class="slide" data-diagrama="singleton" data-t="telon" aria-label="Patrón Singleton">
@@ -101,35 +101,55 @@
       <h2 class="titulo">Cada imagen, una lectura</h2>
       <p class="bajada">Menú, HUD y tablero piden imágenes a la misma caché. La primera vez se lee el archivo; después se reutiliza.</p>
     </header>
-    <aside class="notas"><p>Imagenes tiene constructor privado, un atributo static con la única instancia y obtenerInstancia(). Los contadores son una simulación del uso real: las lecturas se frenan en 28, las imágenes que usa el juego.</p></aside>
+    <aside class="notas"><p>Imagenes tiene constructor privado, un atributo static con la única instancia y obtenerInstancia(). Los contadores son una simulación del uso real: las lecturas se frenan en 30, las imágenes que usa el juego.</p></aside>
+  </section>
+
+  <section class="slide" data-diagrama="dominio" data-t="empuje" aria-label="El dominio">
+    <div class="lienzo"></div>
+    <header class="cab cab--dominio">
+      <p class="rotulo">Pedro y Lucía · Strategy, Mediator y deshacer</p>
+      <h2 class="titulo">Cada caja, su regla</h2>
+      <p class="bajada">Los niveles 2 y 3 reales, simulados con las reglas del código: cada caja trae su comportamiento y un motor resuelve cada empuje.</p>
+    </header>
+    <aside class="notas"><p>Strategy: Caja delega en ComportamientoCaja. La normal no hace nada; la frágil arranca con resistencia 3 y pierde uno por empuje (a los 3 se rompe y desaparece); la llave, si queda sobre un cerrojo, abre todos los muros del nivel.</p><p>Mediator: el Jugador no mueve nada solo, le pide el movimiento a MotorMovimiento, que resuelve choques, empujes y el hielo (la caja sigue hasta el primer piso normal). Para la defensa: hoy solo el Jugador habla con el mediador; la Caja no lo usa.</p><p>Deshacer: antes de cada paso JuegoSokoban guarda una foto completa del nivel (máximo 15). Cada deshacer saca 5 fotos y restaura la última, hasta 3 seguidos. Es la idea de Memento: por eso el muro vuelve a cerrarse.</p></aside>
+  </section>
+
+  <section class="slide" data-diagrama="sonido" data-t="profundidad" aria-label="El sonido">
+    <div class="lienzo"></div>
+    <header class="cab cab--sonido">
+      <p class="rotulo">Mora · Decorator y State</p>
+      <h2 class="titulo">El sonido envuelve al juego</h2>
+      <p class="bajada"><code>JuegoConSonido</code> también es un <code>Juego</code>: le pasa cada pedido a <code>JuegoSokoban</code> y hace sonar lo que cambió. La tecla M lo silencia.</p>
+    </header>
+    <aside class="notas"><p>Decorator: JuegoConSonido implementa Juego y guarda otro Juego adentro. En mover() pide el estado antes, delega, pide el estado después y compara: si cambió una caja de lugar suena el empuje; si llegó a un destino, la caja en destino; si nada cambió, el choque. En Main es una sola línea: new JuegoConSonido(new JuegoSokoban()).</p><p>Las ondas son las reales: la envolvente de cada uno de los 14 archivos WAV, que Mora generó por código y son de dominio público.</p><p>State: Sonidos (Singleton y Facade de javax.sound) delega en su estado. SonidoActivado reproduce; SonidoSilenciado no hace nada. La tecla M le pide al estado actual que pase al otro. Podría contar como una de las dos funcionalidades con patrón.</p></aside>
   </section>
 
   <section class="slide" data-diagrama="uml" data-t="portal" aria-label="Diagrama UML">
     <div class="lienzo"></div>
     <header class="cab cab--angosta">
       <h2 class="titulo">Todo el diseño en un plano</h2>
-      <p class="bajada">Diagrama de clases completo con el color de quien hizo cada parte: azul Luca, verde Martín, amarillo la integración y gris lo pendiente.</p>
+      <p class="bajada">Diagrama de clases completo, con el color de quien hizo cada parte. Cada autor se levanta en su capa.</p>
     </header>
-    <aside class="notas"><p>Recorremos el diagrama por zonas: la vista, el contrato y la parte provisoria con lo pendiente. Está en docs/uml junto con un diagrama por patrón y la guía en PDF. Para la entrega hay que pasarlo a StarUML.</p><p>Primero cada autor se separa en su capa; después se encienden las flechas reales, zona por zona.</p></aside>
+    <aside class="notas"><p>Recorremos el diagrama por zonas: la vista, el contrato, el dominio y el sonido. Está en docs/uml junto con un diagrama por patrón y la guía en PDF. Para la entrega hay que pasarlo a StarUML.</p><p>Primero cada autor se separa en su capa; después se encienden las flechas reales, zona por zona.</p></aside>
   </section>
 
   <section class="slide" data-diagrama="falta" data-t="empuje" aria-label="Lo que falta">
     <div class="lienzo"></div>
     <header class="cab">
-      <h2 class="titulo">Seis cerrojos por abrir</h2>
-      <p class="bajada">Lo que pide la consigna y todavía no está. El próximo es el dominio: con él se completan la fachada y las reglas del deshacer.</p>
+      <h2 class="titulo">Cuatro cerrojos por abrir</h2>
+      <p class="bajada">Cinco de nueve ya están abiertos. Lo próximo son las dos funcionalidades con patrones; después, el diagrama en StarUML, el informe y el video.</p>
     </header>
-    <aside class="notas"><p>Faltan el dominio y el personaje, la música y los sonidos, las dos funcionalidades adicionales con patrones, el diagrama en StarUML, el informe técnico y el video de gameplay.</p><p>Ideas para las funcionalidades: Command y Memento para el deshacer, State para la partida, Strategy para el puntaje.</p><p>El personaje recorre lo terminado y deja la caja llave frente al cerrojo del dominio; la línea naranja es lo recorrido y la tenue, lo que falta.</p></aside>
+    <aside class="notas"><p>Abiertos: arte, interfaz, dominio y personaje, sonido y el UML de revisión. Faltan las dos funcionalidades adicionales con patrones, el diagrama en StarUML, el informe técnico (con las decisiones de diseño) y el video de gameplay.</p><p>Para las funcionalidades: el silencio con State (tecla M) puede contar como una; falta otra. Ideas: Command para deshacer, State para la partida, Strategy para el puntaje.</p><p>El personaje recorre lo terminado y deja la caja llave frente al próximo cerrojo; la línea naranja es lo recorrido y la tenue, lo que falta.</p></aside>
   </section>
 
   <section class="slide" data-diagrama="cierre" data-t="portal" aria-label="Cierre">
     <div class="lienzo"></div>
     <header class="cab cab--abajo">
-      <h2 class="titulo">Próximo nivel: el dominio</h2>
+      <h2 class="titulo">Próximo nivel: la entrega</h2>
       <p class="bajada">¿Preguntas?</p>
-      <p class="equipo-linea">Martín, Luca y dos integrantes más</p>
+      <p class="equipo-linea">Martín, Luca, Pedro, Lucía y Mora</p>
     </header>
-    <aside class="notas"><p>Cerramos con el mismo almacén: una caja ya está en su destino y otra todavía espera. Es el estado del proyecto.</p></aside>
+    <aside class="notas"><p>Cerramos con el mismo almacén: las cinco partes ya están en su destino y queda una caja, la de la entrega final (funcionalidades, StarUML, informe y video). Es el estado del proyecto.</p></aside>
   </section>
 
 </main>

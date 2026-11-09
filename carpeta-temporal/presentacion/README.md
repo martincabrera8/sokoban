@@ -28,17 +28,19 @@ La intro se reproduce sola al abrir; el resto avanza solo cuando apretás una te
 
 1. Intro 3D: el personaje empuja la N y se enciende "SOKOBAN".
 2. Portada: el almacén en 3D con las tres épocas.
-3. El equipo: cada parte es una caja; tres ya en su destino.
-4. El arte de Martín: 101 imágenes, 28 en uso.
+3. El equipo: cada parte es una caja; las cinco llegan a su destino (dominio y sonido se materializan).
+4. El arte de Martín: 104 imágenes, 30 en uso.
 5. Las tres épocas en 3D (1955, 1985, 2015).
 6. La interfaz de Luca: las cinco pantallas reales.
-7. Arquitectura: la vista no toca el dominio.
+7. Arquitectura: la vista no toca el dominio; el dominio y el sonido se enchufan por debajo.
 8. Observer, en vivo.
-9. Facade.
+9. Facade: JuegoSokoban detrás de la puerta y el sonido envolviendo la caja.
 10. Singleton, con contadores simulados.
-11. El diagrama UML completo, con zoom por zonas.
-12. Lo que falta.
-13. Cierre en 3D.
+11. El dominio de Pedro y Lucía: Strategy, Mediator y deshacer sobre los niveles reales (simulación).
+12. El sonido de Mora: Decorator y State, con la onda real de los 14 efectos.
+13. El diagrama UML completo, con zoom por zonas.
+14. Lo que falta.
+15. Cierre en 3D.
 
 ## Cómo cambiarla
 
@@ -56,7 +58,7 @@ presentacion/
 ```
 
 - **Cambiar un texto:** `index.src.html`.
-- **Cambiar un dato** (por ejemplo, cuando llegue el dominio): `src/datos.js` (en `PARTES` y `ENTREGAS`, poner `listo: true`).
+- **Cambiar un dato** (por ejemplo, cuando se termine una entrega): `src/datos.js` (en `ENTREGAS`, poner `listo: true`).
 - **Cambiar la paleta o las tipografías:** solo `src/tokens.css`.
 
 Para volver a armar el HTML (necesita Node y Python con Pillow):

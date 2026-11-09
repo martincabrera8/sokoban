@@ -25,6 +25,8 @@
   --pendiente-suave: rgb(214 151 101 / .16);
   --papel: #F4F7FB;            /* hoja del plano UML */
   --brillo: rgb(255 178 69 / .55); /* luz del destino */
+  --sonido: #C79BEA;           /* lila del paquete sokoban.sonido en el UML (Mora) */
+  --sonido-suave: rgb(199 155 234 / .16);
 
   /* Personaje (colores del sprite characters/player_down) */
   --pj-campera: #E13E3B;

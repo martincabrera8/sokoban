@@ -12,8 +12,10 @@ import singleton from "./diagramas/singleton.js";
 import uml from "./diagramas/uml.js";
 import falta from "./diagramas/falta.js";
 import cierre from "./diagramas/cierre.js";
+import dominio from "./diagramas/dominio.js";
+import sonido from "./diagramas/sonido.js";
 
-Object.entries({ intro, portada, equipo, arte, epocas, interfaz, arquitectura, observer, facade, singleton, uml, falta, cierre })
+Object.entries({ intro, portada, equipo, arte, epocas, interfaz, arquitectura, observer, facade, singleton, dominio, sonido, uml, falta, cierre })
   .forEach(([clave, modulo]) => registrar(clave, modulo));
 
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", iniciar);

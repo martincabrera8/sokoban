@@ -1,90 +1,111 @@
-# Integración del proyecto: estado al 05/11/2026
+# Integración del proyecto: estado al 09/11/2026
 
-Este documento junta las partes que ya están en el repositorio, dice quién hizo cada una y explica cómo se suman las partes que faltan.
+Este documento junta las cuatro partes que ya están en el repositorio (arte, interfaz, dominio y sonido), dice quién hizo cada una, explica cómo se conectan y qué falta para entregar.
 
 ## Diagrama de clases completo
 
 ![Diagrama de clases completo](uml/2-diagrama-completo.png)
 
-- Vectorial: [`uml/2-diagrama-completo.svg`](uml/2-diagrama-completo.svg). Además hay diagramas chicos por patrón, la vista general, cómo leer las flechas y un diagrama de secuencia (todos en [`uml/`](uml/)), y la [guía explicativa en PDF](guia/Guia-del-proyecto-Sokoban.pdf).
+- Vectorial: [`uml/2-diagrama-completo.svg`](uml/2-diagrama-completo.svg). Además hay un diagrama por patrón (Observer, Facade, Singleton, Strategy, Mediator, Decorator, State y el deshacer con fotos), la vista general, MVC, cómo leer las flechas y un diagrama de secuencia (todos en [`uml/`](uml/)), y la [guía explicativa en PDF](guia/Guia-del-proyecto-Sokoban.pdf).
 - Para regenerarlos: `python3 docs/uml/fuentes/diagramas.py` (las clases están en `clases.py`; la posición de cada caja y el recorrido de cada flecha, en `diagramas.py`). El de secuencia es PlantUML: `docs/uml/fuentes/7-secuencia-mover.puml`. La guía se regenera con `node docs/guia/generar-pdf.js`.
-- Colores: **azul = Luca**, **verde = Martín**, **amarillo = integración**, **gris = pendiente**.
+- Colores: **azul = Luca**, **verde = Martín**, **amarillo = integración**, **naranja = Pedro y Lucía**, **lila = Mora**.
 
 ## Quién hizo qué
 
 | Parte | Autor | Archivos |
 |---|---|---|
-| Arte: personaje (4 direcciones), cajas, destinos, pisos y paredes por época, fondos 1955/1985/2015, botones e indicadores del HUD, diseños de pantallas | **Martín** | `assets/` (101 PNG) |
+| Arte: personaje (4 direcciones), cajas, destinos, pisos y paredes por época, fondos 1955/1985/2015, botones e indicadores del HUD, diseños de pantallas | **Martín** | `assets/` (104 PNG) |
 | README inicial y consigna | **Martín** | `README.md`, `docs/consigna-prof-pepe.pdf` |
 | Interfaz gráfica Swing: ventana, menú, partida, HUD, tablero, carteles de pausa y resultado, caché de imágenes | **Luca** | `src/main/java/sokoban/vista/*` (salvo `Epoca`), `Main.java` |
-| Contrato vista-dominio: `Juego` (Facade), `ObservadorJuego` (Observer), `EstadoJuego` (DTO), `Direccion` | **Luca** | `src/main/java/sokoban/modelo/*` |
-| Juego de prueba provisorio (lo reemplaza el dominio) | **Luca** | `src/main/java/sokoban/prueba/JuegoDePrueba.java` |
+| Contrato vista-dominio: `Juego` (Facade), `ObservadorJuego` (Observer), `EstadoJuego` (DTO), `Direccion` | **Luca** | `src/main/java/sokoban/modelo/` (esas 4) |
+| Juego de prueba (ya no se usa) | **Luca** | `src/main/java/sokoban/prueba/JuegoDePrueba.java` |
 | Proyecto Maven, documentación y UML de la interfaz | **Luca** | `pom.xml`, `docs/interfaz.md`, `docs/uml/diagrama-interfaz-sokoban.*`, `docs/capturas/` |
-| Integración Luca + Martín (ver abajo) | **Martín** (asistido por IA) | `vista/Epoca.java`, cambios en `PanelTablero` y `PantallaJuego`, tercer nivel de prueba, este documento, UML completo |
-| Dominio y personaje (Sokoban) | *pendiente* | — |
-| Música y efectos de sonido | *pendiente* | — |
+| Dominio y personaje: `JuegoSokoban`, `CargadorNivel`, `EstadoNivel`, `Posicion`, `Jugador`, `Caja`, las estrategias de caja (Strategy) y el motor de movimiento (Mediator), 5 símbolos nuevos en `PanelTablero` | **Pedro y Lucía** | `src/main/java/sokoban/modelo/` (el resto), `modelo/entidades/`, `modelo/estrategias/`, `modelo/movimiento/`, `niveles/` |
+| Sonido: `JuegoConSonido` (Decorator), `Sonidos` (Singleton + Facade), `EstadoSonido` y sus dos estados (State), `Sonido`, `SonidosDeInterfaz`, 14 efectos generados por código | **Mora** | `src/main/java/sokoban/sonido/`, `assets/sonidos/`, `docs/generar_sonidos.py`, `docs/sonido.md`, 4 líneas de `Main` |
+| Integración Luca + Martín (épocas, giro del personaje) | **Martín** (asistido por IA) | `vista/Epoca.java`, cambios en `PanelTablero` y `PantallaJuego` |
+| Integración del dominio y del sonido, revisión, este documento y los diagramas | **Martín** | ver abajo |
 
-## Qué se hizo en la integración
+## Cómo se conectan las partes ahora
 
-La interfaz de Luca ya usaba los assets de Martín, pero parte del arte no estaba conectado:
+```java
+// Main.java: el único lugar que conoce las clases concretas
+Juego juego = new JuegoConSonido(new JuegoSokoban());
+new VentanaPrincipal(juego).setVisible(true);
+SonidosDeInterfaz.instalar();
+```
 
-1. **Personaje con 4 direcciones.** Antes siempre se dibujaba `player_down`. Ahora `PanelTablero` dibuja `player_up`, `player_down`, `player_left` o `player_right` según la última flecha (gira aunque choque contra una pared). Lo resuelve la vista y no cambia el contrato con el dominio.
-2. **Tablero con el estilo de cada época.** Antes el piso era siempre `floor_1985` y la pared `wall_brick`, aunque el fondo cambiaba. El enumerado nuevo `Epoca` agrupa fondo, piso y pared:
+```
+Main ─▶ VentanaPrincipal(juego) ─▶ PantallaJuego ─▶ juego (interfaz Juego)
+                                                     │
+                                         JuegoConSonido      (Decorator, sonido)
+                                                     │  le pasa cada pedido a
+                                         JuegoSokoban        (dominio)
+                                           ├─ CargadorNivel ─▶ niveles/nivelN.txt
+                                           ├─ EstadoNivel: terreno, Jugador, Caja (con su estrategia)
+                                           ├─ MotorMovimiento (Mediator): mueve al Jugador y empuja la Caja
+                                           ├─ historial de Fotos (deshacer 15 / 5 / 3)
+                                           └─ observadores: PanelHUD y PanelTablero (Observer)
+```
 
-   | Nivel | Época | Fondo | Piso | Pared |
-   |---|---|---|---|---|
-   | 1, 4, 7… | `HILL_VALLEY_1955` | `background_hill_valley_1955` | `floor_1955` | `wall_brick` |
-   | 2, 5, 8… | `MALL_1985` | `background_mall_1985` | `floor_1985` | `wall_mall` |
-   | 3, 6, 9… | `FUTURO_2015` | `background_future_2015` | `floor_2015` | `wall_future` |
+- **La vista solo conoce la interfaz `Juego`** (Facade + DIP). Por eso el dominio y el sonido entraron sin tocar la vista, salvo los 5 símbolos nuevos de `PanelTablero` (`f`, `G`, `g`, `K`, `c`).
+- **El sonido no conoce al dominio**: `JuegoConSonido` envuelve «un `Juego`». Compara el `EstadoJuego` antes y después de cada acción y hace sonar el efecto que corresponde (paso, empuje, caja en destino, frágil dañada o rota, cerrojo, deshacer, reiniciar, victoria, derrota y choque).
+- **Los observadores se registran a través del decorador**: `JuegoConSonido.agregarObservador` se lo pasa a `JuegoSokoban`, que es quien avisa después de cada cambio.
+- **Ni el dominio ni la vista importan nada de `sokoban.sonido`**, y ni el dominio ni el sonido importan nada de `sokoban.vista`.
+- **Un movimiento, en orden**: `PantallaJuego` → `JuegoConSonido` → `JuegoSokoban` (saca una foto) → `Jugador` → `MotorMovimiento` → `Caja` y su estrategia → `notificar()` a HUD y tablero → `Sonidos`. Ver [`uml/7-secuencia-mover.png`](uml/7-secuencia-mover.png).
+- **Puntaje**: `max(0, 1000 - 10·movimientos - 5·empujes - 50·deshacer)`.
 
-   Para cambiar o agregar una época se modifica solo `Epoca` (OCP).
-   ![Las tres épocas: 1955, 1985 y 2015](capturas/6-epocas.png)
+## Qué cambió en la integración
 
-3. **Tercer nivel en `JuegoDePrueba`**, así se pueden ver las tres épocas mientras no llegue el dominio.
-4. **Ahora se usan 28 de las 101 imágenes** (antes 21). Todas las rutas existen y el `.jar` las empaqueta.
+1. **Dominio (Pedro y Lucía).** Se unió la rama `main` con el dominio a la rama con el arte y la interfaz. Llegaron el paquete del dominio, la carpeta `niveles/` y un `<resource>` en `pom.xml` para meter los niveles en el `.jar`. En `Main` se cambió `new JuegoDePrueba()` por `new JuegoSokoban()`.
+2. **`PanelTablero`.** El dominio traía su propia copia de `PanelTablero` (sin épocas ni giro del personaje). Se conservó la versión integrada (con `Epoca` y `mirarHacia`) y se le sumaron los 5 símbolos nuevos del dominio en el mapa `CAPAS`.
+3. **Documentación recuperada.** Al copiar el ZIP del dominio se habían borrado los comentarios de documentación de `Juego`, `EstadoJuego`, `ObservadorJuego`, `Direccion` y `Main`. Se recuperaron, y el comentario de `Juego` ahora dice que la implementa `JuegoSokoban` y la decora `JuegoConSonido`.
+4. **Sonido (Mora).** Se unió la rama `feature/sonido`: el paquete `sokoban.sonido`, los 14 `.wav` en `assets/sonidos/` (el `pom.xml` ya empaquetaba todo `assets/`) y 4 líneas de `Main` marcadas `[Sonido - M. Coghlan]`. La tecla **M** silencia y vuelve a activar el sonido.
+5. **README.** Se actualizó con el equipo, la tecla M y la carpeta de niveles.
+6. **Diagramas y guía.** Se reemplazaron las cajas grises *pendiente* por las clases reales, con un color por autor, y se agregaron los diagramas de Strategy, Mediator, Decorator, State y el deshacer.
 
-Verificado: `mvn package` compila sin errores y el juego se probó en pantalla (menú, los tres niveles, giro del personaje, deshacer y nivel completado).
+Verificado: compila con `javac --release 17` y con `mvn package`, y se probó en pantalla con los tres niveles.
 
-## Revisión de lo que ya está
+### Integración anterior (arte + interfaz)
+
+- **Personaje con 4 direcciones**: `PanelTablero` dibuja `player_up`, `player_down`, `player_left` o `player_right` según la última flecha (gira aunque choque).
+- **Tablero con el estilo de cada época**: el enumerado `Epoca` agrupa fondo, piso y pared; los niveles 1, 2 y 3 usan 1955, 1985 y 2015, y después se repiten. Para cambiar o agregar una época se modifica solo `Epoca` (OCP).
+
+  ![Las tres épocas: 1955, 1985 y 2015](capturas/6-epocas.png)
+
+- **Ahora se usan 30 de las 104 imágenes**: las 28 de antes más la caja frágil dañada y el cerrojo abierto, que llegaron con el dominio.
+
+## Cumplimiento de la consigna (probado)
+
+Niveles `.txt` ✓ · caja normal, frágil y llave ✓ · piso resbaladizo ✓ · cerrojo y muros ✓ · deshacer 15 / 5 / 3 ✓ · victoria y paso al nivel siguiente ✓ · resumen con movimientos, empujes, deshacer y puntaje ✓ · HUD ✓ · sonidos propios de dominio público ✓ · imágenes ✓ · README ✓
+
+## Revisión: para charlar en equipo
 
 **Funciona bien y está bien diseñado**
-- Swing con MVC: la vista solo conoce interfaces (`Juego`, `ObservadorJuego`) y recibe datos en un DTO inmutable (`EstadoJuego`), nunca objetos del dominio.
-- Los patrones están justificados: Observer (HUD y tablero se actualizan solos), Facade (`Juego`) y Singleton (`Imagenes`).
-- Las teclas y los símbolos están en mapas (sin `switch`). No hay números mágicos ni clases largas.
-- El HUD cumple la consigna: nivel, movimientos, empujes y botones visibles de deshacer y reiniciar. El cartel final muestra movimientos, empujes, deshacer y puntaje.
+- MVC con la vista separada del dominio por interfaces y un DTO inmutable (`EstadoJuego`).
+- Siete patrones GoF con un motivo real: Observer (HUD y tablero), Facade (`Juego`, y `Sonidos` sobre `javax.sound`), Singleton (`Imagenes` y `Sonidos`), Strategy (las cajas), Mediator (el movimiento), Decorator (el sonido) y State (silencio con M). El deshacer guarda fotos del nivel, que es la idea de Memento.
+- El sonido entró sin tocar el dominio ni la vista; el dominio entró sin tocar la vista (salvo símbolos).
+- Si la PC no tiene audio, el juego sigue en silencio.
 
-**Puntos a resolver antes de integrar el dominio** (ninguno rompe lo que hay hoy)
-1. **Celdas con dos cosas encima.** El tablero viaja como texto, con un carácter por celda. No hay símbolo para: jugador sobre piso resbaladizo o sobre cerrojo, caja (normal, frágil o llave) sobre piso resbaladizo, caja llave sobre cerrojo o destino, caja frágil o llave en destino, caja frágil dañada (`caja_fragil_danada`) o rota, y cerrojo abierto (`cerrojo_abierto`). Hay dos opciones:
-   - **(a) Más símbolos.** Es simple, pero se multiplican las combinaciones.
-   - **(b) Dos capas** en `EstadoJuego`: `terreno` (pared, piso, destino, resbaladizo, cerrojo, muro) y `objetos` (jugador, cajas). `PanelTablero` dibuja una sobre la otra. **Recomendada**, porque no crece con las combinaciones.
+**Observaciones** (ninguna rompe el juego)
+1. Al copiar el ZIP, el commit del dominio borró la documentación de `Juego`, `EstadoJuego`, `ObservadorJuego`, `Direccion` y `Main`. Ya se recuperó. Para la próxima conviene traer los cambios con una rama y un pull request.
+2. `JuegoDePrueba` ya no se usa: conviene borrar el paquete `sokoban.prueba` antes de entregar.
+3. Mediator: solo el `Jugador` usa el mediador; la `Caja` no. Para la defensa, o la Caja también pasa por él, o se explica por qué no.
+4. El deshacer guarda fotos completas del nivel: se puede presentar como **Memento** si se nombra así en el informe.
+5. Cuando la caja frágil se rompe y el nivel queda sin solución, solo suena «derrota»: no hay cartel que avise que hay que reiniciar.
+6. Detalles visuales: la caja llave tapa el dibujo del cerrojo y el jugador sobre hielo tapa el hielo.
+7. Los 3 niveles son de prueba y muy chicos.
+8. Los dos commits del dominio tienen el mismo mensaje y `INTEGRACION_MEDIATOR_STRATEGY.md` habla de un ZIP: conviene actualizarlo o borrarlo.
+9. El pull request del sonido sigue abierto y hay que aprobarlo en GitHub. `main` todavía no tiene la integración del arte (épocas) ni estas correcciones.
 
-   Hay que decidirlo con quien hace el dominio antes de unir el código.
-2. **Reglas del deshacer.** `JuegoDePrueba` no las cumple, y no hace falta porque es provisorio. El dominio sí tiene que guardar solo los últimos **15** movimientos, volver **5** por cada uso y permitir como máximo **3 usos consecutivos**.
-3. **Diagrama en StarUML.** La consigna pide el diagrama en **StarUML**. El de draw.io (Luca) y el de PlantUML (este) sirven para revisar, pero hay que pasarlo a StarUML antes de entregar.
-
-## Cómo se suma la parte del dominio y personaje (Sokoban)
-
-1. Una clase del dominio (por ejemplo `ControladorJuego`) implementa `sokoban.modelo.Juego`.
-2. Después de cada cambio (`iniciarNivel`, `mover`, `deshacer`, `reiniciar`) llama a `observador.actualizar(getEstado())` en cada observador registrado.
-3. `getEstado()` devuelve el tablero con los símbolos de la tabla de [`interfaz.md`](interfaz.md#integración-con-el-dominio-para-el-resto-del-equipo) (o con dos capas, si se elige la opción **b**).
-4. Niveles en `.txt`: se recomienda la carpeta `niveles/` en la raíz. Para meterlos en el `.jar` se agrega otro `<resource>` en `pom.xml`, igual que el de `assets/`.
-5. En `Main` se cambia `new JuegoDePrueba()` por la clase real y se borra el paquete `sokoban.prueba`. **No se toca ninguna clase de la vista.**
-6. Se actualizan los diagramas: las clases nuevas van en `docs/uml/fuentes/clases.py` y se ubican en `diagramas.py`, reemplazando las cajas grises *pendiente*.
-
-## Cómo se suma la música y los efectos de sonido
-
-1. **Formato.** Java (`javax.sound.sampled.Clip`) solo reproduce **WAV / AIFF / AU** sin librerías externas. Si la música está en MP3 u OGG, conviene convertirla a WAV.
-2. **Ubicación.** `assets/sonidos/` (efectos) y `assets/musica/` (fondo). El `pom.xml` ya empaqueta todo `assets/` en el `.jar`.
-3. **Efectos.** Una clase (por ejemplo `ReproductorSonido`) implementa `ObservadorJuego` y se registra con `juego.agregarObservador(...)` en `Main`. Es el mismo patrón Observer y no hay que modificar nada de lo que existe. Para saber qué pasó, compara el estado nuevo con el anterior: si subió `movimientos`, hubo paso; si subió `empujes`, hubo empuje; si subió `undosUsados`, se deshizo; si `completado` es verdadero, ganó. **Romper una caja frágil o abrir un cerrojo no se puede deducir así**: hay que acordar con el dominio un evento extra o un dato más en `EstadoJuego`.
-4. **Música de fondo.** No depende del dominio. Se puede elegir un tema por época con `Epoca.delNivel(n)`.
-5. **Licencias.** La consigna exige que **todos los assets sean de dominio público**. Hay que anotar de dónde salió cada sonido y cada imagen (con su licencia) en el informe.
+Detalles menores que pueden aparecer en la defensa: `JuegoSokoban` guarda el motor como `MotorMovimiento` aunque alcanza con la interfaz `MediadorMovimiento`; la caja llave abre **todos** los muros `X` del nivel (con un cerrojo por nivel da lo mismo); `JuegoConSonido` deduce qué pasó leyendo los símbolos del tablero, así que si el dominio cambia una letra hay que actualizar sus constantes.
 
 ## Lo que falta para la entrega (según la consigna)
 
-- [ ] Dominio completo: tablero, jugador, cajas normal/frágil/llave, piso resbaladizo, cerrojo y muros, niveles `.txt`, deshacer 15/5/3, puntaje.
-- [ ] Efectos de sonido y música.
-- [ ] **Dos funcionalidades adicionales** que apliquen patrones de diseño (todavía no están definidas).
+- [x] Dominio completo: tablero, jugador, cajas normal/frágil/llave, piso resbaladizo, cerrojo y muros, niveles `.txt`, deshacer 15/5/3, puntaje.
+- [x] Efectos de sonido.
+- [ ] **Dos funcionalidades adicionales** que apliquen patrones de diseño. El silencio con la tecla M (State) podría contar como una; falta la otra.
 - [ ] Diagrama de clases en **StarUML**.
 - [ ] Informe técnico con decisiones de diseño y declaración del uso de IA.
 - [ ] Video de gameplay.
+- [ ] Mail al docente: lo manda un integrante, con copia al resto, con el nombre del equipo y el apellido y nombre de cada uno.
 - [x] README con instrucciones para ejecutar.

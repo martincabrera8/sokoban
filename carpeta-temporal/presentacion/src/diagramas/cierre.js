@@ -6,68 +6,76 @@ import { PARTES } from "../datos.js";
 
 /*
  * Cierre: vuelve el almacén y la cámara sube en grúa mientras cae la noche. Cada parte del trabajo es una caja:
- * las tres terminadas se encienden sobre su destino; la del dominio espera bajo un foco, con el personaje listo
- * para empujarla. El remate es una onda dorada que recorre el tablero.
+ * las cinco se encienden sobre su destino. Queda una sola caja fuera de lugar, la de la entrega final, que espera
+ * bajo un foco con el personaje listo para empujarla. El remate es una onda dorada que recorre el tablero.
  */
 const NIVEL = [
   "###########",
   "#  *    * #",
   "#         #",
   "# @$ .  * #",
-  "#      $  #",
-  "#      .  #",
+  "#         #",
+  "#   *  *  #",
   "###########",
 ];
-/** Caja de cada parte (columna, fila) en el orden de PARTES; el destino de las pendientes. */
-const UBICACION = [[3, 1], [8, 1], [8, 3], [3, 3], [7, 4]];
-const DESTINO_PENDIENTE = { 3: [5, 3], 4: [7, 5] };
+/** Caja de cada parte (columna, fila) en el orden de PARTES. */
+const UBICACION = [[3, 1], [8, 1], [8, 3], [4, 5], [7, 5]];
+/** La caja que falta empujar: la entrega final, y su destino. */
+const ENTREGA = { caja: [3, 3], destino: [5, 3] };
 
 export default {
   montar(lienzo, { slide }) {
-    const esc = crearEscena(lienzo, { nivel: NIVEL, etiqueta: "El almacén visto desde arriba: tres cajas terminadas brillan sobre su destino y la del dominio espera bajo un foco" });
+    const esc = crearEscena(lienzo, { nivel: NIVEL, etiqueta: "El almacén visto desde arriba: las cinco partes brillan sobre su destino y la caja de la entrega final espera bajo un foco" });
     el("div", "cierre__velo", lienzo);
     const equipo = slide.querySelector(".equipo-linea");
     if (equipo) equipo.classList.add("cierre__equipo");
     if (esc.sin3d) return { esc, equipo };
     const { pos, cajas, destinos, haz, onda, chispas } = esc;
     const capa = esc.capaAnclas("cierre__anclas");
+    const chipEn = (ancla, nombre, quien, clase) => {
+      const chip = el("div", "cierre__chip " + clase, ancla);
+      el("b", "", chip, { texto: nombre });
+      el("span", "", chip, { texto: quien });
+      return chip;
+    };
     const partes = PARTES.map((parte, i) => {
       const [x, y] = UBICACION[i];
       const caja = cajas.find((m) => m.userData.x === x && m.userData.y === y);
-      const [dx, dy] = parte.listo ? [x, y] : DESTINO_PENDIENTE[i];
-      const destino = destinos.find((d) => d.x === dx && d.y === dy);
+      const destino = destinos.find((d) => d.x === x && d.y === y);
       const p = pos(x, y);
       const ancla = el("div", "cierre__ancla", capa);
-      esc.anclar(ancla, parte.listo ? p.clone().setY(1.05) : p.clone().add(new THREE.Vector3(0, 0, 0.62)));
-      if (!parte.listo) ancla.classList.add("cierre__ancla--abajo");
-      const chip = el("div", "cierre__chip" + (parte.listo ? " cierre__chip--listo" : i === 3 ? " cierre__chip--proximo" : ""), ancla);
-      el("b", "", chip, { texto: parte.nombre });
-      el("span", "", chip, { texto: parte.listo ? parte.quien : i === 3 ? "próximo nivel" : "pendiente" });
+      esc.anclar(ancla, p.clone().setY(1.05));
+      const chip = chipEn(ancla, parte.nombre, parte.quien, "cierre__chip--listo");
       const res = { parte, caja, destino, chip, p };
-      if (parte.listo) {
-        res.columna = haz({ color: t("acento"), arriba: p.clone().setY(4.2), abajo: p.clone(), rArriba: 0.55, rAbajo: 0.48, desdeArriba: false });
-        res.anillo = onda(t("acento"), p);
-        res.luz = new THREE.PointLight(t("acento"), 0, 3.5, 1.6);
-        res.luz.position.copy(p).setY(0.9);
-        esc.escena.add(res.luz);
-      }
+      res.columna = haz({ color: t("acento"), arriba: p.clone().setY(4.2), abajo: p.clone(), rArriba: 0.55, rAbajo: 0.48, desdeArriba: false });
+      res.anillo = onda(t("acento"), p);
+      res.luz = new THREE.PointLight(t("acento"), 0, 3.5, 1.6);
+      res.luz.position.copy(p).setY(0.9);
+      esc.escena.add(res.luz);
       return res;
     });
-    const dominio = partes[3], musica = partes[4];
-    const entre = dominio.p.clone().lerp(pos(5, 3), 0.5);
+    const pe = pos(...ENTREGA.caja);
+    const anclaE = el("div", "cierre__ancla", capa);
+    esc.anclar(anclaE, pe.clone().setY(1.05));
+    const entrega = {
+      caja: cajas.find((m) => m.userData.x === ENTREGA.caja[0] && m.userData.y === ENTREGA.caja[1]),
+      destino: destinos.find((d) => d.x === ENTREGA.destino[0] && d.y === ENTREGA.destino[1]),
+      chip: chipEn(anclaE, "La entrega", "funcionalidades, StarUML, informe y video", "cierre__chip--proximo"),
+      p: pe,
+    };
+    const entre = pe.clone().lerp(pos(...ENTREGA.destino), 0.5);
     const foco = haz({ color: t("titulo"), arriba: entre.clone().add(new THREE.Vector3(-0.6, 7.5, 0.8)), abajo: entre, rArriba: 0.08, rAbajo: 1.35, luz: true, sombra: true, intensidad: 45 });
-    const focoMusica = haz({ color: t("tinta-2"), arriba: musica.p.clone().add(new THREE.Vector3(0.4, 6.5, 0.6)), abajo: musica.p.clone().setZ(musica.p.z + 0.5), rArriba: 0.06, rAbajo: 1.05, luz: true, intensidad: 22 });
     const fuegos = [0, 1, 2].map((i) => {
       const ch = chispas(180, i === 1 ? t("titulo") : t("acento"), { vel: [1.5, 4.2], alto: [-1, 2.5], g: 2.2, abierto: 1, vida: [0.7, 1] });
       ch.origen.set(-2.5 + i * 2.6, 5.2 + (i % 2) * 0.8, -0.6);
       return ch;
     });
-    const brotes = partes.filter((x) => x.parte.listo).map((x) => {
-      const ch = chispas(70, t("acento"), { vel: [0.4, 1.8], alto: [2.5, 5], g: 3.5 });
+    const brotes = partes.map((x) => {
+      const ch = chispas(60, t("acento"), { vel: [0.4, 1.8], alto: [2.5, 5], g: 3.5 });
       ch.origen.copy(x.p).setY(0.85);
       return ch;
     });
-    return { esc, equipo, partes, dominio, musica, foco, focoMusica, fuegos, brotes };
+    return { esc, equipo, partes, entrega, foco, fuegos, brotes };
   },
 
   construir(tl, c) {
@@ -78,17 +86,16 @@ export default {
       return;
     }
     const { rig, F, U, pj, jugador } = esc;
-    const listos = c.partes.filter((x) => x.parte.listo);
-    const pendientes = c.partes.filter((x) => !x.parte.listo);
+    const listos = c.partes;
     jugador.rotation.y = GIRO.derecha;
 
     // Estado inicial: el mismo encuadre con que terminó la portada, todo apagado
     tl.set(listos.map((x) => x.caja.material), { emissiveIntensity: 0 }, 0)
       .set(listos.map((x) => x.destino.mat), { emissiveIntensity: 0.25 }, 0)
       .set(listos.map((x) => x.columna.fuerza), { value: 0 }, 0)
-      .set([c.foco.fuerza, c.focoMusica.fuerza], { value: 0 }, 0)
-      .set([c.foco.luz, c.focoMusica.luz], { intensity: 0 }, 0)
-      .set(c.partes.map((x) => x.chip), { autoAlpha: 0 }, 0);
+      .set(c.foco.fuerza, { value: 0 }, 0)
+      .set(c.foco.luz, { intensity: 0 }, 0)
+      .set([...c.partes.map((x) => x.chip), c.entrega.chip], { autoAlpha: 0 }, 0);
     if (c.equipo) tl.set(c.equipo, { "--luz": 0 }, 0);
 
     // La cámara se eleva y cae la noche
@@ -98,9 +105,9 @@ export default {
       .fromTo(esc.hemi, { intensity: 2 }, { intensity: 0.75, duration: 2.6, ease: "power1.inOut" }, 0.2)
       .fromTo(esc.sol, { intensity: 2.6 }, { intensity: 0.9, duration: 2.6, ease: "power1.inOut" }, 0.2);
 
-    // Las tres partes terminadas se encienden una por una
+    // Las cinco partes se encienden una por una
     listos.forEach((x, i) => {
-      const en = 1.5 + i * 0.55, br = { p: 0 };
+      const en = 1.4 + i * 0.45, br = { p: 0 };
       tl.to(x.destino.mat, { emissiveIntensity: 2.4, duration: 0.15, ease: "power2.out" }, en)
         .to(x.destino.mat, { emissiveIntensity: 1.3, duration: 0.9 }, en + 0.2)
         .to(x.caja.material, { emissiveIntensity: 0.6, duration: 0.4 }, en)
@@ -113,18 +120,15 @@ export default {
         .fromTo(x.chip, { autoAlpha: 0, y: 16, scale: 0.9 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.8)", immediateRender: false }, en + 0.15);
     });
 
-    // Paso 1: se prende el foco sobre el dominio; el personaje se prepara para empujar
-    tl.addLabel("p1", 3.8);
+    // Paso 1: se prende el foco sobre la caja de la entrega; el personaje se prepara para empujar
+    tl.addLabel("p1", 1.4 + listos.length * 0.45 + 0.5);
     tl.to(c.foco.fuerza, { keyframes: [{ value: 0.7, duration: 0.06 }, { value: 0.1, duration: 0.08 }, { value: 0.85, duration: 0.07 }, { value: 0.4, duration: 0.6, ease: "power2.inOut" }] }, "p1")
       .to(c.foco.luz, { keyframes: [{ intensity: 40, duration: 0.06 }, { intensity: 6, duration: 0.08 }, { intensity: c.foco.intensidad, duration: 0.07 }] }, "p1")
-      .to(c.dominio.destino.mat, { emissiveIntensity: 1, duration: 0.6, ease: "sine.inOut", yoyo: true, repeat: 3 }, "p1+=0.4")
-      .fromTo(c.dominio.chip, { autoAlpha: 0, y: 16, scale: 0.9 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.55, ease: "back.out(1.8)", immediateRender: false }, "p1+=0.35")
+      .to(c.entrega.destino.mat, { emissiveIntensity: 1, duration: 0.6, ease: "sine.inOut", yoyo: true, repeat: 3 }, "p1+=0.4")
+      .fromTo(c.entrega.chip, { autoAlpha: 0, y: 16, scale: 0.9 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.55, ease: "back.out(1.8)", immediateRender: false }, "p1+=0.35")
       .to(rig.mira, { x: 0.1, y: 0, z: 0.4, duration: 2.2, ease: "power2.inOut" }, "p1")
       .to(rig, { dist: 22, giro: 0.22, alto: 0.9, duration: 2.2, ease: "power2.inOut" }, "p1")
-      .to(esc.hemi, { intensity: 0.5, duration: 1 }, "p1")
-      .to(c.focoMusica.fuerza, { value: 0.3, duration: 0.5 }, "p1+=1.1")
-      .to(c.focoMusica.luz, { intensity: c.focoMusica.intensidad, duration: 0.5 }, "p1+=1.1")
-      .fromTo(c.musica.chip, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: "power3.out", immediateRender: false }, "p1+=1.3");
+      .to(esc.hemi, { intensity: 0.5, duration: 1 }, "p1");
     tl.to(pj.pose, { brazoI: -1.5, brazoD: -1.5, aplaste: 0.12, duration: 0.35, ease: "power2.out", onUpdate: pj.aplicar }, "p1+=0.6")
       .to(jugador.rotation, { x: 0.22, duration: 0.35, ease: "power2.out" }, "p1+=0.6")
       .to(jugador.position, { x: "+=0.12", duration: 0.35, ease: "power2.out" }, "p1+=0.6");
@@ -132,7 +136,7 @@ export default {
     // Paso 2: remate. Una onda dorada sale del destino que falta y recorre el almacén; fuegos arriba
     tl.addLabel("p2", "p1+=2.6");
     U.uBorde.value.set(t("acento")).multiplyScalar(0.55);
-    U.uCentro.value.copy(c.dominio.destino.m.position);
+    U.uCentro.value.copy(c.entrega.destino.m.position);
     U.uAncho.value = 0.4;
     tl.fromTo(U.uFrente, { value: -1 }, { value: 13, duration: 2.4, ease: "power1.inOut", immediateRender: false }, "p2")
       .to(rig.mira, { x: 0.5, y: 0, z: 0.4, duration: 3, ease: "power2.inOut" }, "p2")
@@ -159,8 +163,8 @@ export default {
       c.partes.forEach((x, i) => { if (x.columna) x.columna.pulso.value = 1 + Math.sin(tt * (0.8 + i * 0.17) + fases[i]) * 0.18; });
     };
     gsap.ticker.add(tick);
-    // La caja del dominio tiembla cada tanto: el personaje la quiere empujar y todavía no puede
-    const caja = c.dominio.caja;
+    // La caja de la entrega tiembla cada tanto: el personaje ya la quiere empujar
+    const caja = c.entrega.caja;
     const amague = eventos(() => {
       gsap.fromTo(caja.position, { x: caja.position.x }, { x: "+=0.06", duration: 0.1, yoyo: true, repeat: 3, ease: "power1.inOut" });
     }, [2.5, 5.5]);

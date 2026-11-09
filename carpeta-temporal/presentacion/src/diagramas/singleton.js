@@ -6,9 +6,9 @@ import { USADAS } from "../datos.js";
 import { mundo3d, textura, chispa, haz, anclar } from "./patrones3d.js";
 
 /*
- * Singleton. Una sola bóveda (la instancia de Imagenes) con 28 casilleros, uno por imagen que usa el juego.
+ * Singleton. Una sola bóveda (la instancia de Imagenes) con un casillero, uno por imagen que usa el juego.
  * Los tres clientes de la vista piden imágenes; la primera vez que se pide una, la bóveda la lee del disco
- * (assets/) y la guarda; después responde sola. Los pedidos crecen sin parar y las lecturas se frenan en 28.
+ * (assets/) y la guarda; después responde sola. Los pedidos crecen sin parar y las lecturas se frenan en USADAS.length.
  * Al entrar se crea la instancia (la primera llamada real es de PanelHUD, al armar sus botones);
  * en el paso 1, un new Imagenes() rebota contra el constructor privado; en el paso 2 la sesión se acelera.
  */
@@ -121,7 +121,7 @@ function armarEscena(w) {
   cerrojo.position.set(-ancho / 2 - 0.85, 0.2, 0.3);
   boveda.add(cerrojo);
 
-  // El disco: assets/ como un fichero con las 28 imágenes de pie
+  // El disco: assets/ como un fichero con las imágenes de pie
   const disco = new THREE.Group();
   disco.position.copy(DISCO);
   disco.rotation.y = -0.2;
@@ -168,7 +168,7 @@ export default {
     c.instancia = el("code", "sin__codigo", rot, { texto: "instancia == null" });
     c.discoA = el("div", "sin__ancla sin__ancla--arriba", lienzo);
     const rd = el("div", "sin__cartel sin__cartel--disco", c.discoA);
-    el("p", "sin__titulo", rd, { html: "assets/ <span>en disco, 28 PNG</span>" });
+    el("p", "sin__titulo", rd, { html: `assets/ <span>en disco, ${USADAS.length} PNG</span>` });
     el("code", "sin__codigo", rd, { texto: "cargar(ruta): ImageIO.read" });
 
     c.cuentas = el("div", "sin__cuentas", lienzo);
@@ -275,7 +275,7 @@ export default {
         .fromTo(c.boveda.position, { x: BOVEDA.x }, { x: BOVEDA.x + 0.08, duration: 0.06, yoyo: true, repeat: 3 }, "p1+=0.88");
     }
 
-    // Paso 2: toda una sesión, acelerada; las lecturas no pasan de 28
+    // Paso 2: toda una sesión, acelerada; las lecturas no pasan de USADAS.length
     tl.addLabel("p2");
     tl.fromTo(c.ritmo, { v: 1 }, { v: 6, duration: 1.2, ease: "power2.in" }, "p2")
       .fromTo(c.simulado, { "--rapido": 0 }, { "--rapido": 1, duration: 0.4, onUpdate: () => { c.simulado.textContent = c.ritmo.v > 3 ? "Simulación acelerada de una sesión de juego" : "Simulación de una sesión de juego"; } }, "p2+=0.8");

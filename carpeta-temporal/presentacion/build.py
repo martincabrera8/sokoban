@@ -18,7 +18,7 @@ from PIL import Image
 AQUI = Path(__file__).resolve().parent
 SRC = AQUI / "src"
 ASSETS = AQUI.parent.parent / "assets"  # assets/ del juego, en la raíz del repo
-UML = AQUI.parent / "docs" / "uml" / "2-diagrama-completo.svg"
+UML = Path(os.environ.get("PRESENTACION_UML", AQUI.parent / "docs" / "uml" / "2-diagrama-completo.svg"))  # otro plano para probar
 FUENTES = AQUI / "node_modules" / "@fontsource"
 SALIDA = Path(os.environ.get("PRESENTACION_SALIDA", AQUI / "dist" / "presentacion-sokoban.html"))  # otra salida para pruebas en paralelo
 

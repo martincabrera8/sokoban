@@ -9,9 +9,10 @@ import { mundo3d, textura, chispa, haz, anclar } from "./patrones3d.js";
 /*
  * Facade. La interfaz Juego es una caja cerrada con una sola puerta. Los clientes de la vista mandan sus
  * llamadas reales (las siete de la interfaz) y todas entran por ahí. Paso 1: la caja se vuelve de vidrio
- * y adentro está lo que hay hoy, JuegoDePrueba, una sola clase que hace todo. Paso 2: ese bloque se desarma
- * en las piezas del dominio pendiente; cada llamada se reparte entre las piezas que la resuelven.
- * Las llamadas siguen entrando igual por la misma puerta: la vista no se entera del cambio.
+ * y adentro está lo que había al principio, JuegoDePrueba, una sola clase que hacía todo. Paso 2: ese bloque se
+ * desarma en las piezas reales del dominio (JuegoSokoban); cada llamada se reparte entre las que la resuelven.
+ * Paso 3: el sonido envuelve la caja entera (Decorator) y cada llamada que entra suena.
+ * Las llamadas siguen entrando igual por la misma puerta: la vista no se entera de ningún cambio.
  */
 
 /** Quién llama qué. Fuente: PantallaJuego, PanelHUD y VentanaPrincipal. */
@@ -21,17 +22,19 @@ const CLIENTES = [
   { nombre: "VentanaPrincipal", llamadas: ["getCantidadNiveles()"] },
 ];
 const METODOS = ["getCantidadNiveles()", "iniciarNivel(numero)", "mover(direccion)", "deshacer()", "reiniciar()", "getEstado()", "agregarObservador(o)"];
-/** Qué piezas del dominio coordinaría cada llamada (ilustrativo: el dominio todavía no está). */
+/** Qué piezas usa cada llamada en JuegoSokoban (src/main/java/sokoban/modelo/JuegoSokoban.java). */
+const HISTORIAL = "Historial 15 · 5 · 3";
+const CAJAS = ["Caja normal", "Caja frágil", "Caja llave"];
 const RUTA = {
-  mover: ["Jugador", "Tablero", "Caja normal", "Caja frágil", "Historial 15 · 5 · 3", "Puntaje"],
-  deshacer: ["Historial 15 · 5 · 3", "Tablero", "Puntaje"],
-  reiniciar: ["Niveles .txt", "Tablero", "Historial 15 · 5 · 3"],
-  iniciarNivel: ["Niveles .txt", "Tablero", "Caja llave"],
-  getCantidadNiveles: ["Niveles .txt"],
-  getEstado: ["Tablero", "Puntaje"],
+  mover: [HISTORIAL, "Jugador", "MotorMovimiento", "EstadoNivel"], // más la caja empujada, que aplica su estrategia
+  deshacer: [HISTORIAL, "EstadoNivel", "MotorMovimiento"],
+  reiniciar: ["CargadorNivel", "EstadoNivel", "MotorMovimiento", HISTORIAL],
+  iniciarNivel: ["CargadorNivel", "EstadoNivel", "MotorMovimiento", HISTORIAL],
+  getCantidadNiveles: [],
+  getEstado: ["EstadoNivel"],
   agregarObservador: [],
 };
-const ORDEN = ["Niveles .txt", "Tablero", "Historial 15 · 5 · 3", "Puntaje", "Jugador", "Caja normal", "Caja frágil", "Caja llave"]; // atrás y adelante
+const ORDEN = ["CargadorNivel", "EstadoNivel", HISTORIAL, "MotorMovimiento", "Jugador", ...CAJAS]; // atrás y adelante
 const CAMARA = new THREE.Vector3(-8, 9, 16), MIRA = new THREE.Vector3(-2, 2.2, 0);
 const ANCHO = 7.5, ALTO = 3, FONDO = 4.5, VIDRIERA = 0.75; // la caja Juego, hecha con las vidrieras de 1985
 const PUERTA = new THREE.Vector3(-2.85, 0, FONDO / 2);
@@ -63,7 +66,7 @@ function crearPieza(nombre) {
   const g = new THREE.Group();
   const madera = (k) => new THREE.Mesh(new RoundedBoxGeometry(0.72, 0.72, 0.72, 3, 0.05), new THREE.MeshStandardMaterial({ map: textura(k), roughness: 0.75, emissive: new THREE.Color(t("acento")), emissiveIntensity: 0 }));
   let cuerpo;
-  if (nombre === "Tablero") {
+  if (nombre === "EstadoNivel") {
     cuerpo = new THREE.Group();
     for (let i = 0; i < 9; i++) {
       const k = i === 4 ? "goals/goal" : i % 3 === 0 && i < 3 ? "tiles/wall_mall" : "tiles/floor_1985";
@@ -79,12 +82,12 @@ function crearPieza(nombre) {
   } else if (nombre.startsWith("Caja")) {
     cuerpo = madera({ "Caja normal": "boxes/box_wood", "Caja frágil": "boxes/caja_fragil_intacta", "Caja llave": "boxes/caja_llave" }[nombre]);
     cuerpo.position.y = 0.36;
-  } else if (nombre === "Niveles .txt") {
+  } else if (nombre === "CargadorNivel") {
     cuerpo = new THREE.Group();
     const texto = canvasTextura(256, 320, (g2, w, h) => {
       g2.fillStyle = t("papel"); g2.fillRect(0, 0, w, h);
       g2.fillStyle = t("fondo"); g2.font = `500 34px ${t("f-mono")}`;
-      ["#######", "#     #", "# @$ .#", "#     #", "#######"].forEach((l, i) => g2.fillText(l, 22, 70 + i * 46));
+      ["#######", "# @F .#", "# L CX#", "#######"].forEach((l, i) => g2.fillText(l, 22, 80 + i * 50));
     });
     for (let i = 0; i < 3; i++) {
       const hoja = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.012, 0.78), new THREE.MeshStandardMaterial({ color: t("papel"), map: i === 2 ? texto : null, roughness: 0.9, emissive: new THREE.Color(t("acento")), emissiveIntensity: 0 }));
@@ -101,21 +104,26 @@ function crearPieza(nombre) {
       cuerpo.add(lamina);
     }
   } else {
-    const plano = canvasTextura(320, 200, (g2, w, h) => {
-      g2.fillStyle = t("superficie"); g2.fillRect(0, 0, w, h);
-      g2.strokeStyle = t("exito"); g2.lineWidth = 8; g2.strokeRect(6, 6, w - 12, h - 12);
-      g2.fillStyle = t("exito"); g2.font = `700 96px ${t("f-mono")}`; g2.textAlign = "center"; g2.textBaseline = "middle";
-      g2.fillText("1000", w / 2, h / 2 + 4);
+    // MotorMovimiento: un disco con las cuatro flechas del arte alrededor de un núcleo de luz
+    cuerpo = new THREE.Group();
+    const disco = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.46, 0.12, 40), new THREE.MeshStandardMaterial({ color: t("superficie-2"), roughness: 0.4, metalness: 0.4, emissive: new THREE.Color(t("acento")), emissiveIntensity: 0 }));
+    disco.position.y = 0.06;
+    cuerpo.add(disco);
+    ["ui/arrow_up", "ui/arrow_right", "ui/arrow_down", "ui/arrow_left"].forEach((k, i) => {
+      const a = (i * Math.PI) / 2;
+      const f = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.04, 0.26), new THREE.MeshStandardMaterial({ map: textura(k), roughness: 0.6, emissive: new THREE.Color(t("acento")), emissiveIntensity: 0 }));
+      f.position.set(Math.sin(a) * 0.26, 0.14, -Math.cos(a) * 0.26);
+      cuerpo.add(f);
     });
-    cuerpo = new THREE.Mesh(new THREE.BoxGeometry(0.86, 0.54, 0.06), new THREE.MeshStandardMaterial({ map: plano, roughness: 0.5, emissive: new THREE.Color(t("exito")), emissiveMap: plano, emissiveIntensity: 0.4 }));
-    cuerpo.position.y = 0.5;
-    cuerpo.rotation.x = -0.25;
+    const nucleo = new THREE.Mesh(new THREE.SphereGeometry(0.11, 20, 12), new THREE.MeshStandardMaterial({ color: t("linea"), emissive: new THREE.Color(t("linea")), emissiveIntensity: 0.9 }));
+    nucleo.position.y = 0.28;
+    cuerpo.add(nucleo);
   }
   g.add(cuerpo);
   g.userData.cuerpo = cuerpo;
-  // Base de obra: aro punteado del color de lo pendiente
+  // Base: aro de luz del color de lo que ya está en su lugar
   const aro = new THREE.Line(new THREE.BufferGeometry().setFromPoints(Array.from({ length: 65 }, (_, i) => new THREE.Vector3(Math.cos((i / 64) * Math.PI * 2) * 0.62, 0.02, Math.sin((i / 64) * Math.PI * 2) * 0.62))),
-    new THREE.LineDashedMaterial({ color: new THREE.Color(t("pendiente")), dashSize: 0.08, gapSize: 0.06, transparent: true }));
+    new THREE.LineDashedMaterial({ color: new THREE.Color(t("acento")), dashSize: 0.16, gapSize: 0.04, transparent: true, opacity: 0.6 }));
   aro.computeLineDistances();
   g.add(aro);
   g.userData.aro = aro;
@@ -194,21 +202,37 @@ function armarEscena(w) {
     g.position.copy(lugar(i));
     caja.add(g);
     const curva = new THREE.CatmullRomCurve3([centro.clone(), new THREE.Vector3((centro.x + g.position.x) / 2, 1.6, (centro.z + g.position.z) / 2), g.position.clone().setY(0.35)]);
-    const h = haz(curva, "pendiente", 0.018, 0.55);
+    const h = haz(curva, "acento", 0.018, 0.5);
     h.userData.dibujar(0);
     caja.add(h);
     return { nombre, g, curva, haz: h };
   });
   const paquetes = Array.from({ length: 10 }, () => { const s = chispa("acento", 0.55); caja.add(s); return s; });
 
-  return { caja, cuerpo, corte, vidrio, aristas, barrido, puerta, luzPuerta, interior, bloque, partes, bordeBloque, piezas, paquetes, centro };
+  // El sonido: una envoltura de vidrio lila que cubre la caja entera (JuegoConSonido), con ondas que salen de la puerta
+  const lila = new THREE.Color(t("sonido"));
+  const envoltura = new THREE.Group();
+  envoltura.position.y = (ALTO + 0.5) / 2;
+  caja.add(envoltura);
+  const geoEnv = new THREE.BoxGeometry(ANCHO + 0.6, ALTO + 0.5, FONDO + 0.6);
+  const vidrioSonido = new THREE.Mesh(geoEnv, new THREE.MeshBasicMaterial({ color: lila, transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide }));
+  const filosSonido = new THREE.LineSegments(new THREE.EdgesGeometry(geoEnv), new THREE.LineBasicMaterial({ color: lila.clone().multiplyScalar(1.4), transparent: true, opacity: 0 }));
+  envoltura.add(vidrioSonido, filosSonido);
+  const ondas = Array.from({ length: 4 }, () => {
+    const m = new THREE.Mesh(new THREE.RingGeometry(0.62, 0.7, 64), new THREE.MeshBasicMaterial({ color: lila.clone().multiplyScalar(1.6), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }));
+    m.position.set(PUERTA.x, 1, FONDO / 2 + 0.32);
+    caja.add(m);
+    return m;
+  });
+
+  return { caja, cuerpo, corte, vidrio, aristas, barrido, puerta, luzPuerta, interior, bloque, partes, bordeBloque, piezas, paquetes, centro, envoltura, vidrioSonido, filosSonido, ondas };
 }
 
 export default {
   montar(lienzo) {
     const w = mundo3d(lienzo, { descripcion: "Patrón Facade: las llamadas de la vista entran por una sola puerta; detrás, el dominio que las coordina", fov: 30, resplandor: [0.7, 0.5, 0.75] });
     el("div", "fac__velo", lienzo);
-    const c = { w, abierta: { v: 0 }, dominio: { v: 0 }, entrada: { v: 0 }, libre: 0 };
+    const c = { w, abierta: { v: 0 }, dominio: { v: 0 }, sonido: { v: 0 }, entrada: { v: 0 }, libre: 0 };
 
     c.clientes = CLIENTES.map((cl, i) => {
       const caja = el("div", "fac__cliente pos", lienzo, { vars: { x: 120, y: 420 + i * 196 } });
@@ -242,7 +266,7 @@ export default {
     gsap.set(c.respuesta, { autoAlpha: 0 });
 
     c.hoyA = el("div", "fac__ancla fac__ancla--hoy", lienzo);
-    c.hoy = el("p", "fac__hoy", c.hoyA, { html: "<b>JuegoDePrueba</b> hoy hace todo en una sola clase" });
+    c.hoy = el("p", "fac__hoy", c.hoyA, { html: "Al principio, <b>JuegoDePrueba</b> hacía todo en una sola clase" });
     c.etiquetas = ORDEN.map((nombre) => {
       const a = el("div", "fac__ancla fac__ancla--pieza", lienzo);
       const chip = el("p", "fac__pieza", a);
@@ -252,7 +276,9 @@ export default {
       return { a, chip };
     });
     c.dominioA = el("div", "fac__ancla fac__ancla--dominio", lienzo);
-    c.dominioEl = el("p", "fac__dominio", c.dominioA, { html: "<b>Dominio</b> pendiente: lo sube un compañero. Las piezas son las de la consigna; el reparto es ilustrativo." });
+    c.dominioEl = el("p", "fac__dominio", c.dominioA, { html: "<b>JuegoSokoban</b> reparte cada pedido entre sus piezas. La vista sigue llamando a los mismos siete métodos." });
+    c.sonidoA = el("div", "fac__ancla fac__ancla--sonido", lienzo);
+    c.sonidoEl = el("p", "fac__sonido", c.sonidoA, { html: "<b>JuegoConSonido</b> envuelve la fachada: también es un <code>Juego</code>" });
 
     if (w) {
       Object.assign(c, armarEscena(w));
@@ -270,6 +296,7 @@ export default {
         anclar(c.hoyA, enCaja(0.65, 1.75, 0));
         c.piezas.forEach((p, i) => anclar(c.etiquetas[i].a, enCaja(p.g.position.x, i < 4 ? 1.3 + (i % 2) * 0.55 : -0.05, p.g.position.z)));
         anclar(c.dominioA, enCaja(1.2, 0, FONDO / 2));
+        anclar(c.sonidoA, enCaja(1.6, ALTO + 0.5, FONDO / 2 + 0.3));
       });
     } else {
       c.puertaPx = { x: 900, y: 700 };
@@ -277,12 +304,14 @@ export default {
       anclar(c.hoyA, { x: 1250, y: 620 });
       c.etiquetas.forEach((e, i) => anclar(e.a, { x: 1000 + (i % 4) * 200, y: i < 4 ? 560 : 800 }));
       anclar(c.dominioA, { x: 1250, y: 420 });
+      anclar(c.sonidoA, { x: 1250, y: 380 });
     }
     return c;
   },
 
   construir(tl, c) {
-    tl.set([c.hoy, c.dominioEl, ...c.etiquetas.map((e) => e.chip)], { autoAlpha: 0 }, 0)
+    tl.set([c.hoy, c.dominioEl, c.sonidoEl, ...c.etiquetas.map((e) => e.chip)], { autoAlpha: 0 }, 0)
+      .set(c.sonido, { v: 0 }, 0)
       .fromTo(c.entrada, { v: 0 }, { v: 1, duration: 2.6, ease: "none" }, 0)
       .fromTo(c.clientes.map((cl) => cl.caja), { autoAlpha: 0, x: -30 }, { autoAlpha: 1, x: 0, duration: 0.6, ease: "power3.out", stagger: 0.12 }, 0.5)
       .fromTo(c.cartel, { autoAlpha: 0, scale: 0.92 }, { autoAlpha: 1, scale: 1, duration: 0.7, ease: "power3.out" }, 1.3);
@@ -327,6 +356,23 @@ export default {
     }
     tl.fromTo(c.etiquetas.map((e) => e.chip), { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.4, stagger: 0.05 }, "p2+=1.2")
       .fromTo(c.dominioEl, { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.5 }, "p2+=1.6");
+
+    // Paso 3: el sonido baja y envuelve la caja entera; la puerta sigue siendo la misma
+    tl.addLabel("p3", "+=0.4");
+    tl.fromTo(c.sonido, { v: 0 }, { v: 1, duration: 1.4, ease: "none" }, "p3");
+    if (c.w) {
+      tl.fromTo(c.envoltura.position, { y: (ALTO + 0.5) / 2 + 4 }, { y: (ALTO + 0.5) / 2, duration: 1.1, ease: "power3.out" }, "p3")
+        .fromTo(c.envoltura.scale, { x: 1.25, y: 1.25, z: 1.25 }, { x: 1, y: 1, z: 1, duration: 1.1, ease: "power3.out" }, "p3")
+        .fromTo(c.vidrioSonido.material, { opacity: 0 }, { opacity: 0.07, duration: 0.8 }, "p3+=0.2")
+        .fromTo(c.filosSonido.material, { opacity: 0 }, { opacity: 0.95, duration: 0.6 }, "p3+=0.2")
+        .to(c.w.camara.position, { x: -7.4, y: 10.2, z: 16, duration: 1.6, ease: "power2.inOut" }, "p3");
+      c.ondas.forEach((o, i) => {
+        tl.fromTo(o.scale, { x: 1, y: 1 }, { x: 4, y: 4, duration: 1.1, ease: "power2.out", immediateRender: false }, `p3+=${1.1 + i * 0.16}`)
+          .fromTo(o.material, { opacity: 0.9 }, { opacity: 0, duration: 1.1, ease: "power1.in", immediateRender: false }, `p3+=${1.1 + i * 0.16}`);
+      });
+    }
+    tl.to(c.dominioEl, { autoAlpha: 0, duration: 0.3 }, "p3")
+      .fromTo(c.sonidoEl, { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.5 }, "p3+=1");
   },
 
   vida(c) {
@@ -378,7 +424,9 @@ function entrar(c, metodo, texto, cliente) {
   gsap.fromTo(c.luzPuerta.material, { opacity: 0.9 }, { opacity: 0.18, duration: 0.6 });
   if (metodo === "getEstado") volver(c, cliente);
   if (c.abierta.v < 0.9) return;
-  const destinos = c.dominio.v < 0.6 ? null : RUTA[metodo].map((n) => c.piezas.find((p) => p.nombre === n));
+  if (c.sonido.v > 0.9) sonar(c);
+  const nombres = metodo === "mover" ? RUTA.mover.concat(gsap.utils.random(CAJAS)) : RUTA[metodo];
+  const destinos = c.dominio.v < 0.6 ? null : nombres.map((n) => c.piezas.find((p) => p.nombre === n));
   if (!destinos) { // hoy: todo lo resuelve JuegoDePrueba
     const s = c.paquetes[c.libre++ % c.paquetes.length];
     const curva = new THREE.QuadraticBezierCurve3(c.centro, new THREE.Vector3(-1, 2.4, 0), new THREE.Vector3(0.5, 1.2, 0));
@@ -389,6 +437,14 @@ function entrar(c, metodo, texto, cliente) {
     const s = c.paquetes[c.libre++ % c.paquetes.length];
     gsap.delayedCall(i * 0.08, () => viajar(s, p.curva, 0.55, () => reaccionar(p, metodo)));
   });
+}
+
+/** JuegoConSonido: lo que entra por la puerta suena; una onda lila sale de ahí. */
+function sonar(c) {
+  const o = c.ondas[c.libre++ % c.ondas.length];
+  gsap.fromTo(o.scale, { x: 1, y: 1 }, { x: 3.2, y: 3.2, duration: 0.9, ease: "power2.out" });
+  gsap.fromTo(o.material, { opacity: 0.85 }, { opacity: 0, duration: 0.9, ease: "power1.in" });
+  gsap.fromTo(c.filosSonido.material, { opacity: 1 }, { opacity: 0.7, duration: 0.6 });
 }
 
 function viajar(s, curva, dur, alLlegar) {
@@ -403,7 +459,8 @@ function reaccionar(p, metodo) {
   const cuerpo = p.g.userData.cuerpo;
   gsap.fromTo(p.g.userData.aro.material, { opacity: 1 }, { opacity: 0.5, duration: 0.8 });
   gsap.fromTo(p.g.scale, { x: 1.12, y: 1.12, z: 1.12 }, { x: 1, y: 1, z: 1, duration: 0.5, ease: "power2.out" });
-  cuerpo.traverse((o) => { if (o.material && o.material.emissive && p.nombre !== "Puntaje" && !p.nombre.startsWith("Historial")) gsap.fromTo(o.material, { emissiveIntensity: 0.7 }, { emissiveIntensity: 0, duration: 0.8 }); });
+  cuerpo.traverse((o) => { if (o.material && o.material.emissive && !p.nombre.startsWith("Historial") && o.geometry.type !== "SphereGeometry") gsap.fromTo(o.material, { emissiveIntensity: 0.7 }, { emissiveIntensity: 0, duration: 0.8 }); });
+  if (p.nombre === "MotorMovimiento") gsap.fromTo(cuerpo.rotation, { y: 0 }, { y: Math.PI / 2, duration: 0.5, ease: "power2.out" });
   if (p.nombre === "Jugador") gsap.fromTo(cuerpo.position, { y: 0 }, { y: 0.35, duration: 0.18, yoyo: true, repeat: 1, ease: "power2.out" });
   if (p.nombre.startsWith("Caja") && metodo === "mover") gsap.fromTo(cuerpo.position, { x: 0 }, { x: 0.18, duration: 0.2, yoyo: true, repeat: 1, ease: "empuje" });
   if (p.nombre.startsWith("Historial")) {

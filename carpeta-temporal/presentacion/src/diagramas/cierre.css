@@ -15,4 +15,3 @@
 .cierre__chip--proximo span { color: var(--pendiente); font-weight: 600; }
 .cierre__equipo { --luz: 0; color: color-mix(in oklab, var(--titulo) calc(var(--luz) * 100%), var(--tinta-3));
   text-shadow: 0 0 calc(var(--luz) * 22px) color-mix(in srgb, var(--acento) calc(var(--luz) * 60%), transparent); }
-.cierre__ancla--abajo { transform: translate(-50%, 6px); }

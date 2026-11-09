@@ -22,21 +22,11 @@
 .obs__barrido { position: absolute; left: 0; right: 0; top: 0; bottom: 0; pointer-events: none; opacity: 0;
   background: linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--exito) 30%, transparent) 46%, color-mix(in srgb, var(--tinta) 55%, transparent) 50%, transparent 54%); }
 
-.obs__panel--sonido { width: 620px; background: color-mix(in srgb, var(--pendiente) 10%, var(--fondo-hondo)); border: 2px dashed var(--pendiente);
-  box-shadow: 0 0 0 calc(var(--golpe) * 3px) var(--pendiente), 0 0 calc(var(--golpe) * 40px) color-mix(in srgb, var(--pendiente) 50%, transparent); }
-.obs__panel--sonido .obs__clase { color: var(--pendiente); }
-.obs__barras { display: flex; align-items: flex-end; gap: 7px; height: 44px; }
-.obs__barras i { flex: 1; height: 100%; border-radius: 3px; background: var(--pendiente); transform-origin: 50% 100%; transform: scaleY(.14); }
-.obs__pendiente { margin: 10px 0 0; font-size: 22px; color: var(--tinta-2); line-height: 1.3; }
-
 /* El sujeto: lista de observadores y la foto completa */
 .obs__sujeto { position: absolute; left: var(--margen); bottom: 40px; z-index: 2; width: 1010px; padding: 16px 24px 18px; }
 .obs__sujeto > .obs__clase span { font-size: 22px; }
 .obs__fila { display: flex; align-items: center; gap: 16px; margin-top: 8px; }
 .obs__lista { font-family: var(--f-mono); font-size: 24px; color: var(--exito); white-space: nowrap; }
-.obs__lista--nueva { color: var(--acento); }
-.obs__codigo { padding: 4px 12px; border-radius: var(--radio-chico); white-space: nowrap; font-family: var(--f-mono); font-size: 22px; color: var(--titulo);
-  background: var(--superficie); border: 1px solid var(--acento); }
 .obs__registro { overflow: hidden; }
 .obs__registro-int { padding-top: 14px; margin-top: 14px; border-top: 1px solid var(--linea-suave); }
 .obs__registro-titulo { margin: 0 0 10px; font-size: 24px; color: var(--tinta-2); }

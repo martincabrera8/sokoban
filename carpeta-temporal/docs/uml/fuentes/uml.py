@@ -23,6 +23,8 @@ AUTOR = {
     "luca": ("#DAE8FC", "#6C8EBF"),
     "martin": ("#D5E8D4", "#82B366"),
     "integ": ("#FFF2CC", "#D6B656"),
+    "dominio": ("#FCDDC7", "#C8683A"),
+    "sonido": ("#EEDDF3", "#A0559F"),
     "pend": ("#F5F5F5", "#9E9E9E"),
     "swing": ("#FFFFFF", "#9E9E9E"),
 }
@@ -42,7 +44,7 @@ class Caja:
         self.id, self.nombre, self.x, self.y = id, nombre, x, y
         self.estereo, self.attrs, self.ops, self.valores = estereo, list(attrs), list(ops), list(valores)
         self.tipo, self.autor, self.rol, self.extiende, self.texto = tipo, autor, rol, extiende, texto
-        lineas = [m.lstrip("_~") for m in self.attrs + self.ops + self.valores] + list(texto or [])
+        lineas = [m.lstrip("_") for m in self.attrs + self.ops + self.valores] + list(texto or [])
         minimo = max([ancho(l) for l in lineas] + [ancho(nombre, _fb) + 10, ancho(estereo or "", _fs) + 10,
                                                     ancho(extiende or "", _fs) + 10])
         self.w = w or int(minimo + 2 * PAD + 6)
@@ -92,7 +94,7 @@ class Caja:
             for m in comp:
                 estatico = m.startswith("_")
                 abstracto = self.tipo == "interface" and m.startswith("+") and "(" in m
-                txt = m.lstrip("_~")
+                txt = m.lstrip("_")
                 sangria = len(txt) - len(txt.lstrip(" "))
                 txt = txt.lstrip(" ")
                 deco = ' text-decoration="underline"' if estatico else ""

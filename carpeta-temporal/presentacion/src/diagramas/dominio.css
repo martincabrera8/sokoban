@@ -1,0 +1,63 @@
+/* ── Dominio: los niveles reales en 3D, la interfaz Strategy, la cadena del Mediator y la pila de fotos ── */
+.cab--dominio { width: 1040px; }
+.dom__velo { position: absolute; inset: calc(var(--ey, 0px) * -1) calc(var(--ex, 0px) * -1); pointer-events: none; z-index: 1;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--fondo-hondo) 96%, transparent) 0%, color-mix(in srgb, var(--fondo-hondo) 82%, transparent) 24%, transparent 40%); }
+
+.dom__ancla { position: absolute; left: 0; top: 0; z-index: 2; pointer-events: none;
+  transform: translate(calc(var(--ax, -2000) * 1px), calc(var(--ay, -2000) * 1px)) translate(var(--ox, -50%), var(--oy, -100%)); }
+.dom__ancla--pila { --oy: 12px; }
+.dom__ancla--undo { --ox: -62%; --oy: 96px; }
+.dom__ancla--nivel { --ox: -12px; --oy: -50%; }
+.dom__ancla--aviso { z-index: 3; }
+
+/* Cartel de la interfaz y la cadena: el mismo panel del juego */
+.dom__estrategia, .dom__cadena { position: absolute; z-index: 2; background: linear-gradient(180deg, var(--superficie-2), var(--superficie));
+  border: 1px solid var(--linea-media); border-radius: var(--radio); box-shadow: var(--sombra-caja); }
+.dom__estrategia { right: var(--margen); top: 92px; width: 560px; padding: 18px 24px 14px; }
+.dom__cadena { left: var(--margen); bottom: 40px; padding: 16px 24px 18px; }
+.dom__rotulo { margin: 0 0 4px; font-size: 22px; letter-spacing: .06em; text-transform: uppercase; color: var(--tinta-3); font-weight: 600; }
+.dom__rotulo b { margin-left: 4px; font-family: var(--f-display); font-size: 32px; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--titulo); }
+.dom__firma { display: block; margin-bottom: 10px; font-family: var(--f-mono); font-size: 22px; color: var(--tinta-2); }
+
+.dom__fila { --activo: 0; display: flex; align-items: center; gap: 16px; margin: 0 -12px; padding: 8px 12px; border-radius: 10px;
+  background: color-mix(in srgb, var(--acento) calc(var(--activo) * 16%), transparent);
+  box-shadow: inset 4px 0 0 color-mix(in srgb, var(--acento) calc(var(--activo) * 100%), transparent); }
+.dom__icono { width: 52px; height: 52px; flex: none; border-radius: 6px; transform: scale(calc(1 + var(--activo) * .12)); }
+.dom__fila-texto { display: flex; flex-direction: column; line-height: 1.25; }
+.dom__clase { font-family: var(--f-mono); font-size: 22px; font-weight: 500; color: color-mix(in srgb, var(--titulo) calc(var(--activo) * 100%), var(--tinta)); }
+.dom__efecto { font-size: 22px; color: var(--tinta-2); }
+
+/* Mediator: tres eslabones unidos por una línea de luz */
+.dom__eslabones { display: flex; align-items: stretch; gap: 40px; margin-top: 8px; }
+.dom__eslabon { --golpe: 0; position: relative; display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; border-radius: var(--radio-chico);
+  background: color-mix(in srgb, var(--acento) calc(var(--golpe) * 22%), var(--fondo-hondo)); border: 1px solid color-mix(in srgb, var(--acento) calc(30% + var(--golpe) * 70%), var(--linea-media));
+  box-shadow: 0 0 calc(var(--golpe) * 28px) color-mix(in srgb, var(--acento) calc(var(--golpe) * 60%), transparent); }
+.dom__eslabon + .dom__eslabon::before { content: ""; position: absolute; right: 100%; top: 50%; width: 40px; height: 2px; margin-top: -1px;
+  background: color-mix(in srgb, var(--acento) calc(35% + var(--golpe) * 65%), var(--linea-media)); }
+.dom__quien { font-size: 22px; color: var(--tinta-3); font-weight: 600; }
+.dom__metodo { min-width: 15ch; font-family: var(--f-mono); font-size: 22px; color: var(--titulo); white-space: nowrap; }
+.dom__metodo:empty::before { content: "…"; color: var(--tinta-3); }
+.dom__regla { margin: 12px 0 0; font-size: 22px; color: var(--tinta-2); }
+.dom__regla b { color: var(--exito); font-weight: 600; }
+
+/* Rótulos sobre el 3D */
+.dom__res { display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; white-space: nowrap;
+  font-size: 22px; font-weight: 600; color: var(--tinta); background: color-mix(in srgb, var(--fondo-hondo) 90%, transparent); border: 1px solid var(--pendiente); }
+.dom__res span { margin-right: 4px; }
+.dom__res i { --on: 1; width: 16px; height: 16px; border-radius: 4px; border: 2px solid var(--pendiente);
+  background: color-mix(in srgb, var(--pendiente) calc(var(--on) * 100%), transparent); }
+.dom__pila { display: flex; flex-direction: column; align-items: center; padding: 6px 16px 8px; border-radius: var(--radio-chico); white-space: nowrap;
+  background: color-mix(in srgb, var(--fondo-hondo) 90%, transparent); border: 1px solid var(--linea-media); box-shadow: var(--sombra-lejos); }
+.dom__pila > b { font-size: 22px; letter-spacing: .06em; text-transform: uppercase; color: var(--tinta-3); }
+.dom__cuenta { font-size: 24px; color: var(--tinta-2); }
+.dom__cuenta b { font-family: var(--f-mono); font-size: 30px; font-weight: 500; color: var(--exito); font-variant-numeric: tabular-nums; }
+.dom__undo { width: 520px; margin: 0; padding: 10px 16px; border-radius: var(--radio-chico); font-size: 22px; line-height: 1.35; color: var(--tinta-2);
+  background: color-mix(in srgb, var(--fondo-hondo) 92%, transparent); border: 1px solid var(--exito); box-shadow: var(--sombra-lejos); }
+.dom__undo code { font-family: var(--f-mono); color: var(--exito); }
+.dom__nivel { display: inline-grid; margin: 0; }
+.dom__nivel span { grid-area: 1 / 1; padding: 4px 12px; border-radius: 6px; white-space: nowrap; font-family: var(--f-mono); font-size: 22px; color: var(--tinta-2);
+  background: color-mix(in srgb, var(--fondo-hondo) 88%, transparent); border: 1px solid var(--linea-suave); }
+.dom__aviso { display: inline-grid; margin: 0; }
+.dom__aviso span { grid-area: 1 / 1; justify-self: center; padding: 8px 16px; border-radius: 10px; white-space: nowrap; font-size: 24px; font-weight: 700;
+  color: var(--fondo); background: var(--acento); box-shadow: 0 0 26px var(--brillo), var(--sombra-lejos); opacity: 0; }
+.dom__respaldo { position: absolute; left: 160px; top: 420px; width: 832px; height: 384px; image-rendering: pixelated; border-radius: 8px; }

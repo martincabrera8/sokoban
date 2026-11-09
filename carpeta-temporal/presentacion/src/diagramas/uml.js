@@ -12,64 +12,73 @@ import { crearVista, cargando, orbitar } from "../vista3d.js";
  */
 const U = 100;                 // unidades del SVG por metro de la escena
 const ESP = 0.05;              // espesor de cada caja
-/* Resolución de las texturas (px por unidad del SVG). En la toma más cercana una unidad ocupa unos 2,3 px de pantalla:
-   las cajas (con los nombres) van a 2,4 y el papel (líneas y huellas) a 1,25. Antes eran 2 y 3: unos 98 MB de video. */
-const ESC_PAPEL = 1.25, ESC_CAJA = 2.4;
+/* Resolución de las texturas (px por unidad del SVG). Las cajas (con los nombres) van a 2,2 y el papel (líneas y huellas)
+   a 1,25, con un tope de lado para que un plano más grande no dispare la memoria de video. */
+const ESC_PAPEL = 1.25, ESC_CAJA = 2.2, LADO_PAPEL = 3400;
 const REGION = { x: 640, w: 1240, y: 70, h: 960 }; // dónde se encuadra el plano, en px del escenario
 const CORRE = REGION.x + REGION.w / 2 - 960;          // corrimiento del centro óptico hacia la derecha
-const ALTURA = [1.5, 2.6, 3.6, 4.6];                // capas: Luca, integración, Martín, pendiente
+/** Altura de la capa de cada autor (de abajo hacia arriba en el orden de AUTORES). */
+const altura = (i) => 1.5 + i * 1.0;
+/** Orden de las capas por autor; los nombres salen de la leyenda del SVG. Uno desconocido va al final. */
+const AUTORES = ["Luca", "Integración", "Martín", "Pedro y Lucía", "Mora", "Pendiente"];
 
-/* Recorrido. Cada toma es un rectángulo del SVG (x0, y0, x1, y1) y la inclinación de la cámara. */
-const TOMA = {
-  general: [0, 70, 2290, 1640, 0.62],
-  capas: [80, -520, 2620, 1500, 1.12],
-  arranque: [250, 70, 990, 660, 0.36],
-  menu: [30, 380, 760, 900, 0.36],
-  paneles: [360, 700, 1110, 1330, 0.36],
-  frontera: [880, 230, 1760, 1110, 0.4],
-  contrato: [1180, 240, 1720, 690, 0.32],
-  prueba: [1790, 110, 2270, 820, 0.3],
-  pendientes: [1780, 770, 2250, 1270, 0.32],
-};
+/* Recorrido por zonas. Cada toma encuadra las clases que nombra (las que existan en el SVG), así el plano puede crecer
+   o reordenarse sin tocar este archivo. luces: relaciones que se encienden primero, [desde, hasta]. */
 const ZONAS = [
-  { nombre: "Vista", detalle: "Las pantallas de Luca. Cada una contiene a la siguiente y todas piden imágenes a la misma caché.", tomas: ["arranque", "menu", "paneles"] },
-  { nombre: "Contrato", detalle: "Las flechas que salen de la vista terminan acá. Nunca tocan JuegoDePrueba.", tomas: ["frontera", "contrato"] },
-  { nombre: "Prueba y pendientes", detalle: "JuegoDePrueba cumple el contrato por ahora. Lo gris se enchufa al mismo contrato cuando llegue.", tomas: ["prueba", "pendientes"] },
+  { nombre: "Vista", detalle: "Las pantallas de Luca. Cada una contiene a la siguiente y todas piden imágenes a la misma caché.",
+    tomas: [["Main", "VentanaPrincipal", "PantallaJuego"], ["MenuPrincipal", "Cartel", "VentanaPrincipal"], ["PanelTablero", "PanelHUD", "Epoca", "Imagenes"]],
+    luces: [["Main", "VentanaPrincipal"], ["VentanaPrincipal", "PantallaJuego"], ["VentanaPrincipal", "MenuPrincipal"], ["MenuPrincipal", "Cartel"], ["PantallaJuego", "Cartel"],
+      ["PantallaJuego", "PanelTablero"], ["PantallaJuego", "PanelHUD"], ["PanelTablero", "Epoca"], ["PanelTablero", "Imagenes"], ["PanelHUD", "Imagenes"], ["MenuPrincipal", "Imagenes"], ["Imagenes", "Imagenes"], ["Imagenes", "Assets"]] },
+  { nombre: "Contrato", detalle: "Las flechas que salen de la vista terminan acá. Nunca tocan el dominio ni el sonido.",
+    tomas: [["PantallaJuego", "PanelHUD", "PanelTablero", "Juego", "ObservadorJuego", "EstadoJuego", "Direccion"], ["Juego", "ObservadorJuego", "EstadoJuego", "Direccion"]],
+    luces: [["PantallaJuego", "Juego"], ["PanelHUD", "Juego"], ["PanelHUD", "ObservadorJuego"], ["PanelTablero", "ObservadorJuego"], ["PanelTablero", "Direccion"],
+      ["Juego", "ObservadorJuego"], ["Juego", "EstadoJuego"], ["ObservadorJuego", "EstadoJuego"]] },
+  { nombre: "Dominio", detalle: "Pedro y Lucía. JuegoSokoban cumple el contrato; las cajas usan Strategy y el movimiento, un Mediator.",
+    tomas: [["JuegoSokoban", "Foto", "CargadorNivel", "Niveles", "EstadoNivel"], ["Jugador", "Caja", "Posicion", "ComportamientoCaja", "CajaNormalStrategy", "CajaFragilStrategy", "CajaLlaveStrategy", "MediadorMovimiento", "MotorMovimiento"]],
+    luces: [["JuegoSokoban", "Juego"], ["JuegoSokoban", "CargadorNivel"], ["JuegoSokoban", "EstadoNivel"], ["JuegoSokoban", "Foto"], ["JuegoSokoban", "MotorMovimiento"],
+      ["MotorMovimiento", "MediadorMovimiento"], ["Jugador", "MediadorMovimiento"], ["EstadoNivel", "Caja"], ["Caja", "ComportamientoCaja"],
+      ["CajaNormalStrategy", "ComportamientoCaja"], ["CajaFragilStrategy", "ComportamientoCaja"], ["CajaLlaveStrategy", "ComportamientoCaja"]] },
+  { nombre: "Sonido", detalle: "Mora. JuegoConSonido envuelve al juego (Decorator); Sonidos es Singleton y cambia de estado con la M (State).",
+    tomas: [["JuegoConSonido", "Sonidos", "Sonido", "SonidosDeInterfaz"], ["Sonidos", "EstadoSonido", "SonidoActivado", "SonidoSilenciado", "AssetsSonidos"]],
+    luces: [["JuegoConSonido", "Juego"], ["Main", "JuegoConSonido"], ["JuegoConSonido", "Sonidos"], ["Sonidos", "EstadoSonido"], ["SonidoActivado", "EstadoSonido"],
+      ["SonidoSilenciado", "EstadoSonido"], ["Sonidos", "Sonido"], ["SonidosDeInterfaz", "Sonidos"]] },
+  { nombre: "Prueba y pendientes", detalle: "JuegoDePrueba cumple el contrato por ahora. Lo gris se enchufa al mismo contrato cuando llegue.",
+    tomas: [["JuegoDePrueba", "Foto"], ["ControladorJuego", "ReproductorSonido", "Musica"]],
+    luces: [["JuegoDePrueba", "Juego"], ["Main", "JuegoDePrueba"], ["ControladorJuego", "Juego"], ["JuegoDePrueba", "Foto"], ["JuegoDePrueba", "ObservadorJuego"], ["ReproductorSonido", "ObservadorJuego"]] },
 ];
-
-/* Orden en que se encienden las relaciones de cada zona: [desde, hasta]. */
-const LUCES = [
-  [["Main", "VentanaPrincipal"], ["VentanaPrincipal", "PantallaJuego"], ["VentanaPrincipal", "MenuPrincipal"], ["MenuPrincipal", "Cartel"], ["PantallaJuego", "Cartel"],
-    ["PantallaJuego", "PanelTablero"], ["PantallaJuego", "PanelHUD"], ["PanelTablero", "Epoca"], ["PanelTablero", "Imagenes"], ["PanelHUD", "Imagenes"], ["MenuPrincipal", "Imagenes"], ["Imagenes", "Imagenes"], ["Imagenes", "Assets"]],
-  [["PantallaJuego", "Juego"], ["PanelHUD", "Juego"], ["PanelHUD", "ObservadorJuego"], ["PanelTablero", "ObservadorJuego"], ["PanelTablero", "Direccion"],
-    ["Juego", "ObservadorJuego"], ["Juego", "EstadoJuego"], ["ObservadorJuego", "EstadoJuego"]],
-  [["JuegoDePrueba", "Juego"], ["Main", "JuegoDePrueba"], ["ControladorJuego", "Juego"], ["JuegoDePrueba", "Foto"], ["JuegoDePrueba", "ObservadorJuego"], ["ReproductorSonido", "ObservadorJuego"]],
-];
+/** Una toma no se acerca más que esto (unidades del SVG): así el texto de las cajas no se pixela. */
+const TOMA_MIN = { w: 620, h: 430 };
 
 /* ── Lectura del SVG real ── */
 function leerPlano() {
   const doc = new DOMParser().parseFromString(window.UML || "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'/>", "image/svg+xml");
   const raiz = doc.documentElement;
+  // Notas de herramientas entre paréntesis (por ejemplo, de la leyenda) no van en la proyección
+  raiz.querySelectorAll("text, tspan").forEach((x) => { if (!x.children.length) x.textContent = x.textContent.replace(/\s*\([^)]*\bIA\b[^)]*\)/g, ""); });
   const [, , VW, VH] = (raiz.getAttribute("viewBox") || "0 0 10 10").split(/[\s,]+/).map(Number);
   const num = (e, k) => parseFloat(e.getAttribute(k)) || 0;
 
-  // Leyenda "Quién hizo cada parte": cuadradito de color + texto en la misma fila
+  // Leyenda "Quién hizo cada parte": cuadradito de color + texto en la misma fila ("Nombre · qué hizo")
   const textos = [...raiz.querySelectorAll(":scope > text")];
-  const autores = [...raiz.querySelectorAll(":scope > rect")].filter((r) => num(r, "width") === 30).map((r) => {
+  const leyenda = [...raiz.querySelectorAll(":scope > rect")].filter((r) => num(r, "width") === 30).map((r) => {
     const y = num(r, "y");
     const txt = textos.find((x) => Math.abs(num(x, "y") - y - 12.5) < 3 && num(x, "x") > num(r, "x"));
     const linea = txt ? txt.textContent.trim() : "";
-    const corte = linea.search(/\s(·\s)?/);
-    return { fill: r.getAttribute("fill"), stroke: r.getAttribute("stroke"), nombre: linea.slice(0, corte), resto: linea.slice(corte).replace(/^\s*·?\s*/, "") };
+    const corte = linea.includes(" · ") ? linea.indexOf(" · ") : Math.max(0, linea.indexOf(" "));
+    return { fill: r.getAttribute("fill"), stroke: r.getAttribute("stroke"), nombre: corte ? linea.slice(0, corte) : linea, resto: corte ? linea.slice(corte).replace(/^\s*·?\s*/, "") : "" };
   });
-  const orden = (a) => ["Luca", "Integración", "Martín", "Pendiente"].indexOf(a.nombre);
-  autores.sort((a, b) => orden(a) - orden(b));
+  const orden = (a) => { const i = AUTORES.indexOf(a.nombre); return i < 0 ? AUTORES.length : i; };
+  leyenda.sort((a, b) => orden(a) - orden(b));
 
-  const cajas = [...raiz.querySelectorAll("g.caja")].map((g) => {
+  const crudas = [...raiz.querySelectorAll("g.caja")].map((g) => {
     const r = g.querySelector("rect");
-    const fill = r.getAttribute("fill");
-    const capa = Math.max(0, autores.findIndex((a) => a.fill === fill));
-    return { id: g.id, g, x: num(r, "x"), y: num(r, "y"), w: num(r, "width"), h: num(r, "height"), fill, stroke: r.getAttribute("stroke"), capa, pendiente: autores[capa] && autores[capa].nombre === "Pendiente" };
+    return { id: g.id, g, x: num(r, "x"), y: num(r, "y"), w: num(r, "width"), h: num(r, "height"), fill: r.getAttribute("fill"), stroke: r.getAttribute("stroke") };
+  });
+  // Solo los autores que tienen alguna clase en el plano
+  const autores = leyenda.filter((a) => crudas.some((c) => c.fill === a.fill));
+  const cajas = crudas.map((c) => {
+    const capa = Math.max(0, autores.findIndex((a) => a.fill === c.fill));
+    return { ...c, capa, pendiente: autores[capa] && autores[capa].nombre === "Pendiente" };
   });
   const porId = Object.fromEntries(cajas.map((c) => [c.id, c]));
   const tocada = (p) => cajas.find((c) => p[0] >= c.x - 4 && p[0] <= c.x + c.w + 4 && p[1] >= c.y - 4 && p[1] <= c.y + c.h + 4);
@@ -78,11 +87,11 @@ function leerPlano() {
   const relaciones = [];
   [...raiz.querySelectorAll(":scope > path")].forEach((p) => {
     if (p.getAttribute("fill") !== "none") return;
-    const tok = (p.getAttribute("d") || "").match(/[MLA]|-?[\d.]+/g) || [];
+    const tok = (p.getAttribute("d") || "").match(/[MLAQ]|-?[\d.]+/g) || [];
     const pts = [];
     for (let i = 0; i < tok.length;) {
       const c = tok[i];
-      if (c === "M" || c === "L") { pts.push([+tok[i + 1], +tok[i + 2]]); i += 3; } else if (c === "A") { pts.push([+tok[i + 6], +tok[i + 7]]); i += 8; } else i += 1;
+      if (c === "M" || c === "L") { pts.push([+tok[i + 1], +tok[i + 2]]); i += 3; } else if (c === "A") { pts.push([+tok[i + 6], +tok[i + 7]]); i += 8; } else if (c === "Q") { pts.push([+tok[i + 3], +tok[i + 4]]); i += 5; } else i += 1;
     }
     if (pts.length < 2) return;
     const a = tocada(pts[0]), b = tocada(pts[pts.length - 1]);
@@ -94,7 +103,40 @@ function leerPlano() {
     const txt = r.nextElementSibling && r.nextElementSibling.tagName === "text" ? r.nextElementSibling : null;
     return { x: num(r, "x"), y: num(r, "y"), w: num(r, "width"), h: num(r, "height"), nodos: [r, txt].filter(Boolean) };
   });
-  return { raiz, VW, VH, autores, cajas, porId, relaciones, rotulosFlecha };
+
+  /** Rectángulo que encuadra las clases nombradas (las que existan), con aire y un tamaño mínimo. */
+  const encuadre = (ids, incl) => {
+    const lista = ids.map((id) => porId[id]).filter(Boolean);
+    if (!lista.length) return null;
+    let x0 = Math.min(...lista.map((c) => c.x)) - 50, y0 = Math.min(...lista.map((c) => c.y)) - 50;
+    let x1 = Math.max(...lista.map((c) => c.x + c.w)) + 50, y1 = Math.max(...lista.map((c) => c.y + c.h)) + 50;
+    const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, w = Math.max(TOMA_MIN.w, x1 - x0), h = Math.max(TOMA_MIN.h, y1 - y0);
+    x0 = cx - w / 2; x1 = cx + w / 2; y0 = cy - h / 2; y1 = cy + h / 2;
+    return [x0, y0, x1, y1, incl];
+  };
+  const alto = altura(Math.max(0, autores.length - 1)) * U;
+  const TOMA = {
+    general: [0, VH * 0.04, VW, VH * 0.97, 0.62],
+    capas: [VW * 0.035, -alto * 1.13, VW * 1.14, VH * 0.89, 1.12],
+  };
+  // Zonas: solo las que tienen clases en este plano; cada toma con nombre propio
+  const zonas = [];
+  ZONAS.forEach((z) => {
+    if (!porId[z.tomas[0][0]]) return; // la zona existe si está su clase principal
+    const tomas = z.tomas.map((ids, j) => {
+      const r = encuadre(ids, j === 0 ? 0.36 : 0.32);
+      if (!r) return null;
+      TOMA[z.nombre + j] = r;
+      return z.nombre + j;
+    }).filter(Boolean);
+    if (!tomas.length) return;
+    const ids = new Set(z.tomas.flat().filter((id) => porId[id]));
+    const par = (a, b) => (x) => (x.desde === a && x.hasta === b) || (x.desde === b && x.hasta === a);
+    const luces = z.luces.map(([a, b]) => relaciones.find(par(a, b))).filter(Boolean);
+    relaciones.forEach((r) => { if (luces.length < 14 && !luces.includes(r) && ids.has(r.desde) && ids.has(r.hasta)) luces.push(r); });
+    zonas.push({ nombre: z.nombre, detalle: z.detalle, tomas, luces });
+  });
+  return { raiz, VW, VH, autores, cajas, porId, relaciones, rotulosFlecha, TOMA, zonas };
 }
 
 /** Dibuja un SVG en un canvas (el SVG va como imagen: los textos quedan nítidos a la escala pedida). */
@@ -129,7 +171,7 @@ export default {
     const pie = el("div", "uml__zona pos", lienzo, { vars: { x: 120, y: 520 } });
     const zonaNombre = el("div", "uml__nombre", pie);
     const zonaDetalle = el("p", "uml__detalle", pie);
-    const textosZona = ZONAS.map((z) => ({ nombre: z.nombre, detalle: z.detalle }));
+    const textosZona = P.zonas.map((z) => ({ nombre: z.nombre, detalle: z.detalle }));
 
     // Minimapa: el plano en chico con el cuadro de la toma actual
     const mini = el("div", "uml__mini pos", lienzo, { vars: { x: 120, y: 790 } });
@@ -142,7 +184,6 @@ export default {
 
     // Rótulos de las capas: fijos a la izquierda, con una línea guía hasta la capa levantada
     const guias = s("svg", { class: "svg uml__guias", viewBox: "0 0 1920 1080", "aria-hidden": "true" }, lienzo);
-    const ANCLA = { Luca: "Main", "Integración": "Epoca", "Martín": "Assets", Pendiente: "ControladorJuego" };
     const rotulos = P.autores.map((a, i) => {
       const propias = P.cajas.filter((c) => c.capa === i);
       const r = el("div", "uml__capa pos", lienzo);
@@ -153,15 +194,15 @@ export default {
       el("b", "", txt, { texto: a.nombre });
       el("span", "", txt, { texto: a.resto });
       el("div", "uml__capa-cuenta", r, { texto: String(propias.length) });
-      const ancla = P.porId[ANCLA[a.nombre]] || propias[0];
+      const ancla = propias.slice().sort((p, q) => p.x - q.x)[0];
       const guia = s("line", { class: "uml__guia" }, guias);
       const punta = s("circle", { class: "uml__punta", r: 6 }, guias);
       return { r, i, ancla, guia, punta, piezas: [r, guia, punta] };
     });
-    // Orden de arriba a abajo según la altura en pantalla de cada capa levantada (lo pendiente queda más alto)
-    const ORDEN = { Pendiente: 0, Luca: 1, "Integración": 2, "Martín": 3 };
+    // De arriba a abajo en el mismo orden en que se apilan las capas: la más alta, primero
+    const paso = Math.min(82, 420 / Math.max(1, rotulos.length - 1));
     rotulos.forEach((r) => {
-      const y = 492 + (ORDEN[P.autores[r.i].nombre] ?? r.i) * 82;
+      const y = 492 + (rotulos.length - 1 - r.i) * paso;
       r.r.style.setProperty("--x", "120px"); r.r.style.setProperty("--y", y + "px");
       r.guia.setAttribute("x1", 620); r.guia.setAttribute("y1", y + 34);
     });
@@ -181,7 +222,7 @@ export default {
     const escena = new THREE.Scene();
     escena.background = new THREE.Color(t("fondo-hondo"));
     escena.fog = new THREE.Fog(t("fondo-hondo"), 26, 60);
-    const camara = vista.camara(30, 0.1, 140);
+    const camara = vista.camara(30, 1, 160); // cerca en 1: con el plano grande hace falta precisión de profundidad (papel y cajas no parpadean)
     const aMundo = (x, y) => new THREE.Vector3((x - P.VW / 2) / U, 0, (y - P.VH / 2) / U);
 
     // Mesa: grilla de plano técnico que se pierde en la niebla
@@ -194,7 +235,7 @@ export default {
     escena.add(mesa);
 
     // Papel: textura del SVG sin las cajas (dejan su huella punteada), con penumbra fuera de la zona y haz de impresión
-    const escPapel = Math.min(ESC_PAPEL * fino, (maxTex - 16) / P.VW);
+    const escPapel = Math.min(ESC_PAPEL * fino, (Math.min(maxTex, LADO_PAPEL) - 16) / Math.max(P.VW, P.VH));
     const sinCajas = P.raiz.cloneNode(true);
     sinCajas.querySelectorAll("g.caja").forEach((g) => {
       const r = g.querySelector("rect");
@@ -300,7 +341,6 @@ export default {
       };
       return { ...r, camino, largo, m, estado, aplicar };
     });
-    const relacion = (a, b) => relaciones.find((r) => r.desde === a && r.hasta === b);
 
     // Capas de vidrio: una por autor, a la altura donde se levantan sus clases
     const vidrios = P.autores.map((a, i) => {
@@ -311,7 +351,7 @@ export default {
       const borde = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(P.VW / U + 0.6, P.VH / U + 0.6)), new THREE.LineBasicMaterial({ color: color.clone().multiplyScalar(1.8), transparent: true, opacity: 0, toneMapped: false }));
       borde.rotation.x = -Math.PI / 2;
       g.add(hoja, borde);
-      g.position.y = ALTURA[i] - 0.02;
+      g.position.y = altura(i) - 0.02;
       escena.add(g);
       const estado = { v: 0 };
       return { estado, aplicar: () => { hoja.material.opacity = estado.v * 0.03; borde.material.opacity = estado.v * 0.8; g.visible = estado.v > 0.001; } };
@@ -319,7 +359,7 @@ export default {
     // Hilos de luz entre capas: las relaciones reales que cruzan de un autor a otro
     const hilos = P.relaciones.filter((r) => r.desde !== r.hasta && P.porId[r.desde].capa !== P.porId[r.hasta].capa).map((r) => {
       const a = P.porId[r.desde], b = P.porId[r.hasta];
-      const pa = aMundo(a.x + a.w / 2, a.y + a.h / 2).setY(ALTURA[a.capa] + ESP), pb = aMundo(b.x + b.w / 2, b.y + b.h / 2).setY(ALTURA[b.capa] + ESP);
+      const pa = aMundo(a.x + a.w / 2, a.y + a.h / 2).setY(altura(a.capa) + ESP), pb = aMundo(b.x + b.w / 2, b.y + b.h / 2).setY(altura(b.capa) + ESP);
       const medio = pa.clone().lerp(pb, 0.5); medio.y += 0.9;
       const curva = new THREE.QuadraticBezierCurve3(pa, medio, pb);
       const geo = new THREE.TubeGeometry(curva, 48, 0.035, 6, false);
@@ -336,8 +376,10 @@ export default {
     sol.position.set(-7, 14, 9);
     sol.castShadow = true;
     sol.shadow.mapSize.set(1024, 1024);
-    Object.assign(sol.shadow.camera, { left: -14, right: 14, top: 11, bottom: -11, near: 1, far: 40 });
-    sol.shadow.bias = -0.0006;
+    const medio = { x: P.VW / U / 2 + 2, z: P.VH / U / 2 + 2 };
+    Object.assign(sol.shadow.camera, { left: -medio.x, right: medio.x, top: medio.z, bottom: -medio.z, near: 1, far: 60 });
+    sol.shadow.bias = -0.004;     // el plano es grande: con menos sesgo, el papel se sombrea a sí mismo en rayas
+    sol.shadow.normalBias = 0.04;
     escena.add(sol);
 
     // Partículas que viajan por las flechas encendidas y polvo de luz sobre la mesa
@@ -355,7 +397,7 @@ export default {
     // Cámara: objetivo, distancia, inclinación desde la vertical, giro y corrimiento óptico
     const tanH = Math.tan((30 * Math.PI) / 360) * (16 / 9), tanV = Math.tan((30 * Math.PI) / 360);
     const toma = (nombre) => {
-      const [x0, y0, x1, y1, incl] = TOMA[nombre];
+      const [x0, y0, x1, y1, incl] = P.TOMA[nombre];
       const c = aMundo((x0 + x1) / 2, (y0 + y1) / 2);
       const ancho = (x1 - x0) / U, alto = ((y1 - y0) / U) * Math.cos(incl);
       const d = Math.max(ancho / ((REGION.w / 1920) * 2 * tanH), alto / ((REGION.h / 1080) * 2 * tanV)) * 1.02;
@@ -395,7 +437,8 @@ export default {
       });
       // Líneas guía de los rótulos de capa: del rótulo fijo a la caja levantada
       rotulos.forEach((r) => {
-        const c = caja3d[r.ancla.id];
+        if (!r.ancla) return;
+      const c = caja3d[r.ancla.id];
         v3.set(c.base.x - c.w / U / 2, c.alza.y + ESP, c.base.z).project(camara);
         const x = ((v3.x + 1) / 2) * W - ex, y = ((1 - v3.y) / 2) * H - ey;
         r.guia.setAttribute("x2", x.toFixed(1)); r.guia.setAttribute("y2", y.toFixed(1));
@@ -408,7 +451,7 @@ export default {
     vista.animar({ escena, camara, brillo: [0.55, 0.45, 0.9], orbita: { giro: 0.45, alto: 0.18 }, cada: () => { ubicarCamara(); actualizar(); } });
 
     return {
-      slide, P, cam, toma, uni, vidrios, hilos, cajas3d, caja3d, relaciones, relacion, pulsos, polvo, deriva, rotulos, velo,
+      slide, P, cam, toma, uni, vidrios, hilos, cajas3d, caja3d, relaciones, pulsos, polvo, deriva, rotulos, velo,
       pie, zonaNombre, zonaDetalle, textosZona, mini, mmarco,
       destruir: () => vista.destruir(),
     };
@@ -424,7 +467,7 @@ export default {
     const marco = { x: 0, y: 0, w: c.P.VW, h: c.P.VH };
     const pintarMarco = () => ["x", "y", "w", "h"].forEach((k) => c.mmarco.setAttribute({ x: "x", y: "y", w: "width", h: "height" }[k], marco[k].toFixed(1)));
     const aMarco = (nombre, en, dur) => {
-      const [x0, y0, x1, y1] = TOMA[nombre];
+      const [x0, y0, x1, y1] = c.P.TOMA[nombre];
       tl.to(marco, { x: x0, y: y0, w: x1 - x0, h: y1 - y0, duration: dur, ease: "power2.inOut", onUpdate: pintarMarco }, en);
     };
 
@@ -434,8 +477,8 @@ export default {
     pintarMarco();
     if (c.sin3d) {
       tl.to(c.mini, { autoAlpha: 1, duration: 0.5 }, 1);
-      ZONAS.forEach((z, i) => { tl.addLabel("p" + (i + 1)); tl.call(mostrarZona(i), null, "p" + (i + 1)).to(c.pie, { autoAlpha: 1, duration: 0.4 }, "p" + (i + 1)); });
-      tl.addLabel("p4"); tl.to(c.pie, { autoAlpha: 0, duration: 0.4 }, "p4");
+      c.P.zonas.forEach((z, i) => { tl.addLabel("p" + (i + 1)); tl.call(mostrarZona(i), null, "p" + (i + 1)).to(c.pie, { autoAlpha: 1, duration: 0.4 }, "p" + (i + 1)); });
+      tl.addLabel("final"); tl.to(c.pie, { autoAlpha: 0, duration: 0.4 }, "final");
       return;
     }
     const { cam, toma, uni } = c;
@@ -445,21 +488,22 @@ export default {
       aMarco(nombre, en, dur);
     };
     const foco = (nombre, en, dur, atenua = 1) => {
-      const [x0, y0, x1, y1] = TOMA[nombre];
+      const [x0, y0, x1, y1] = c.P.TOMA[nombre];
       tl.to(uni.uFoco.value, { x: x0, y: y0, z: x1, w: y1, duration: dur, ease: "power2.inOut" }, en)
         .to(uni.uAtenua, { value: atenua, duration: dur * 0.8 }, en);
     };
     /** Enciende una relación: el tubo se dibuja de quien depende a quien conoce y la caja de llegada destella. */
-    const luz = (par, en, dur = 0.75) => {
-      const r = c.relacion(par[0], par[1]);
+    const luz = (rel, en, dur = 0.75) => {
+      const r = c.relaciones.find((x) => x.desde === rel.desde && x.hasta === rel.hasta && x.pts === rel.pts);
       if (!r) return en;
+      const par = [r.desde, r.hasta];
       tl.fromTo(r.estado, { p: 0, a: 1 }, { p: 1, a: 1, duration: Math.max(0.35, Math.min(1.1, dur * Math.sqrt(r.largo / 4))), ease: "power1.inOut", onUpdate: r.aplicar }, en);
       const destino = c.caja3d[par[1]];
       if (destino) tl.fromTo(destino.luz, { v: 0 }, { v: 1, duration: 0.18, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, en + 0.55);
       return en;
     };
-    const apagar = (pares, en) => pares.forEach((par) => {
-      const r = c.relacion(par[0], par[1]);
+    const apagar = (rels, en) => rels.forEach((rel) => {
+      const r = c.relaciones.find((x) => x.pts === rel.pts);
       if (r) tl.to(r.estado, { a: 0.28, duration: 0.6, onUpdate: r.aplicar }, en);
     });
 
@@ -474,7 +518,7 @@ export default {
     tl.to(cam, { tx: k.tx, tz: k.tz, d: k.d, incl: k.incl, giro: -0.42, duration: 2.4, ease: "power2.inOut" }, 2.6);
     c.cajas3d.forEach((cj) => {
       const en = 2.75 + cj.capa * 0.42 + (cj.x / c.P.VW) * 0.35;
-      tl.fromTo(cj.alza, { y: 0, giro: 0 }, { y: ALTURA[cj.capa], giro: 0, duration: 1.1, ease: "back.out(1.4)" }, en);
+      tl.fromTo(cj.alza, { y: 0, giro: 0 }, { y: altura(cj.capa), giro: 0, duration: 1.1, ease: "back.out(1.4)" }, en);
     });
     c.vidrios.forEach((v, i) => tl.fromTo(v.estado, { v: 0 }, { v: 1, duration: 0.8, ease: "power2.out", onUpdate: v.aplicar }, 2.9 + i * 0.42));
     c.hilos.forEach((h, i) => tl.fromTo(h.estado, { p: 0 }, { p: 1, duration: 0.7, ease: "power1.inOut", onUpdate: h.aplicar }, 4.6 + i * 0.18));
@@ -485,7 +529,7 @@ export default {
 
     // Pasos: una zona por paso
     let en = 0;
-    ZONAS.forEach((z, i) => {
+    c.P.zonas.forEach((z, i) => {
       const etiqueta = "p" + (i + 1);
       tl.addLabel(etiqueta);
       en = tl.labels[etiqueta];
@@ -496,16 +540,16 @@ export default {
         tl.to(piezasRot, { autoAlpha: 0, duration: 0.35 }, en)
           .to(bajada, { autoAlpha: 0, duration: 0.4 }, en)
           .fromTo(c.mini, { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.6, ease: "power2.out", immediateRender: false }, en + 0.5);
-        c.cajas3d.forEach((cj) => tl.to(cj.alza, { y: 0, giro: 0, duration: 0.7, ease: "bounce.out" }, en + 0.1 + (3 - cj.capa) * 0.08));
+        c.cajas3d.forEach((cj) => tl.to(cj.alza, { y: 0, giro: 0, duration: 0.7, ease: "bounce.out" }, en + 0.1 + (c.P.autores.length - 1 - cj.capa) * 0.08));
         en += 0.7;
       } else {
-        apagar(LUCES[i - 1], en);
+        apagar(c.P.zonas[i - 1].luces, en);
       }
       tl.to(c.pie, { autoAlpha: 0, x: -16, duration: 0.25 }, en)
         .call(mostrarZona(i), null, en + 0.26)
         .to(c.pie, { autoAlpha: 1, x: 0, duration: 0.45, ease: "power2.out" }, en + 0.3);
       // Recorrido: la cámara pasa por cada toma mientras se encienden las flechas de esa parte
-      const luces = LUCES[i];
+      const luces = z.luces;
       const tramo = Math.ceil(luces.length / z.tomas.length);
       z.tomas.forEach((nombre, j) => {
         const t0 = en + j * 2.6;
@@ -514,7 +558,7 @@ export default {
         luces.slice(j * tramo, (j + 1) * tramo).forEach((par, n, todas) => luz(par, t0 + 0.9 + n * (1.6 / Math.max(1, todas.length))));
       });
       // Los pendientes flotan sobre el papel mientras se nombran
-      if (i === 2) {
+      if (z.nombre === "Prueba y pendientes") {
         c.cajas3d.filter((cj) => cj.pendiente).forEach((cj, n) => {
           tl.fromTo(cj.alza, { y: 0 }, { y: 0.55, duration: 0.9, ease: "power2.out" }, en + 1 + n * 2.2);
         });
@@ -522,8 +566,8 @@ export default {
     });
 
     // Final: todo el plano, todas las flechas encendidas
-    tl.addLabel("p4");
-    en = tl.labels.p4;
+    tl.addLabel("final");
+    en = tl.labels.final;
     mover("general", en, 2.2, { giro: -0.08 });
     tl.to(uni.uAtenua, { value: 0, duration: 1.2 }, en)
       .to(uni.uFoco.value, { x: 0, y: 0, z: c.P.VW, w: c.P.VH, duration: 1.2 }, en)

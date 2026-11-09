@@ -8,6 +8,7 @@
 .fac__ancla--llamada { z-index: 4; }
 .fac__ancla--hoy { --oy: -100%; }
 .fac__ancla--dominio { --oy: 24px; }
+.fac__ancla--sonido { --oy: calc(-100% - 46px); }
 .fac__ancla--cartel { z-index: 3; }
 
 .fac__cliente, .fac__cartel { --golpe: 0; background: linear-gradient(180deg, var(--superficie-2), var(--superficie)); border: 1px solid var(--linea-media);
@@ -31,8 +32,12 @@
 .fac__hoy, .fac__dominio { margin: 0; padding: 10px 18px; border-radius: var(--radio-chico); font-size: 24px; color: var(--tinta-2); text-align: center;
   background: color-mix(in srgb, var(--fondo-hondo) 88%, transparent); border: 1px solid var(--linea-media); box-shadow: var(--sombra-lejos); white-space: nowrap; }
 .fac__hoy b, .fac__dominio b { color: var(--titulo); font-weight: 600; }
-.fac__dominio { white-space: normal; width: 760px; border: 1px dashed var(--pendiente); }
-.fac__dominio b { color: var(--pendiente); }
+.fac__dominio { white-space: normal; width: 760px; border: 1px solid var(--acento); }
+.fac__dominio b { color: var(--acento); }
+.fac__sonido { margin: 0; padding: 10px 18px; border-radius: var(--radio-chico); font-size: 24px; color: var(--tinta-2); white-space: nowrap;
+  background: color-mix(in srgb, var(--fondo-hondo) 88%, transparent); border: 1px solid var(--sonido); box-shadow: var(--sombra-lejos); }
+.fac__sonido b { color: var(--sonido); font-weight: 600; }
+.fac__sonido code { font-family: var(--f-mono); font-size: 22px; color: var(--titulo); }
 .fac__pieza { display: flex; align-items: center; gap: 8px; margin: 0; padding: 4px 12px 4px 6px; border-radius: 999px; white-space: nowrap; font-size: 22px; color: var(--tinta);
-  background: color-mix(in srgb, var(--fondo-hondo) 86%, transparent); border: 1px dashed var(--pendiente); }
+  background: color-mix(in srgb, var(--fondo-hondo) 86%, transparent); border: 1px solid color-mix(in srgb, var(--acento) 60%, transparent); }
 .fac__pieza img { width: 28px; height: 28px; image-rendering: pixelated; }

@@ -12,10 +12,10 @@ import { mundo3d, textura, chispa, haz, anclar } from "./patrones3d.js";
  * lo resuelve solo con las mismas reglas de JuegoDePrueba (simulación). Cada movimiento que cambia algo
  * llama a notificar(): el núcleo late, sale una onda y la misma foto EstadoJuego viaja a cada observador
  * en órbita. PanelHUD reescribe sus tres números y PanelTablero se vuelve a pintar desde las líneas de texto.
- * Un choque contra la pared no cambia nada y no avisa. En el segundo paso se suscribe ReproductorSonido.
+ * Un choque contra la pared no cambia nada y no avisa.
  */
 
-/* ── Reglas y constantes copiadas de JuegoDePrueba ── */
+/* ── Reglas y constantes de JuegoSokoban (cajas normales) sobre un nivel de prueba ── */
 const NIVEL = 3;
 const MAXIMO = 1000, COSTO_MOV = 10, COSTO_EMP = 5, COSTO_UNDO = 50, PASOS_POR_UNDO = 5;
 const DELTA = { arriba: [0, -1], abajo: [0, 1], izquierda: [-1, 0], derecha: [1, 0] };
@@ -126,10 +126,9 @@ const CAMARA = new THREE.Vector3(-2.9, 19.8, 23.6), MIRA = new THREE.Vector3(4.6
 const OBS = [ // ángulo sobre la órbita (grados, negativos hacia la cámara); el orden es el de la lista de observadores
   { clave: "hud", angulo: -13, nombre: "PanelHUD" },
   { clave: "tablero", angulo: -48, nombre: "PanelTablero" },
-  { clave: "sonido", angulo: 18, nombre: "ReproductorSonido" },
 ];
 /** Lugar de cada observador cuando no hay WebGL. */
-const FIJO = { sonido: { x: 1220, y: 325 }, hud: { x: 1320, y: 545 }, tablero: { x: 1170, y: 855 } };
+const FIJO = { hud: { x: 1320, y: 545 }, tablero: { x: 1170, y: 855 } };
 const enOrbita = (grados, r = R_ORBITA, y = Y_ORBITA) => { const a = (grados * Math.PI) / 180; return new THREE.Vector3(r * Math.cos(a), y, -r * Math.sin(a)); };
 const celda = (x, y) => new THREE.Vector3(x - 3.5, 0, y - 2);
 
@@ -212,12 +211,12 @@ function armarEscena(w, juego) {
     const ini = enOrbita(o.angulo, R_NUCLEO, 0.1);
     const medio = ini.clone().lerp(fin, 0.5).setY(3.2);
     const curva = new THREE.QuadraticBezierCurve3(ini, medio, fin);
-    const h = haz(curva, o.clave === "sonido" ? "pendiente" : "linea", 0.035, 0.55);
+    const h = haz(curva, "linea", 0.035, 0.55);
     h.userData.dibujar(0);
     escena.add(h);
-    const pulso = chispa(o.clave === "sonido" ? "pendiente" : "exito", 0.9);
+    const pulso = chispa("exito", 0.9);
     escena.add(pulso);
-    const nodo = chispa(o.clave === "sonido" ? "pendiente" : "linea", 0.8);
+    const nodo = chispa("linea", 0.8);
     nodo.position.copy(fin);
     escena.add(nodo);
     rutas[o.clave] = { curva, haz: h, pulso, nodo, fin, angulo: o.angulo };
@@ -237,7 +236,7 @@ export default {
     const juego = crearJuego();
     const w = mundo3d(lienzo, { descripcion: "Simulación del patrón Observer: el juego en 3D avisa cada movimiento a sus observadores en órbita", fov: 30, resplandor: [0.85, 0.5, 0.72] });
     el("div", "obs__velo", lienzo);
-    const c = { juego, w, mira: "abajo", entrada: { v: 0 }, sonido: { v: 0 } };
+    const c = { juego, w, mira: "abajo", entrada: { v: 0 } };
 
     // Observadores: carteles HTML anclados a su lugar en la órbita
     const ancla = (clase) => el("div", "obs__ancla " + clase, lienzo);
@@ -248,15 +247,10 @@ export default {
       const cab = el("div", "obs__cab", p);
       el("p", "obs__clase", cab, { texto: o.nombre });
       const metodo = el("code", "obs__metodo", cab, { texto: "actualizar(estado)" });
-      let dibujo = null, barras = null;
+      let dibujo = null;
       if (o.clave === "hud") dibujo = lienzo2d(p, "obs__dibujo", 370, 110);
       if (o.clave === "tablero") { dibujo = lienzo2d(p, "obs__dibujo obs__dibujo--tablero", 432, 270); el("i", "obs__barrido", p); }
-      if (o.clave === "sonido") {
-        const fila = el("div", "obs__barras", p);
-        barras = Array.from({ length: 18 }, () => el("i", "", fila));
-        el("p", "obs__pendiente", p, { texto: "Pendiente de subir. Reacción simulada." });
-      }
-      c.paneles[o.clave] = { a, p, metodo, dibujo, barras };
+      c.paneles[o.clave] = { a, p, metodo, dibujo };
     });
 
     c.avisoA = ancla("obs__ancla--aviso");
@@ -272,10 +266,9 @@ export default {
 
     // El sujeto: su lista de observadores y, en el paso 1, la foto completa que reparte
     c.sujeto = el("div", "obs__sujeto", lienzo);
-    el("p", "obs__clase", c.sujeto, { html: "Juego <span>el sujeto, simulado con las reglas de JuegoDePrueba (nivel 3)</span>" });
+    el("p", "obs__clase", c.sujeto, { html: "Juego <span>el sujeto, simulado con las reglas de JuegoSokoban en un nivel de prueba</span>" });
     const fila = el("div", "obs__fila", c.sujeto);
-    c.lista = el("code", "obs__lista", fila);
-    c.codigo = el("code", "obs__codigo", fila, { texto: "juego.agregarObservador(sonido);" });
+    c.lista = el("code", "obs__lista", fila, { texto: "observadores: [hud, tablero]" });
     c.registroEl = el("div", "obs__registro", c.sujeto);
     const regInt = el("div", "obs__registro-int", c.registroEl);
     el("p", "obs__registro-titulo", regInt, { html: "<code>notificar()</code> saca una foto <b>EstadoJuego</b> y le da la misma a cada uno" });
@@ -306,7 +299,7 @@ export default {
       c.rutas2d = {};
       OBS.forEach((o) => {
         const f = FIJO[o.clave];
-        c.rutas2d[o.clave] = svgEl("path", { class: "conector" + (o.clave === "sonido" ? " conector--fantasma" : ""), d: `M770,640 C1000,640 1080,${f.y} ${f.x},${f.y}` }, svg);
+        c.rutas2d[o.clave] = svgEl("path", { class: "conector", d: `M770,640 C1000,640 1080,${f.y} ${f.x},${f.y}` }, svg);
         anclar(c.paneles[o.clave].a, f);
       });
       anclar(c.avisoA, { x: 506, y: 470 });
@@ -320,14 +313,12 @@ export default {
       pintarTablero(c.paneles.tablero.dibujo, estado.tablero, c.mira);
       pintarTablero(c.miniRegistro, estado.tablero, c.mira, false);
     });
-    escribirLista(c);
     return c;
   },
 
   construir(tl, c) {
     const paneles = OBS.map((o) => c.paneles[o.clave].p);
-    tl.set([c.codigo, c.paneles.sonido.p], { autoAlpha: 0 }, 0)
-      .set(c.registroEl, { height: 0 }, 0)
+    tl.set(c.registroEl, { height: 0 }, 0)
       .fromTo(c.entrada, { v: 0 }, { v: 1, duration: 3, ease: "none" }, 0);
     if (c.w) {
       const { camara } = c.w;
@@ -352,17 +343,6 @@ export default {
     tl.addLabel("p1");
     tl.fromTo(c.registroEl, { height: 0 }, { height: "auto", duration: 0.7, ease: "power3.inOut" }, "p1")
       .fromTo(c.registroEl.firstChild, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out" }, "p1+=0.3");
-
-    // Paso 2: se suma un observador con una línea, sin tocar nada de lo que existe
-    tl.addLabel("p2");
-    tl.fromTo(c.codigo, { autoAlpha: 0, clipPath: "inset(0% 100% 0% 0%)" }, { autoAlpha: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 0.9, ease: "steps(31)" }, "p2")
-      .fromTo(c.sonido, { v: 0 }, { v: 1, duration: 1.4, ease: "none", onUpdate: () => escribirLista(c) }, "p2+=0.6")
-      .fromTo(c.paneles.sonido.p, { autoAlpha: 0, scale: 0.85, x: 40 }, { autoAlpha: 1, scale: 1, x: 0, duration: 0.7, ease: "power3.out" }, "p2+=1.3");
-    if (c.w) {
-      const avance = { f: 0 };
-      tl.fromTo(avance, { f: 0 }, { f: 1, duration: 0.9, ease: "power2.inOut", onUpdate: () => c.rutas.sonido.haz.userData.dibujar(avance.f) }, "p2+=0.8")
-        .fromTo(c.rutas.sonido.nodo.material, { opacity: 0 }, { opacity: 1, duration: 0.3 }, "p2+=1.6");
-    }
   },
 
   vida(c) {
@@ -423,11 +403,6 @@ export default {
 
   desmontar(c) { if (c.w) c.w.destruir(); },
 };
-
-function escribirLista(c) {
-  c.lista.textContent = c.sonido.v > 0.5 ? "observadores: [hud, tablero, sonido]" : "observadores: [hud, tablero]";
-  c.lista.classList.toggle("obs__lista--nueva", c.sonido.v > 0.5);
-}
 
 function decir(c, texto, apagado = false) {
   c.aviso.textContent = texto;
@@ -504,7 +479,7 @@ function notificar(c) {
   const mira = c.mira;
   actualizarRegistro(c, estado, c.ultimo);
   c.ultimo = estado;
-  const lista = ["hud", "tablero"].concat(c.sonido.v > 0.5 ? ["sonido"] : []);
+  const lista = ["hud", "tablero"];
   const color = estado.completado ? "acento" : "linea";
   if (c.w) {
     gsap.fromTo(c.latido.material, { opacity: 0.9 }, { opacity: 0, duration: 0.9, ease: "power2.out" });
@@ -545,11 +520,6 @@ function recibir(c, k, estado, mira) {
   if (k === "tablero") {
     pintarTablero(panel.dibujo, estado.tablero, mira);
     gsap.fromTo(panel.p.querySelector(".obs__barrido"), { yPercent: -100, autoAlpha: 1 }, { yPercent: 100, autoAlpha: 0, duration: 0.45, ease: "power1.in" });
-  }
-  if (k === "sonido") {
-    const fuerza = c.ultimoEmpuje !== estado.empujes ? 1 : 0.5;
-    c.ultimoEmpuje = estado.empujes;
-    panel.barras.forEach((b, i) => gsap.fromTo(b, { scaleY: gsap.utils.random(0.3, 1) * fuerza }, { scaleY: 0.14, duration: gsap.utils.random(0.4, 0.9), ease: "power2.out", delay: i * 0.012 }));
   }
 }
 

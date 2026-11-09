@@ -8,20 +8,20 @@ import { cargando } from "../vista3d.js";
 
 /*
  * El arte de Martín en 3D. Las imágenes de assets/ llueven y se apilan por carpeta: cada pila es un gráfico de unidades
- * (una carta, una imagen). Después las pilas estallan en un depósito donde se ve cada imagen y se encienden las 28
- * que el juego usa. Al final esas 28 vuelan y arman un nivel del juego: con 28 imágenes alcanza para todo el tablero.
+ * (una carta, una imagen). Después las pilas estallan en un depósito donde se ve cada imagen y se encienden las 30
+ * que el juego usa. Al final esas 30 vuelan y arman un nivel del juego: con 30 imágenes alcanza para todo el tablero.
  */
 const ANCHO = { characters: 2, boxes: 2, goals: 2, backgrounds: 2, ui: 4, tiles: 8 }; // columnas de cada estante
 const HUECO = 0.8, CARTA = 0.92, GROSOR = 0.07, PILA_Z = 2.2, BASE_Y = 0.6;
 const ANCHAS = (k) => k.startsWith("backgrounds/") || k.startsWith("ui/pantalla_");
 
-/** Nivel que arman las 28 imágenes: tres épocas lado a lado (columnas 0-3, 4-7 y 8-11). */
+/** Nivel que arman las imágenes en uso: tres épocas lado a lado (columnas 0-3, 4-7 y 8-11). */
 const NIVEL = [
   "############",
   "#  .  M  K #",
   "# @$  F  L #",
   "#   ~~W  G #",
-  "#  .    .  #",
+  "#  .  f .c #",
   "############",
 ];
 const EPOCAS = ["1955", "1985", "2015"];
@@ -30,8 +30,8 @@ const PISO = { 1955: "tiles/floor_1955", 1985: "tiles/floor_1985", 2015: "tiles/
 const PARED = { 1955: "tiles/wall_brick", 1985: "tiles/wall_mall", 2015: "tiles/wall_future" };
 const FONDO = { 1955: "backgrounds/background_hill_valley_1955", 1985: "backgrounds/background_mall_1985", 2015: "backgrounds/background_future_2015" };
 const SIMBOLO = { ".": "goals/goal", G: "goals/goal_placed", "~": "tiles/terreno_resbaladizo", W: "tiles/muro_abierto", M: "tiles/muro_cerrado", K: "tiles/cerrojo_cerrado",
-  $: "boxes/box_wood", F: "boxes/caja_fragil_intacta", L: "boxes/caja_llave" };
-const BLOQUES = { M: 0.5, K: 0.5, $: 0.78, F: 0.78, L: 0.78 }; // alto de lo que no es piso
+  c: "tiles/cerrojo_abierto", $: "boxes/box_wood", F: "boxes/caja_fragil_intacta", f: "boxes/caja_fragil_danada", L: "boxes/caja_llave" };
+const BLOQUES = { M: 0.5, K: 0.5, $: 0.78, F: 0.78, f: 0.78, L: 0.78 }; // alto de lo que no es piso
 const HUD = ["ui/indicador_nivel", "ui/indicador_movimientos", "ui/indicador_empujes", "ui/boton_undo", "ui/boton_restart", "ui/boton_pause"];
 const COLS = NIVEL[0].length, FILAS = NIVEL.length, TAB_Z = 3.4;
 const celda = (x, z, y = 0) => new THREE.Vector3(x - COLS / 2 + 0.5, y, TAB_Z + z);
@@ -96,7 +96,7 @@ export default {
   montar(lienzo) {
     const inventario = window.INVENTARIO || {};
     const usadas = new Set(USADAS);
-    const k = escena3d(lienzo, { aria: "Las imágenes del juego se apilan por carpeta, se ordenan en un depósito, se encienden las 28 que usa el juego y vuelan a armar un nivel", niebla: [30, 70], brillo: [0.55, 0.5, 0.86] });
+    const k = escena3d(lienzo, { aria: "Las imágenes del juego se apilan por carpeta, se ordenan en un depósito, se encienden las que usa el juego y vuelan a armar un nivel", niebla: [30, 70], brillo: [0.55, 0.5, 0.86] });
     el("div", "arte__velo", lienzo);
 
     // Estantes: una columna de cartas por carpeta, con su nombre y su cuenta
@@ -118,7 +118,7 @@ export default {
     const resumen = el("p", "arte__resumen pos", lienzo, { vars: { x: 120, y: 410 } });
     const nTotal = el("b", "cifra arte__total", resumen, { texto: "0" });
     el("span", "arte__unidad", resumen, { texto: "imágenes en assets/" });
-    const nUsadas = el("b", "cifra arte__total arte__total--usadas", resumen, { texto: "28" });
+    const nUsadas = el("b", "cifra arte__total arte__total--usadas", resumen, { texto: String(USADAS.length) });
     el("span", "arte__unidad arte__unidad--usadas", resumen, { texto: "las usa el juego" });
     nUsadas.textContent = String(USADAS.length);
     if (!k) return { sin3d: true, estantes, resumen, nTotal, totalImagenes };
@@ -186,7 +186,7 @@ export default {
     // Cada pila se arma de abajo hacia arriba; el reparto arranca por las pilas más bajas
     cartas.forEach((c) => { c.retraso = (c.pila.y / 6.6) * 0.75 + c.orden * 0.004; c.retrasoReparto = (c.mural.y / 10) * 0.35 + Math.abs(c.mural.x) * 0.012; });
 
-    // Tablero que arman las 28
+    // Tablero que arman las 30
     const tablero = new THREE.Group();
     escena.add(tablero);
     const geoPiso = new THREE.PlaneGeometry(1, 1), geoMuro = cajaDosCaras(1, 0.5, 1, 2).translate(0, 0.25, 0);
@@ -207,10 +207,10 @@ export default {
         m.rotation.x = -Math.PI / 2; m.position.copy(celda(x, z, 0.002)); m.receiveShadow = true;
         sumar(clave, m, x, z);
       };
-      if (".G~W".includes(ch)) { plano(SIMBOLO[ch]); return; }
+      if (".G~Wc".includes(ch)) { plano(SIMBOLO[ch]); return; }
       if (!"MK".includes(ch)) plano(PISO[ep]);
       if (BLOQUES[ch]) {
-        const alto = BLOQUES[ch], esCaja = "$FL".includes(ch);
+        const alto = BLOQUES[ch], esCaja = "$FfL".includes(ch);
         const g = esCaja ? new THREE.BoxGeometry(alto, alto, alto) : cajaDosCaras(1, alto, 1, 2);
         g.translate(0, alto / 2, 0);
         const m = new THREE.Mesh(g, esCaja ? matDe(SIMBOLO[ch]) : [matDe(SIMBOLO[ch], true), matDe(SIMBOLO[ch])]);
@@ -420,7 +420,7 @@ export default {
     anima("lluvia", 1, 2.6, 0.2);
     tl.fromTo(rotulos, { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.08, ease: "power3.out" }, 0.5);
 
-    // p1: las pilas estallan en un depósito donde se ve cada imagen y se encienden las 28 que usa el juego
+    // p1: las pilas estallan en un depósito donde se ve cada imagen y se encienden las que usa el juego
     tl.addLabel("p1", 3.4);
     tl.to(cam, { ...PLANOS.pared, duration: 2.2, ease: "power3.inOut" }, "p1");
     anima("reparto", 1, 2.4, "p1");
@@ -430,7 +430,7 @@ export default {
       .fromTo(estantes.map((e) => e.rotulo.querySelector(".arte__usa")), { scale: 1.8 }, { scale: 1, duration: 0.5, ease: "back.out(2.5)", stagger: 0.07 }, "p1+=2.6")
       .to(usadas, { autoAlpha: 1, duration: 0.5 }, "p1+=2.8");
 
-    // p2: las 28 vuelan y arman un nivel del juego
+    // p2: las 30 vuelan y arman un nivel del juego
     tl.addLabel("p2", "p1+=4.2");
     tl.to(cam, { ...PLANOS.tablero, duration: 2.6, ease: "power2.inOut" }, "p2");
     tl.to(rotulos, { autoAlpha: 0, duration: 0.5 }, "p2")
@@ -448,7 +448,7 @@ export default {
       if (c.pj.raiz.visible) c.pj.cabeza.rotation.y = Math.sin(tt * 0.5) * 0.4;
     };
     gsap.ticker.add(tick);
-    // Un destello recorre al azar alguna de las 28 mientras están en el depósito
+    // Un destello recorre al azar alguna de las 30 mientras están en el depósito
     const destello = eventos(() => {
       const carta = gsap.utils.random(c.vuelan);
       if (!carta.halo || carta.llego || c.E.luz < 1 || c.E.obra > 0) return;

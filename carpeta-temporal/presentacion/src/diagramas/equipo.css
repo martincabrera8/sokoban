@@ -5,16 +5,12 @@
     linear-gradient(180deg, color-mix(in srgb, var(--fondo) 92%, transparent) 0%, color-mix(in srgb, var(--fondo) 55%, transparent) 22%, transparent 36%); }
 .equipo__lineas { pointer-events: none; }
 .equipo__linea { fill: none; stroke: var(--linea); stroke-width: 2; opacity: .6; }
-.equipo__linea--pendiente { stroke: var(--pendiente); stroke-dasharray: 7 7; opacity: .75; }
 .equipo__punto { fill: var(--fondo); stroke: var(--linea); stroke-width: 3; }
-.equipo__punto--pendiente { stroke: var(--pendiente); }
 
 .equipo__parte { --luz: 0; --activo: 0; --destello: 0; width: 600px; padding: 4px 0 6px 24px; transform-origin: 0 50%; }
 .equipo__parte::before { content: ""; position: absolute; left: 0; top: 6px; bottom: 8px; width: 5px; border-radius: 3px;
   background: color-mix(in srgb, var(--acento) calc(var(--luz) * 100%), var(--tinta-3));
   box-shadow: 0 0 calc(var(--destello) * 34px + var(--luz) * 10px) color-mix(in srgb, var(--acento) calc(var(--luz) * 100%), transparent); }
-.equipo__parte--pendiente::before { background: repeating-linear-gradient(180deg, var(--pendiente) 0 9px, transparent 9px 15px);
-  box-shadow: 0 0 calc(var(--destello) * 30px) var(--pendiente); }
 .equipo__cabeza { display: flex; align-items: center; gap: 16px; }
 .equipo__nombre { font-size: 34px; font-weight: 700; line-height: 1.15;
   color: color-mix(in srgb, var(--titulo) calc(var(--activo) * 100%), var(--tinta)); }
@@ -23,8 +19,7 @@
   text-transform: uppercase; white-space: nowrap; color: var(--tinta-2); border: 1px solid var(--linea-media); background: color-mix(in srgb, var(--fondo) 80%, transparent); }
 .equipo__estado--listo { color: var(--fondo); background: var(--acento); border-color: var(--acento);
   box-shadow: 0 0 calc(var(--destello) * 36px + 6px) var(--brillo); }
-.equipo__parte--pendiente .equipo__estado { color: var(--pendiente); border: 1px dashed var(--pendiente); background: var(--pendiente-suave); }
-.equipo__parte--pendiente .equipo__nombre { color: color-mix(in srgb, var(--pendiente) 55%, var(--tinta)); }
+.equipo__parte--reciente .equipo__estado:not(.equipo__estado--listo) { color: var(--titulo); border-color: var(--titulo); }
 .equipo__detalle { margin: 6px 0 0; font-size: 24px; line-height: 1.3; color: var(--tinta-2); }
 .equipo__detalle b { color: var(--tinta); font-weight: 600; }
 .equipo__marcador { width: 600px; }
@@ -33,5 +28,5 @@
 .equipo__de { font-size: 56px; color: var(--tinta-2); }
 .equipo__de { font-family: var(--f-texto); font-weight: 700; font-size: 48px; }
 .equipo__globo { margin: 0; padding: 10px 18px; border-radius: 12px; transform-origin: 50% 100%; white-space: nowrap;
-  font-size: 24px; font-weight: 600; color: var(--fondo); background: var(--pendiente); box-shadow: var(--sombra-lejos); }
-.equipo__globo::after { content: ""; position: absolute; left: 50%; bottom: -9px; width: 18px; height: 18px; margin-left: -9px; background: var(--pendiente); transform: rotate(45deg); border-radius: 3px; }
+  font-size: 24px; font-weight: 600; color: var(--fondo); background: var(--titulo); box-shadow: var(--sombra-lejos); }
+.equipo__globo::after { content: ""; position: absolute; left: 50%; bottom: -9px; width: 18px; height: 18px; margin-left: -9px; background: var(--titulo); transform: rotate(45deg); border-radius: 3px; }

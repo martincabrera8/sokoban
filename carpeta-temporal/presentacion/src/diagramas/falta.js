@@ -9,7 +9,8 @@ import { crearPersonaje } from "../personaje3d.js";
  * Mapa de niveles en 3D, armado como un nivel de Sokoban con las baldosas de Martín.
  * Cada entrega de la consigna es un cerrojo (tiles/cerrojo_abierto o cerrojo_cerrado) y detrás tiene su muro:
  * lo terminado tiene el muro bajo y el cerrojo brilla; lo pendiente tiene el muro con rejas.
- * El personaje recorre lo hecho y empuja la caja llave hasta el próximo cerrojo: el del dominio.
+ * El personaje recorre lo hecho (primera fila; en el paso 1 la segunda, con el dominio y el sonido) y empuja
+ * la caja llave hasta el próximo cerrojo: el de las dos funcionalidades con patrones.
  */
 const FILAS = [3, -1, -5];                       // z de cada fila del mapa (de adelante hacia atrás)
 const EPOCA = ["1955", "1985", "2015"];          // cada fila en una época
@@ -89,7 +90,7 @@ export default {
       return { ancla, r, ...lugar(i) };
     });
 
-    const vista = crearVista(lienzo, { caja, exposicion: 1.1, aria: "Mapa de niveles: tres cerrojos abiertos y seis cerrados; el personaje empuja la caja llave hasta el cerrojo del dominio" });
+    const vista = crearVista(lienzo, { caja, exposicion: 1.1, aria: "Mapa de niveles: cinco cerrojos abiertos y cuatro cerrados; el personaje empuja la caja llave hasta el próximo cerrojo" });
     if (!vista) {
       rotulos.forEach((r, i) => { r.ancla.style.transform = `translate(${300 + (i % 3) * 600}px, ${520 + Math.floor(i / 3) * 170}px)`; });
       return { sin3d: true, rotulos, proximo };
@@ -209,7 +210,7 @@ export default {
     pj.raiz.rotation.y = Math.PI / 2;
     escena.add(pj.raiz);
     const prox = niveles[proximo];
-    const llaveIni = { x: BORDE - 1, z: prox.z };
+    const llaveIni = { x: prox.x + prox.dir * -3, z: prox.z }; // tres baldosas antes del cerrojo, en el sentido de la fila
     const llave = new THREE.Mesh(new THREE.BoxGeometry(0.84, 0.84, 0.84), new THREE.MeshStandardMaterial({ map: T("boxes/caja_llave"), roughness: 0.6, emissive: colAcento, emissiveIntensity: 0.08, emissiveMap: T("boxes/caja_llave") }));
     llave.position.set(llaveIni.x, 0.42, llaveIni.z);
     llave.castShadow = true;
@@ -231,8 +232,8 @@ export default {
       return { estado, largo: cp.getLength(), aplicar: () => { m.visible = estado.p > 0.001; geo.setDrawRange(0, Math.floor((total * estado.p) / 6) * 6); } };
     };
     const zA = FILAS[0], zB = FILAS[1];
-    const hecho = rastro([[-BORDE, zA], [BORDE, zA], [BORDE, zB], [prox.x + 2, zB]], colAcento.clone().multiplyScalar(1.7), 0.06, 0.9);
-    const falta = rastro([[prox.x + 2, zB], [-BORDE, zB], [-BORDE, FILAS[2]], [BORDE, FILAS[2]]], new THREE.Color(t("pendiente")), 0.04, 0.55);
+    const hecho = rastro([[-BORDE, zA], [BORDE, zA], [BORDE, zB], [prox.x - prox.dir * 2, zB]], colAcento.clone().multiplyScalar(1.7), 0.06, 0.9);
+    const falta = rastro([[prox.x - prox.dir * 2, zB], [-BORDE, zB], [-BORDE, FILAS[2]], [BORDE, FILAS[2]]], new THREE.Color(t("pendiente")), 0.04, 0.55);
     hecho.aplicar(); falta.aplicar();
 
     // Luces
@@ -346,32 +347,36 @@ export default {
       .fromTo(c.llave.scale, { x: 0.001, y: 0.001, z: 0.001 }, { x: 1, y: 1, z: 1, duration: 0.5, ease: "back.out(2)" }, 2.2);
     niveles.forEach((n) => tl.fromTo([n.g.scale, n.muro.scale], { x: 0.001, y: 0.001, z: 0.001 }, { x: 1, y: 1, z: 1, duration: 0.45, ease: "back.out(2)" }, 0.1 + (2.2 * n.o) / 1.35));
     // El personaje corre por lo que ya está hecho: cada cerrojo listo se enciende y su muro baja
-    const zA = niveles[0].z;
+    const zA = niveles[0].z, zB = c.prox.z;
     const salida = 2.4, porBaldosa = 0.21;
-    tl.fromTo(pj.raiz.scale, { x: 0.001, y: 0.001, z: 0.001 }, { x: 0.78, y: 0.78, z: 0.78, duration: 0.4, ease: "back.out(2)" }, salida - 0.4);
-    const llegada = caminar([[-BORDE, zA], [BORDE - 2, zA]], salida, porBaldosa, true);
     const enRastro = (d) => d / c.hecho.largo;
-    tl.fromTo(c.hecho.estado, { p: 0 }, { p: enRastro(2 * BORDE - 2), duration: llegada - salida, ease: "none", onUpdate: c.hecho.aplicar }, salida);
-    mover(salida, llegada - salida + 0.6, { tx: BORDE - 3.5, tz: 1.5, d: 11.5, incl: 0.68, giro: 0.36, oy: 80 }, "power1.inOut");
-    niveles.filter((n) => n.e.listo).forEach((n, i) => {
-      const cuando = salida + (n.x - 2 - -BORDE) * porBaldosa;
+    /** Distancia recorrida (en baldosas) hasta el punto (x, z) del camino en zigzag. */
+    const recorrido = (x, z) => (z === zA ? x + BORDE : 2 * BORDE + (zA - zB) + (BORDE - x));
+    const abrir = (n, i, cuando) => {
       tl.fromTo(n.estado, { v: 0 }, { v: 1, duration: 0.55, ease: "power2.out", onUpdate: () => c.aplicarNivel(n) }, cuando)
         .fromTo(n.anillo.scale, { x: 0.3, y: 0.3 }, { x: 2.4, y: 2.4, duration: 0.9, ease: "power2.out" }, cuando)
         .fromTo(n.anillo.material, { opacity: 1 }, { opacity: 0, duration: 0.9, ease: "power1.in" }, cuando);
       verRotulo(i, cuando + 0.15);
-    });
+    };
+    tl.fromTo(pj.raiz.scale, { x: 0.001, y: 0.001, z: 0.001 }, { x: 0.78, y: 0.78, z: 0.78, duration: 0.4, ease: "back.out(2)" }, salida - 0.4);
+    const llegada = caminar([[-BORDE, zA], [BORDE - 2, zA]], salida, porBaldosa, true);
+    tl.fromTo(c.hecho.estado, { p: 0 }, { p: enRastro(2 * BORDE - 2), duration: llegada - salida, ease: "none", onUpdate: c.hecho.aplicar }, salida);
+    mover(salida, llegada - salida + 0.6, { tx: BORDE - 3.5, tz: 1.5, d: 11.5, incl: 0.68, giro: 0.36, oy: 80 }, "power1.inOut");
+    niveles.forEach((n, i) => { if (n.e.listo && n.z === zA) abrir(n, i, salida + (recorrido(n.x, n.z) - 2) * porBaldosa); });
     mirar(0, 1, llegada + 0.1, 0.3);
     tl.to(pj.pose, { aplaste: 0.6, duration: 0.1, onUpdate: pj.aplicar }, llegada + 0.35)
       .to(pj.pose, { aplaste: 0, duration: 0.4, ease: "elastic.out(1, 0.4)", onUpdate: pj.aplicar }, llegada + 0.45);
-    verRotulo(c.proximo, llegada + 0.3);
 
-    // p1: rodea la pared y empuja la caja llave hasta el cerrojo del dominio
+    // p1: baja a la segunda fila, abre lo que llegó después (dominio, sonido, UML) y empuja la caja llave hasta el próximo cerrojo
     tl.addLabel("p1");
     let en = tl.labels.p1;
-    const zB = c.prox.z;
-    const atras = caminar([[BORDE - 2, zA], [BORDE, zA], [BORDE, zB]], en, PASO);
-    tl.to(c.hecho.estado, { p: enRastro(2 * BORDE + (zA - zB)), duration: atras - en, ease: "none", onUpdate: c.hecho.aplicar }, en);
-    mover(en, atras - en + 0.3, { tx: BORDE - 2, tz: zB + 0.8, d: 9.5, incl: 0.74, giro: 0.85, oy: 50 });
+    const detras = c.llaveIni.x + 1; // el personaje empuja hacia la izquierda: se para a la derecha de la llave
+    const atras = caminar([[BORDE - 2, zA], [BORDE, zA], [BORDE, zB], [detras, zB]], en, porBaldosa, true);
+    tl.to(c.hecho.estado, { p: enRastro(recorrido(detras, zB)), duration: atras - en, ease: "none", onUpdate: c.hecho.aplicar }, en);
+    niveles.forEach((n, i) => { if (n.e.listo && n.z === zB) abrir(n, i, en + (recorrido(n.x, n.z) - recorrido(BORDE - 2, zA) - 2) * porBaldosa); });
+    verRotulo(c.proximo, atras - 0.6);
+    mover(en, (atras - en) * 0.5, { tx: BORDE - 3, tz: zB + 1.2, d: 11.5, incl: 0.7, giro: 0.5, oy: 70 }, "power1.inOut");
+    mover(en + (atras - en) * 0.5, (atras - en) * 0.5 + 0.4, { tx: c.prox.x + 3, tz: zB + 0.8, d: 9.5, incl: 0.74, giro: 0.5, oy: 50 }, "power1.inOut");
     mirar(-1, 0, atras);
     tl.to(pj.pose, { brazoI: -1.45, brazoD: -1.45, duration: 0.2, onUpdate: pj.aplicar }, atras);
     const empujes = c.llaveIni.x - (c.prox.x + 1);
@@ -382,7 +387,7 @@ export default {
     }
     const llega = atras + 0.25 + empujes * 0.55;
     tl.to(c.hecho.estado, { p: 1, duration: llega - atras - 0.25, ease: "none", onUpdate: c.hecho.aplicar }, atras + 0.25);
-    mover(atras, llega - atras + 0.5, { tx: c.prox.x + 1, tz: zB - 0.3, d: 8.5, incl: 0.74, giro: 0.6, oy: 130 });
+    mover(atras, llega - atras + 0.5, { tx: c.prox.x + 2, tz: zB - 0.3, d: 9.5, incl: 0.74, giro: 0.2, oy: 120 });
     tl.to(pj.pose, { brazoI: 0, brazoD: 0, piernaI: 0, piernaD: 0, duration: 0.3, onUpdate: pj.aplicar }, llega)
       .fromTo(c.prox.anillo.material, { opacity: 0 }, { opacity: 0.85, duration: 0.4 }, llega)
       .fromTo(c.prox.anillo.scale, { x: 0.6, y: 0.6 }, { x: 1.25, y: 1.25, duration: 0.5, ease: "back.out(2)" }, llega)

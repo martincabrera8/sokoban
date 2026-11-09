@@ -13,8 +13,9 @@ gsap.registerPlugin(SplitText);
  * Tres placas apiladas en 3D: arriba la vista (8 clases), en el medio el contrato (4 tipos que atraviesan la placa
  * como únicas puertas) y abajo quien lo implementa. Los datos viajan siempre por el contrato: las llamadas bajan
  * (naranja) y las fotos del estado suben (celeste). Una llamada que intenta ir directo al dominio choca con la placa.
- * Al final la caja JuegoDePrueba sale despedida y el personaje empuja la caja del dominio hasta su destino:
- * en Main cambia una línea y ni la vista ni el contrato se tocan.
+ * La caja JuegoDePrueba sale despedida y el personaje empuja la caja del dominio (JuegoSokoban) hasta su destino.
+ * Después baja la envoltura del sonido (JuegoConSonido) y la cubre entera: el Decorator también cumple el contrato.
+ * En Main cambia una línea y el contrato no se toca.
  */
 const FOV = 30;
 const Y = { vista: 2.5, contrato: 0, impl: -2.5 };
@@ -23,6 +24,7 @@ const BLOQUE = { w: 2.3, h: 0.42, d: 0.95 };
 const PLACA = { w: 10.6, grosor: 0.16, dVista: 3.9, d: 2.5 };
 const FILA = { frente: 1.0, fondo: -1.15 };
 const CAJA = 1.3;
+const ENVOLTURA = 1.36; // la caja de vidrio del sonido, un poco más grande que la del dominio
 const PASOS_CAJA = 3;
 const X_DESTINO = 0;
 /** Qué tipos del contrato importa cada clase de la vista (src/main/java/sokoban/vista/*.java). */
@@ -108,7 +110,7 @@ function camino(tramos) {
 /** Sin WebGL: las tres capas como texto. */
 function respaldo(lienzo) {
   const pila = el("div", "arq__respaldo", lienzo);
-  [["Vista", CAPAS.vista.join(", ")], ["Contrato", CAPAS.contrato.join(", ")], ["Implementación", "hoy JuegoDePrueba; después, el dominio"]].forEach(([n, d]) => {
+  [["Vista", CAPAS.vista.join(", ")], ["Contrato", CAPAS.contrato.join(", ")], ["Implementación", `${CAPAS.decorador} envuelve a ${CAPAS.dominio}`]].forEach(([n, d]) => {
     const f = el("div", "arq__respaldo-capa", pila);
     el("div", "arq__capa-nombre", f, { texto: n });
     el("div", "arq__capa-dato", f, { texto: d });
@@ -210,8 +212,27 @@ export default {
     el("span", "arq__clase-nombre", rotPrueba, { texto: "JuegoDePrueba" });
     el("span", "arq__clase-tipo", rotPrueba, { texto: "de prueba, 3 niveles" });
     const rotDominio = el("div", "arq__clase arq__clase--pendiente", capa);
-    el("span", "arq__clase-nombre", rotDominio, { texto: "ControladorJuego" });
-    el("span", "arq__clase-tipo", rotDominio, { texto: "el dominio (simulado)" });
+    el("span", "arq__clase-nombre", rotDominio, { texto: CAPAS.dominio });
+    el("span", "arq__clase-tipo", rotDominio, { texto: "el dominio, Pedro y Lucía" });
+    const rotSonido = el("div", "arq__clase arq__clase--sonido", capa);
+    el("span", "arq__clase-nombre", rotSonido, { texto: CAPAS.decorador });
+    el("span", "arq__clase-tipo", rotSonido, { texto: "lo envuelve, Mora" });
+    // El sonido: una caja de vidrio que envuelve a la del dominio, con aristas lila y ondas que salen de ella
+    const lila = luz("sonido");
+    const envoltura = new THREE.Group();
+    escena.add(envoltura);
+    const vidrio = new THREE.Mesh(new RoundedBoxGeometry(CAJA * ENVOLTURA, CAJA * ENVOLTURA, CAJA * ENVOLTURA, 4, 0.12),
+      new THREE.MeshStandardMaterial({ color: t("superficie-2"), emissive: lila, emissiveIntensity: 0.35, transparent: true, opacity: 0.32, roughness: 0.15, metalness: 0.1, depthWrite: false }));
+    const filos = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(CAJA * ENVOLTURA, CAJA * ENVOLTURA, CAJA * ENVOLTURA)),
+      new THREE.LineBasicMaterial({ color: lila.clone().multiplyScalar(1.6), transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending, depthWrite: false }));
+    envoltura.add(vidrio, filos);
+    const ondasSonido = Array.from({ length: 3 }, () => {
+      const m = new THREE.Mesh(new THREE.TorusGeometry(CAJA * 0.78, 0.025, 8, 96), new THREE.MeshBasicMaterial({ color: lila.clone().multiplyScalar(2), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+      m.rotation.x = Math.PI / 2;
+      m.position.set(X_DESTINO, pisoImpl + (CAJA * ENVOLTURA) / 2, 0);
+      escena.add(m);
+      return m;
+    });
     const pj = crearPersonaje(0.82);
     pj.raiz.rotation.y = Math.PI / 2;
     pj.raiz.traverse((o) => { if (o.isMesh) o.castShadow = true; });
@@ -308,9 +329,11 @@ export default {
     const rotulos = {
       vista: rotCapa("Vista", "8 clases de Swing en sokoban.vista"),
       contrato: rotCapa("Contrato", "4 tipos en sokoban.modelo"),
-      impl: rotCapa("Implementación", "hoy JuegoDePrueba, en sokoban.prueba"),
+      impl: rotCapa("Implementación", "primero JuegoDePrueba, de prueba"),
     };
-    const nuevoDato = el("div", "arq__capa-dato arq__capa-dato--nuevo", rotulos.impl.d.parentNode, { texto: "después, el dominio del equipo" });
+    rotulos.vista.igual.textContent = "solo sumó dibujos";
+    const nuevoDato = el("div", "arq__capa-dato arq__capa-dato--nuevo", rotulos.impl.d.parentNode, { texto: `${CAPAS.dominio}, el dominio` });
+    const sonidoDato = el("div", "arq__capa-dato arq__capa-dato--nuevo arq__capa-dato--sonido", rotulos.impl.d.parentNode, { texto: "el dominio, envuelto por el sonido" });
     const mensajes = {
       mover: el("div", "arq__mensaje", capa, { texto: "juego.mover(DERECHA)" }),
       hud: el("div", "arq__mensaje arq__mensaje--estado", capa, { texto: "actualizar(estado)" }),
@@ -321,14 +344,20 @@ export default {
     const main = el("div", "arq__main", lienzo);
     el("div", "arq__main-archivo", main, { texto: "Main.java" });
     const comentario = el("div", "arq__main-linea arq__main-comentario", main);
-    const comHoy = el("span", "", comentario, { texto: "// hoy" });
-    const comDespues = el("span", "arq__main-despues", comentario, { texto: "// cuando llegue el dominio" });
+    const comHoy = el("span", "", comentario, { texto: "// primero, el de prueba" });
+    const comDespues = el("span", "arq__main-despues", comentario, { texto: "// el dominio" });
+    const comSonido = el("span", "arq__main-despues", comentario, { texto: "// el dominio, con sonido" });
     const linea = el("div", "arq__main-linea arq__main-cambia", main);
     el("span", "", linea, { texto: "Juego juego = new " });
     const hueco = el("span", "arq__main-hueco", linea);
     const viejo = el("span", "arq__main-clase arq__main-viejo", hueco, { texto: "JuegoDePrueba" });
-    const nuevo = el("span", "arq__main-clase arq__main-nuevo", hueco, { texto: "ControladorJuego" });
-    el("span", "", linea, { texto: "();" });
+    const nuevo = el("span", "arq__main-clase arq__main-nuevo", hueco, { texto: CAPAS.dominio });
+    const envol = el("span", "arq__main-clase arq__main-envol", hueco, { texto: CAPAS.decorador + "(" });
+    const cierre = el("span", "", linea, { texto: "();" });
+    const linea2 = el("div", "arq__main-linea arq__main-cambia arq__main-segunda", main);
+    el("span", "arq__main-sangria", linea2, { texto: "new " });
+    el("span", "arq__main-nuevo", linea2, { texto: CAPAS.dominio });
+    el("span", "", linea2, { texto: "());" });
 
     // ── Estado que mueve el timeline ──
     const est = {
@@ -342,6 +371,7 @@ export default {
       llega: { v: 0 },         // la onda al encastrar
       guion: { mover: { u: 0 }, direccion: { u: 0 }, hud: { u: 0 }, tablero: { u: 0 }, atajo: { u: 0 } },
       rotulos: { v: 0 },
+      sonido: { v: 0 },        // la envoltura del sonido baja y cubre la caja del dominio
       nota: { v: 0 },          // el mensaje del atajo que no existe
     };
     const orbita = { az: 0, el: 0 };
@@ -355,7 +385,7 @@ export default {
       e.style.opacity = p.visible ? Math.max(0, Math.min(1, alfa)).toFixed(3) : 0;
     };
 
-    const IMPL_PRUEBA = luz("exito", 1.05), IMPL_DOMINIO = luz("acento", 1.3);
+    const IMPL_PRUEBA = luz("exito", 1.05), IMPL_DOMINIO = luz("acento", 1.3), IMPL_SONIDO = luz("sonido", 1.3);
     function actualizar() {
       // Cámara en órbita: el timeline da la base y la vida la hace girar despacio
       const az = 0.2 + orbita.az + vista.orbita.giro, elev = Math.max(0.02, Math.min(1.45, 0.38 + (est.cam.el - 1) * 0.9 + orbita.el + vista.orbita.alto)), r = 23.5 * est.cam.r;
@@ -378,7 +408,7 @@ export default {
         const f = k.startsWith("impl>") ? Math.min(c.trazo.v, est.impl.v) : c.trazo.v;
         const n = Math.floor(Math.max(0, Math.min(1, f)) * 90) * 8 * 6;
         c.nucleo.geometry.setDrawRange(0, n); c.halo.geometry.setDrawRange(0, n);
-        if (k.startsWith("impl>")) { c.nucleo.material.color.copy(IMPL_PRUEBA).lerp(IMPL_DOMINIO, est.cambio.v); }
+        if (k.startsWith("impl>")) { c.nucleo.material.color.copy(IMPL_PRUEBA).lerp(IMPL_DOMINIO, est.cambio.v).lerp(IMPL_SONIDO, est.sonido.v * 0.7); }
       });
 
       // Caja de prueba: cae en su destino y después sale despedida
@@ -395,6 +425,13 @@ export default {
       const lv = est.llega.v;
       dominio.material.emissiveIntensity = suave(0, 0.3, lv) * 0.14;
       destino.material.emissiveIntensity = Math.max(fv > 0.2 ? 0.5 : 0, suave(0, 0.3, lv) * 0.7);
+      // La envoltura baja desde arriba, se apoya sobre el destino y queda vibrando apenas
+      const sv = est.sonido.v;
+      envoltura.visible = sv > 0.001;
+      envoltura.position.set(X_DESTINO, pisoImpl + (CAJA * ENVOLTURA) / 2 - 0.02 + (1 - sv) * 3.2, 0);
+      envoltura.scale.setScalar(0.6 + 0.4 * suave(0, 0.6, sv));
+      vidrio.material.opacity = 0.32 * suave(0, 0.5, sv);
+      filos.material.opacity = 0.95 * suave(0, 0.4, sv);
       onda.scale.setScalar(1 + lv * 9);
       onda.material.opacity = lv > 0 && lv < 1 ? (1 - lv) : 0;
 
@@ -431,7 +468,8 @@ export default {
         colocar(b.rotulo, p, suave(0.6, 1, b.nace.v) * (fondo.includes(k) ? 0.85 : 1));
       });
       colocar(rotPrueba, proyectar(tmp.set(prueba.position.x, pisoImpl, CAJA / 2 + 0.35)), est.cae.v * (1 - suave(0, 0.08, fv)));
-      colocar(rotDominio, proyectar(tmp.set(dominio.position.x, pisoImpl, CAJA / 2 + 0.35)), suave(0.5, 1, ev));
+      colocar(rotDominio, proyectar(tmp.set(dominio.position.x, pisoImpl, CAJA / 2 + 0.35)), suave(0.5, 1, ev) * (1 - suave(0.2, 0.6, sv)));
+      colocar(rotSonido, proyectar(tmp.set(X_DESTINO, pisoImpl, (CAJA * ENVOLTURA) / 2 + 0.35)), suave(0.6, 1, sv));
       const fondoPlaca = { vista: PLACA.dVista, contrato: PLACA.d, impl: PLACA.d };
       Object.entries(rotulos).forEach(([k, r]) => {
         const p = proyectar(tmp.set(PLACA.w / 2, placas[k].g.position.y, fondoPlaca[k] / 2));
@@ -447,7 +485,7 @@ export default {
     vista.animar({ escena, camara, brillo: [0.7, 0.5, 0.82], orbita: { giro: 0.5, alto: 0.2 }, cada: actualizar });
 
     return {
-      est, orbita, placas, bloques, conductos, enjambre, FLUJOS, pj, polvo, rotulos, nuevoDato, comHoy, comDespues, hueco, viejo, nuevo, linea, main, ubicarChispa,
+      est, orbita, placas, bloques, conductos, enjambre, FLUJOS, pj, polvo, rotulos, nuevoDato, sonidoDato, comHoy, comDespues, comSonido, hueco, viejo, nuevo, envol, cierre, linea, linea2, main, ubicarChispa, ondasSonido, envoltura,
       destruir: () => vista.destruir(),
     };
   },
@@ -473,7 +511,9 @@ export default {
       .fromTo(c.main, { autoAlpha: 0, y: -16 }, { autoAlpha: 1, y: 0, duration: 0.6 }, 3.0)
       .set([est.cambio, est.fuera, est.entra, est.empuje, est.llega], { v: 0 }, 0)
       .set(Object.values(est.guion), { u: 0 }, 0)
-      .set([c.comDespues, c.nuevo, c.nuevoDato, c.rotulos.vista.igual, c.rotulos.contrato.igual], { autoAlpha: 0 }, 0)
+      .set([c.comDespues, c.comSonido, c.nuevo, c.envol, c.nuevoDato, c.sonidoDato, c.rotulos.vista.igual, c.rotulos.contrato.igual], { autoAlpha: 0 }, 0)
+      .set(c.linea2, { height: 0, autoAlpha: 0 }, 0)
+      .set(est.sonido, { v: 0 }, 0)
       .set(est.nota, { v: 0 }, 0)
       .set(c.hueco, { width: "13ch" }, 0);
 
@@ -515,7 +555,7 @@ export default {
     const letrasViejas = SplitText.create(c.viejo, { type: "chars" }).chars;
     const letrasNuevas = SplitText.create(c.nuevo, { type: "chars" }).chars;
     tl.to(letrasViejas, { y: 34, rotation: () => gsap.utils.random(-50, 50), autoAlpha: 0, duration: 0.45, ease: "power2.in", stagger: 0.025 }, llega)
-      .to(c.hueco, { width: "16ch", duration: 0.5, ease: "power2.inOut" }, llega + 0.35)
+      .to(c.hueco, { width: "12ch", duration: 0.5, ease: "power2.inOut" }, llega + 0.35)
       .set(c.nuevo, { autoAlpha: 1 }, llega + 0.45)
       .fromTo(letrasNuevas, { y: -30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.4, ease: "back.out(2)", stagger: 0.03 }, llega + 0.45)
       .to(c.comHoy, { autoAlpha: 0, duration: 0.3 }, llega + 0.3)
@@ -529,6 +569,35 @@ export default {
     pose(llega + 1.3, { aplaste: -0.3, brazoI: -2.8, brazoD: -2.8, abrir: 0.3 }, 0.14);
     tl.to(pj.raiz.rotation, { y: 0, duration: 0.3 }, llega + 1.1);
     pose(llega + 1.75, { aplaste: 0, brazoI: 0, brazoD: 0, abrir: 0 }, 0.4, "elastic.out(1, 0.4)");
+
+    // 4. Baja la envoltura del sonido y cubre al dominio: también es un Juego, así que el contrato ni se entera
+    tl.addLabel("p4", llega + 2.6);
+    const p4 = tl.labels.p4;
+    tl.to(pj.raiz.rotation, { y: -Math.PI / 2, duration: 0.3 }, p4)
+      .to(est.cam, { el: 0.9, y: -0.6, duration: 1.4, ease: "power2.inOut" }, p4)
+      .fromTo(est.sonido, { v: 0 }, { v: 1, duration: 1.1, ease: "power2.inOut" }, p4 + 0.3)
+      .fromTo(c.envoltura.rotation, { y: -0.6 }, { y: 0, duration: 1.1, ease: "power3.out" }, p4 + 0.3)
+      .to(est.impl, { v: 0, duration: 0.3 }, p4 + 0.3)
+      .to(est.impl, { v: 1, duration: 0.8, ease: "power2.out" }, p4 + 1.5)
+      .to(est.cam, { el: 1, y: 0, duration: 1.6, ease: "power2.inOut" }, p4 + 1.8);
+    c.ondasSonido.forEach((o, i) => {
+      tl.fromTo(o.scale, { x: 1, y: 1, z: 1 }, { x: 3.4, y: 3.4, z: 3.4, duration: 1.1, ease: "power2.out", immediateRender: false }, p4 + 1.35 + i * 0.18)
+        .fromTo(o.material, { opacity: 0.9 }, { opacity: 0, duration: 1.1, ease: "power1.in", immediateRender: false }, p4 + 1.35 + i * 0.18);
+    });
+    const letrasNuevo = SplitText.create(c.envol, { type: "chars" }).chars;
+    const enMain = p4 + 1.4;
+    tl.to(c.cierre, { autoAlpha: 0, duration: 0.2 }, enMain)
+      .to(c.nuevo, { y: 30, autoAlpha: 0, duration: 0.4, ease: "power2.in" }, enMain)
+      .to(c.hueco, { width: "15ch", duration: 0.45, ease: "power2.inOut" }, enMain + 0.1)
+      .set(c.envol, { autoAlpha: 1 }, enMain + 0.25)
+      .fromTo(letrasNuevo, { y: -30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.4, ease: "back.out(2)", stagger: 0.025 }, enMain + 0.25)
+      .to(c.linea2, { height: "auto", autoAlpha: 1, duration: 0.45, ease: "power2.out" }, enMain + 0.3)
+      .fromTo(c.linea2, { "--marca": 0 }, { "--marca": 1, duration: 0.5 }, enMain + 0.5)
+      .to(c.comDespues, { autoAlpha: 0, duration: 0.3 }, enMain)
+      .to(c.comSonido, { autoAlpha: 1, duration: 0.4 }, enMain + 0.2)
+      .to(c.nuevoDato, { autoAlpha: 0, duration: 0.3 }, enMain + 0.1)
+      .fromTo(c.sonidoDato, { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.4 }, enMain + 0.3)
+      .fromTo([c.rotulos.vista.igual, c.rotulos.contrato.igual], { scale: 1 }, { scale: 1.15, duration: 0.18, yoyo: true, repeat: 1, ease: "power2.out", stagger: 0.12, immediateRender: false }, enMain + 0.8);
   },
 
   vida(c) {
@@ -558,7 +627,15 @@ export default {
       ch.recorrido = f; ch.u = 0; ch.rapidez = gsap.utils.random(0.7, 1.3);
       ch.sprites.forEach((sp) => sp.material.color.copy(color[f.baja]));
     }, [0.25, 0.9]);
-    return juntas({ kill: () => gsap.ticker.remove(tick) }, flujo);
+    // El sonido suena cada tanto: una onda lila sale de la envoltura
+    let n = 0;
+    const suena = eventos(() => {
+      if (c.est.sonido.v < 0.99) return;
+      const o = c.ondasSonido[n++ % c.ondasSonido.length];
+      gsap.fromTo(o.scale, { x: 1, y: 1, z: 1 }, { x: 3, y: 3, z: 3, duration: 1.2, ease: "power2.out" });
+      gsap.fromTo(o.material, { opacity: 0.7 }, { opacity: 0, duration: 1.2, ease: "power1.in" });
+    }, [0.9, 2.4]);
+    return juntas({ kill: () => gsap.ticker.remove(tick) }, flujo, suena);
   },
 
   desmontar(c) { if (c.destruir) c.destruir(); },
