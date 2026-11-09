@@ -24,6 +24,10 @@
                 <directory>assets</directory>
                 <targetPath>assets</targetPath>
             </resource>
+            <resource>
+                <directory>niveles</directory>
+                <targetPath>niveles</targetPath>
+            </resource>
         </resources>
         <plugins>
             <plugin>
