@@ -8,8 +8,12 @@ import java.util.List;
  *
  * El tablero viaja como líneas de texto, con un símbolo por celda, igual que en
  * los archivos de nivel (por ejemplo "#  $.@#").
+ *
+ * plutonio son las cargas del DeLorean que tiene el jugador y viajes, las veces
+ * que viajó en el tiempo en este nivel.
  */
 public record EstadoJuego(int nivel, int movimientos, int empujes, int undosUsados,
+                          int plutonio, int viajes,
                           int puntaje, boolean completado, List<String> tablero) {
 
     public EstadoJuego {

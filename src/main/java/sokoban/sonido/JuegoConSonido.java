@@ -73,6 +73,13 @@ public class JuegoConSonido implements Juego {
     }
 
     @Override
+    public void viajarEnElTiempo() {
+        EstadoJuego antes = juego.getEstado();
+        juego.viajarEnElTiempo();
+        sonar(antes.equals(juego.getEstado()) ? Sonido.CHOQUE : Sonido.VIAJE_EN_EL_TIEMPO);
+    }
+
+    @Override
     public void reiniciar() {
         juego.reiniciar();
         sonar(Sonido.REINICIAR);
@@ -114,6 +121,9 @@ public class JuegoConSonido implements Juego {
         }
         if (contar(despues, CAJAS_EN_DESTINO) > contar(antes, CAJAS_EN_DESTINO)) {
             return Sonido.CAJA_EN_DESTINO;
+        }
+        if (despues.plutonio() > antes.plutonio()) {
+            return Sonido.PLUTONIO;
         }
         if (despues.empujes() > antes.empujes()) {
             boolean empujoFragil = !posiciones(despues, CAJAS_FRAGILES).equals(posiciones(antes, CAJAS_FRAGILES));
