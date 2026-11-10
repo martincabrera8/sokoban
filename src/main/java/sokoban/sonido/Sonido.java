@@ -20,7 +20,9 @@ public enum Sonido {
     VICTORIA("victoria"),
     DERROTA("derrota"),
     CHOQUE("choque"),
-    CLIC("clic");
+    CLIC("clic"),
+    PLUTONIO("plutonio"),
+    VIAJE_EN_EL_TIEMPO("viaje_tiempo");
 
     private final String archivo;
 
