@@ -3,6 +3,8 @@ package sokoban;
 import javax.swing.SwingUtilities;
 import sokoban.modelo.Juego;
 import sokoban.modelo.JuegoSokoban;
+import sokoban.sonido.JuegoConSonido;     // [Sonido - M. Coghlan]
+import sokoban.sonido.SonidosDeInterfaz;  // [Sonido - M. Coghlan]
 import sokoban.vista.VentanaPrincipal;
 
 public final class Main {
@@ -10,8 +12,9 @@ public final class Main {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            Juego juego = new JuegoSokoban();
+            Juego juego = new JuegoConSonido(new JuegoSokoban()); // [Sonido - M. Coghlan] antes: new JuegoSokoban()
             new VentanaPrincipal(juego).setVisible(true);
+            SonidosDeInterfaz.instalar();                         // [Sonido - M. Coghlan]
         });
     }
 }
