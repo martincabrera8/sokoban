@@ -1,0 +1,3 @@
+Tipografías de la guía (hoja estilo Don Valentín): Lora, Inter e IBM Plex Mono.
+Todas tienen licencia SIL Open Font License 1.1 (uso y redistribución libres).
+Se tomaron de los paquetes @fontsource de npm.

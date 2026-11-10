@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1560 850" width="1560" height="850" font-family="Inter, Arial, sans-serif">
+<style>text{white-space:pre}</style>
+<rect width="1560" height="850" fill="#FFFFFF"/>
+<text x="30" y="40" font-size="22" font-weight="700" fill="#6E1A2C">Patrón Decorator (estructural): el sonido</text>
+<text x="30" y="62" font-size="12.5" fill="#6B6B6B">JuegoConSonido «envuelve» a otro Juego: tiene la misma interfaz, le pasa cada pedido y agrega algo (el sonido) antes o después.</text>
+<path d="M 266.0 306.5 L 480.0 306.5" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="469.0,300.5 480.0,306.5 469.0,312.5" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<rect x="353.1953125" y="297.5" width="39.609375" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="373.0" y="310.0" font-size="10.5" text-anchor="middle" fill="#3A332E">juego</text>
+<text x="464" y="300.5" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
+<path d="M 1060.0 167.0 L 980.0 167.0 L 980.0 297.6 L 835.0 297.6" fill="none" stroke="#7B3FA0" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polygon points="835.0,297.6 850.0,305.6 850.0,289.6" fill="#FFFFFF" stroke="#7B3FA0" stroke-width="1.6"/>
+<rect x="942.0234375" y="191" width="75.953125" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="980" y="203.5" font-size="10.5" text-anchor="middle" fill="#3A332E">implementan</text><circle cx="933.0234375" cy="200" r="8.5" fill="#B8892A"/><text x="933.0234375" y="203.5" font-size="10" font-weight="700" text-anchor="middle" fill="#FFFFFF">1</text>
+<path d="M 1060.0 365.9 L 980.0 365.9 L 980.0 297.6 L 835.0 297.6" fill="none" stroke="#7B3FA0" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polygon points="835.0,297.6 850.0,305.6 850.0,289.6" fill="#FFFFFF" stroke="#7B3FA0" stroke-width="1.6"/>
+<path d="M 1060.0 512.8 L 693.0 512.8 L 693.0 399.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="687.0,410.0 693.0,399.0 699.0,410.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<rect x="798.125" y="503.79999999999995" width="123.75" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="860" y="516.3" font-size="10.5" text-anchor="middle" fill="#3A332E">juego: el que envuelve</text><circle cx="789.125" cy="512.8" r="8.5" fill="#B8892A"/><text x="789.125" y="516.3" font-size="10" font-weight="700" text-anchor="middle" fill="#FFFFFF">2</text>
+<text x="707.0" y="421" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
+<g class="caja" id="PantallaJuego">
+<rect x="50" y="241" width="50.546875" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="58" y="253" font-size="10.5" font-weight="600" fill="#7A5A12">Cliente</text>
+<rect x="50" y="260" width="216" height="93" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="158.0" y="278" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">PantallaJuego</text>
+<text x="158.0" y="292" text-anchor="middle" font-size="10.5" fill="#7B3FA0">extiende JPanel</text>
+<line x1="50" y1="299" x2="266" y2="299" stroke="#6C8EBF" stroke-width="1"/>
+<text x="59.0" y="316.5" font-size="12" fill="#1E1A17">- juego: Juego</text>
+<line x1="50" y1="326" x2="266" y2="326" stroke="#6C8EBF" stroke-width="1"/>
+<text x="59.0" y="343.5" font-size="12" fill="#1E1A17">- mover(direccion: Direccion): void</text>
+</g>
+<g class="caja" id="Juego">
+<rect x="480" y="211" width="148.34375" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="488" y="223" font-size="10.5" font-weight="600" fill="#7A5A12">Componente (Component)</text>
+<rect x="480" y="230" width="355" height="169" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="657.5" y="247" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«interface»</text>
+<text x="657.5" y="262" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17" font-style="italic">Juego</text>
+<line x1="480" y1="270" x2="835" y2="270" stroke="#6C8EBF" stroke-width="1"/>
+<text x="489.0" y="287.5" font-size="12" fill="#1E1A17" font-style="italic">+ getCantidadNiveles(): int</text>
+<text x="489.0" y="304.5" font-size="12" fill="#1E1A17" font-style="italic">+ iniciarNivel(numero: int): void</text>
+<text x="489.0" y="321.5" font-size="12" fill="#1E1A17" font-style="italic">+ mover(direccion: Direccion): void</text>
+<text x="489.0" y="338.5" font-size="12" fill="#1E1A17" font-style="italic">+ deshacer(): void</text>
+<text x="489.0" y="355.5" font-size="12" fill="#1E1A17" font-style="italic">+ reiniciar(): void</text>
+<text x="489.0" y="372.5" font-size="12" fill="#1E1A17" font-style="italic">+ getEstado(): EstadoJuego</text>
+<text x="489.0" y="389.5" font-size="12" fill="#1E1A17" font-style="italic">+ agregarObservador(observador: ObservadorJuego): void</text>
+</g>
+<g class="caja" id="JuegoSokoban">
+<rect x="1060" y="91" width="188.359375" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="1068" y="103" font-size="10.5" font-weight="600" fill="#7A5A12">Componente concreto (el dominio)</text>
+<rect x="1060" y="110" width="219" height="114" rx="6" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.4"/>
+<text x="1169.5" y="128" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">JuegoSokoban</text>
+<line x1="1060" y1="136" x2="1279" y2="136" stroke="#C8683A" stroke-width="1"/>
+<line x1="1060" y1="146" x2="1279" y2="146" stroke="#C8683A" stroke-width="1"/>
+<text x="1069.0" y="163.5" font-size="12" fill="#1E1A17">+ mover(direccion: Direccion): void</text>
+<text x="1069.0" y="180.5" font-size="12" fill="#1E1A17">+ deshacer(): void</text>
+<text x="1069.0" y="197.5" font-size="12" fill="#1E1A17">+ getEstado(): EstadoJuego</text>
+<text x="1069.0" y="214.5" font-size="12" fill="#1E1A17">+ …  (los 7 de Juego)</text>
+</g>
+<g class="caja" id="JuegoConSonido">
+<rect x="1060" y="321" width="128.546875" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="1068" y="333" font-size="10.5" font-weight="600" fill="#7A5A12">Decorador (Decorator)</text>
+<rect x="1060" y="340" width="360" height="216" rx="6" fill="#EEDDF3" stroke="#A0559F" stroke-width="1.4"/>
+<text x="1240.0" y="358" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">JuegoConSonido</text>
+<line x1="1060" y1="366" x2="1420" y2="366" stroke="#A0559F" stroke-width="1"/>
+<text x="1069.0" y="383.5" font-size="12" fill="#1E1A17">- juego: Juego</text>
+<line x1="1060" y1="393" x2="1420" y2="393" stroke="#A0559F" stroke-width="1"/>
+<text x="1069.0" y="410.5" font-size="12" fill="#1E1A17">+ JuegoConSonido(juego: Juego)</text>
+<text x="1069.0" y="427.5" font-size="12" fill="#1E1A17">+ mover(direccion: Direccion): void</text>
+<text x="1069.0" y="444.5" font-size="12" fill="#1E1A17">+ deshacer(): void</text>
+<text x="1069.0" y="461.5" font-size="12" fill="#1E1A17">+ reiniciar(): void</text>
+<text x="1069.0" y="478.5" font-size="12" fill="#1E1A17">+ iniciarNivel(numero: int): void</text>
+<text x="1069.0" y="495.5" font-size="12" fill="#1E1A17">+ getEstado(): EstadoJuego  (solo delega)</text>
+<text x="1069.0" y="512.5" font-size="12" fill="#1E1A17" text-decoration="underline">~ queSonidoCorresponde(antes: EstadoJuego,</text>
+<text x="1089.4" y="529.5" font-size="12" fill="#1E1A17" text-decoration="underline">despues: EstadoJuego): Sonido</text>
+<text x="1069.0" y="546.5" font-size="12" fill="#1E1A17" text-decoration="underline">- sonar(sonido: Sonido): void</text>
+</g>
+<text x="860" y="538.8" font-size="10.5" font-weight="400" fill="#8A7F76" text-anchor="middle" font-style="italic">(un Juego cualquiera: hoy, JuegoSokoban)</text>
+<path d="M 50 610 L 658 610 L 670 622 L 670 738 L 50 738 Z" fill="#FFFDF5" stroke="#B8892A" stroke-width="1.2"/>
+<text x="60" y="628" font-size="12" font-weight="700" fill="#6E1A2C">Cómo se lee (seguí los números)</text>
+<text x="60" y="646" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">1</tspan> El dominio y el decorador cumplen el mismo contrato Juego.</text>
+<text x="60" y="662" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">2</tspan> El decorador guarda adentro otro Juego y le pasa cada pedido.</text>
+<text x="60" y="678" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">3</tspan> Antes y después de mover compara el EstadoJuego y elige el efecto</text>
+<text x="60" y="694" font-size="11.5" fill="#1E1A17">     (paso, empuje, caja en destino, frágil, cerrojo, victoria, choque…).</text>
+<text x="60" y="710" font-size="11.5" fill="#1E1A17">La vista y el dominio no se enteran: solo cambió Main:</text>
+<text x="60" y="726" font-size="11.5" fill="#1E1A17">     new JuegoConSonido(new JuegoSokoban())</text>
+<path d="M 720 610 L 1498 610 L 1510 622 L 1510 770 L 720 770 Z" fill="#FFFDF5" stroke="#B8892A" stroke-width="1.2"/>
+<text x="730" y="628" font-size="12" font-weight="700" fill="#6E1A2C">El código clave (sonido/JuegoConSonido.java)</text>
+<text x="730" y="646" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace" font-size="11" fill="#1E1A17">public void mover(Direccion direccion) {</text>
+<text x="730" y="662" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace" font-size="11" fill="#1E1A17">    EstadoJuego antes = juego.getEstado();</text>
+<text x="730" y="678" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace" font-size="11" fill="#1E1A17">    juego.mover(direccion);                 // 2. delega en el juego real</text>
+<text x="730" y="694" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace" font-size="11" fill="#1E1A17">    EstadoJuego despues = juego.getEstado();</text>
+<text x="730" y="710" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace" font-size="11" fill="#1E1A17">    if (antes.equals(despues)) { sonar(Sonido.CHOQUE); return; }</text>
+<text x="730" y="726" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace" font-size="11" fill="#1E1A17">    Sonido sonido = queSonidoCorresponde(antes, despues);   // 3.</text>
+<text x="730" y="742" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace" font-size="11" fill="#1E1A17">    sonar(sonido);  ...  // si se rompió una frágil y no alcanza: DERROTA</text>
+<text x="730" y="758" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace" font-size="11" fill="#1E1A17">}</text>
+</svg>

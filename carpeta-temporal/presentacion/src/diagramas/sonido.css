@@ -1,0 +1,62 @@
+/* ── Sonido: el vidrio del Decorator, el ecualizador con las ondas reales y la moneda del State ── */
+.cab--sonido { width: 1060px; }
+.son__velo { position: absolute; inset: calc(var(--ey, 0px) * -1) calc(var(--ex, 0px) * -1); pointer-events: none; z-index: 1;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--fondo-hondo) 96%, transparent) 0%, color-mix(in srgb, var(--fondo-hondo) 80%, transparent) 24%, transparent 40%),
+    linear-gradient(90deg, color-mix(in srgb, var(--fondo-hondo) 80%, transparent) 0%, transparent 36%); }
+
+.son__ancla { position: absolute; left: 0; top: 0; z-index: 2; pointer-events: none;
+  transform: translate(calc(var(--ax, -2000) * 1px), calc(var(--ay, -2000) * 1px)) translate(var(--ox, -50%), var(--oy, -100%)); }
+.son__ancla--vidrio { --oy: calc(-100% - 6px); }
+.son__ancla--nucleo { --oy: 8px; }
+.son__ancla--estado { --oy: 14px; }
+.son__ancla--efecto { --oy: calc(-100% - 10px); z-index: 3; }
+.son__ancla--tecla { --oy: calc(-100% - 8px); }
+.son__ancla--llamada { z-index: 4; --oy: -50%; }
+
+/* Paneles de la izquierda: el código real y el enum */
+.son__codigo, .son__lista { position: absolute; left: var(--margen); z-index: 2; background: linear-gradient(180deg, var(--superficie-2), var(--superficie));
+  border: 1px solid var(--linea-media); border-radius: var(--radio); box-shadow: var(--sombra-caja); }
+.son__codigo { top: 330px; width: 690px; padding: 16px 22px 14px; }
+.son__lista { top: 712px; width: 690px; padding: 16px 22px 16px; }
+.son__rotulo { margin: 0 0 8px; font-size: 22px; letter-spacing: .06em; text-transform: uppercase; color: var(--tinta-3); font-weight: 600; }
+.son__rotulo b { margin-left: 4px; font-family: var(--f-display); font-size: 30px; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--sonido); }
+.son__lineas { display: flex; flex-direction: column; }
+.son__linea { --paso: 0; margin: 0 -10px; padding: 1px 10px; border-radius: 6px; white-space: pre; font-family: var(--f-mono); font-size: 22px; line-height: 1.45;
+  color: color-mix(in srgb, var(--titulo) calc(var(--paso) * 100%), var(--tinta-2));
+  background: color-mix(in srgb, var(--sonido) calc(var(--paso) * 20%), transparent);
+  box-shadow: inset 4px 0 0 color-mix(in srgb, var(--sonido) calc(var(--paso) * 100%), transparent); }
+.son__main { margin: 10px 0 0; padding-top: 10px; border-top: 1px solid var(--linea-suave); font-size: 22px; color: var(--tinta-2); }
+.son__main code { font-family: var(--f-mono); font-size: 22px; color: var(--titulo); }
+.son__efectos { display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: 4px 10px; }
+.son__efecto { --luz: 0; padding: 2px 8px; border-radius: 6px; white-space: nowrap; font-family: var(--f-mono); font-size: 22px;
+  color: color-mix(in srgb, var(--fondo) calc(var(--luz) * 100%), var(--tinta-2));
+  background: color-mix(in srgb, var(--sonido) calc(var(--luz) * 100%), transparent);
+  box-shadow: 0 0 calc(var(--luz) * 22px) color-mix(in srgb, var(--sonido) calc(var(--luz) * 70%), transparent); }
+
+/* Rótulos sobre el 3D */
+.son__clase { margin: 0; padding: 6px 14px; border-radius: var(--radio-chico); white-space: nowrap; font-size: 22px; color: var(--tinta-2);
+  background: color-mix(in srgb, var(--fondo-hondo) 88%, transparent); border: 1px solid var(--acento); }
+.son__clase b { font-family: var(--f-mono); font-weight: 500; color: var(--titulo); }
+.son__clase--sonido { border-color: var(--sonido); }
+.son__clase--sonido b { color: var(--sonido); }
+.son__llamada { display: block; padding: 6px 14px; border-radius: var(--radio-chico); white-space: nowrap; font-family: var(--f-mono); font-size: 24px; color: var(--fondo-hondo);
+  background: var(--acento); box-shadow: 0 0 24px var(--brillo), var(--sombra-lejos); opacity: 0; }
+.son__porque { display: flex; align-items: baseline; gap: 10px; min-height: 1.5em; margin: 8px 0 0; font-size: 22px; white-space: nowrap; }
+.son__porque-rotulo { color: var(--tinta-3); font-weight: 600; }
+.son__motivo { color: var(--sonido); font-weight: 600; opacity: 0; }
+.son__suena { display: flex; flex-direction: column; align-items: center; margin: 0; padding: 8px 16px; border-radius: 10px; white-space: nowrap;
+  background: var(--sonido); box-shadow: 0 0 30px color-mix(in srgb, var(--sonido) 60%, transparent), var(--sombra-lejos); opacity: 0; }
+.son__suena b { font-family: var(--f-mono); font-size: 26px; font-weight: 500; color: var(--fondo-hondo); }
+.son__suena span { font-size: 22px; color: var(--fondo-hondo); }
+.son__estado { display: flex; flex-direction: column; align-items: center; gap: 6px; perspective: 600px; padding: 8px 10px 10px; border-radius: var(--radio);
+  background: color-mix(in srgb, var(--fondo-hondo) 88%, transparent); border: 1px solid var(--linea-suave); box-shadow: var(--sombra-lejos); }
+.son__estado-rotulo { margin: 0; font-size: 22px; letter-spacing: .06em; text-transform: uppercase; color: var(--tinta-3); font-weight: 600; white-space: nowrap; }
+.son__estado-rotulo b { color: var(--tinta); text-transform: none; letter-spacing: 0; }
+.son__caras { display: grid; }
+.son__cara { grid-area: 1 / 1; display: flex; flex-direction: column; align-items: center; margin: 0; padding: 8px 16px; border-radius: 10px; white-space: nowrap;
+  font-size: 22px; color: var(--tinta-2); background: color-mix(in srgb, var(--fondo-hondo) 90%, transparent); border: 1px solid var(--sonido); transform-origin: 50% 0; }
+.son__cara b { font-family: var(--f-mono); font-size: 24px; font-weight: 500; color: var(--sonido); }
+.son__cara--silencio { border-color: var(--tinta-3); }
+.son__cara--silencio b { color: var(--tinta); }
+.son__tecla { display: block; padding: 4px 12px; border-radius: var(--radio-chico); white-space: nowrap; font-family: var(--f-mono); font-size: 22px; color: var(--titulo);
+  background: var(--superficie-2); border: 1px solid var(--titulo); }

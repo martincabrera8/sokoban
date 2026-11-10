@@ -1,0 +1,16 @@
+/* ── Lo que falta: mapa de niveles en 3D ── */
+.falta__velo { position: absolute; inset: calc(var(--ey, 0px) * -1) calc(var(--ex, 0px) * -1) auto; height: calc(400px + var(--ey, 0px)); pointer-events: none;
+  background: linear-gradient(180deg, var(--fondo-hondo) 0%, color-mix(in srgb, var(--fondo-hondo) 90%, transparent) 55%, transparent 100%); }
+
+.falta__ancla { position: absolute; left: 0; top: 0; width: 0; height: 0; will-change: transform, opacity; }
+.falta__rotulo { position: absolute; left: 0; bottom: 14px; translate: -50% 0; display: flex; align-items: center; gap: 12px; padding: 8px 16px 8px 8px; white-space: nowrap;
+  background: color-mix(in srgb, var(--superficie) 94%, transparent); border: 1px solid var(--linea-media); border-radius: var(--radio-chico); box-shadow: var(--sombra-caja); }
+.falta__rotulo::after { content: ""; position: absolute; left: 50%; top: 100%; width: 2px; height: 14px; margin-left: -1px; background: var(--linea-media); }
+.falta__rotulo--listo { border-color: var(--acento); }
+.falta__rotulo--proximo { border-color: var(--pendiente); box-shadow: var(--sombra-caja), 0 0 0 calc(var(--marco, 0) * 4px) color-mix(in srgb, var(--acento) 45%, transparent), 0 0 calc(var(--marco, 0) * 30px) var(--brillo); }
+.falta__icono { width: 44px; height: 44px; flex: none; border-radius: 6px; }
+.falta__texto { display: flex; flex-direction: column; line-height: 1.2; }
+.falta__texto b { font-size: var(--t-dato); color: var(--tinta); font-weight: 700; }
+.falta__estado { font-size: 22px; color: var(--pendiente); }
+.falta__rotulo--listo .falta__estado { color: var(--acento); }
+.falta__rotulo--proximo .falta__estado { color: var(--titulo); font-weight: 600; }

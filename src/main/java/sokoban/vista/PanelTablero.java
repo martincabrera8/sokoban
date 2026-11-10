@@ -1,34 +1,39 @@
 package sokoban.vista;
 
+import static sokoban.vista.Epoca.PARED;
+import static sokoban.vista.Epoca.PISO;
+
 import java.awt.Graphics;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.JPanel;
 
+import sokoban.modelo.Direccion;
 import sokoban.modelo.EstadoJuego;
 import sokoban.modelo.ObservadorJuego;
 
 /**
- * Dibuja el tablero con las imágenes del diseño del grupo, sobre el fondo de la
- * época del nivel (1955, 1985, 2015). Es OBSERVADOR: cada vez que cambia la
- * partida guarda el estado nuevo y se vuelve a pintar.
+ * Dibuja el tablero con las imágenes del diseño del grupo, con el fondo, el piso
+ * y la pared de la época del nivel (1955, 1985, 2015). Es OBSERVADOR: cada vez
+ * que cambia la partida guarda el estado nuevo y se vuelve a pintar.
  *
  * Cada símbolo se dibuja como una o más capas (primero el piso, después lo que
  * está encima). Para un elemento nuevo alcanza con agregar su símbolo acá.
+ * El jugador se dibuja mirando hacia donde se movió por última vez.
  */
 public class PanelTablero extends JPanel implements ObservadorJuego {
 
     private static final int TAMANO_MAXIMO_CELDA = 64;
-    private static final String PISO = "tiles/floor_1985";
     private static final String DESTINO = "goals/goal";
-    private static final String JUGADOR = "characters/player_down";
-    private static final List<String> FONDOS = List.of(
-            "backgrounds/background_hill_valley_1955",
-            "backgrounds/background_mall_1985",
-            "backgrounds/background_future_2015");
+    private static final String JUGADOR = "{jugador}";
+    private static final Map<Direccion, String> SPRITES_JUGADOR = Map.of(
+            Direccion.ARRIBA, "characters/player_up",
+            Direccion.ABAJO, "characters/player_down",
+            Direccion.IZQUIERDA, "characters/player_left",
+            Direccion.DERECHA, "characters/player_right");
     private static final Map<Character, List<String>> CAPAS = Map.ofEntries(
-            Map.entry('#', List.of("tiles/wall_brick")),
+            Map.entry('#', List.of(PARED)),
             Map.entry(' ', List.of(PISO)),
             Map.entry('.', List.of(PISO, DESTINO)),
             Map.entry('@', List.of(PISO, JUGADOR)),
@@ -48,19 +53,26 @@ public class PanelTablero extends JPanel implements ObservadorJuego {
             Map.entry('O', List.of("tiles/muro_abierto")));
 
     private List<String> tablero = List.of();
-    private int nivel = 1;
+    private Epoca epoca = Epoca.delNivel(1);
+    private Direccion orientacion = Direccion.ABAJO;
 
     @Override
     public void actualizar(EstadoJuego estado) {
         tablero = estado.tablero();
-        nivel = estado.nivel();
+        epoca = Epoca.delNivel(estado.nivel());
+        repaint();
+    }
+
+    /** Gira al jugador hacia la dirección elegida, aunque el movimiento quede bloqueado. */
+    public void mirarHacia(Direccion direccion) {
+        orientacion = direccion;
         repaint();
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        Imagenes.obtenerInstancia().dibujarFondo(g, FONDOS.get((nivel - 1) % FONDOS.size()), getWidth(), getHeight());
+        Imagenes.obtenerInstancia().dibujarFondo(g, epoca.getFondo(), getWidth(), getHeight());
         int filas = tablero.size();
         int columnas = tablero.stream().mapToInt(String::length).max().orElse(0);
         if (filas == 0 || columnas == 0) {
@@ -79,7 +91,11 @@ public class PanelTablero extends JPanel implements ObservadorJuego {
 
     private void dibujarCelda(Graphics g, char simbolo, int x, int y, int tamano) {
         for (String capa : CAPAS.getOrDefault(simbolo, List.of())) {
-            g.drawImage(Imagenes.obtenerInstancia().obtener(capa), x, y, tamano, tamano, null);
+            g.drawImage(Imagenes.obtenerInstancia().obtener(rutaDe(capa)), x, y, tamano, tamano, null);
         }
+    }
+
+    private String rutaDe(String capa) {
+        return JUGADOR.equals(capa) ? SPRITES_JUGADOR.get(orientacion) : epoca.resolver(capa);
     }
 }

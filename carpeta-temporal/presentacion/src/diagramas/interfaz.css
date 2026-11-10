@@ -1,0 +1,31 @@
+/* ── Interfaz: cinco pantallas en 3D unidas por el recorrido ── */
+.interfaz__velo { position: absolute; inset: calc(var(--ey, 0px) * -1) calc(var(--ex, 0px) * -1); pointer-events: none;
+  background:
+    radial-gradient(70% 55% at 18% 8%, color-mix(in srgb, var(--fondo-hondo) 92%, transparent) 0%, color-mix(in srgb, var(--fondo-hondo) 70%, transparent) 45%, transparent 75%); }
+.interfaz__capa { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+.interfaz__capa > * { position: absolute; left: 0; top: 0; will-change: transform, opacity; opacity: 0; }
+
+/* Nombre de cada pantalla, pegado a la esquina de su monitor */
+.interfaz__nombre { display: flex; align-items: baseline; gap: 14px; translate: -100% -100%; padding: 6px 14px 8px; border-radius: var(--radio-chico);
+  background: color-mix(in srgb, var(--fondo-hondo) 82%, transparent); border: 1px solid var(--linea-suave); white-space: nowrap; }
+.interfaz__nombre-pantalla { font-family: var(--f-display); font-size: 32px; color: var(--titulo); line-height: 1.1; }
+.interfaz__nombre-clase { font-family: var(--f-mono); font-size: 22px; color: var(--tinta-2); }
+
+/* Acción que lleva de una pantalla a otra, sobre su tubo de luz */
+.interfaz__accion { translate: -50% -50%; padding: 6px 14px; border-radius: 999px; font-size: 24px; font-weight: 600; color: var(--tinta); white-space: nowrap;
+  background: color-mix(in srgb, var(--fondo-hondo) 86%, transparent); border: 1px solid var(--linea-media); }
+
+/* Llaves del HUD de cerca */
+.interfaz__llave { height: 22px; margin-top: 14px; border: 3px solid var(--exito); border-top: 0; border-radius: 0 0 10px 10px; }
+.interfaz__llave-texto { position: absolute; left: 50%; top: 100%; translate: -50% 12px; padding: 6px 16px; border-radius: var(--radio-chico); white-space: nowrap;
+  font-size: 26px; font-weight: 600; color: var(--tinta); background: color-mix(in srgb, var(--fondo-hondo) 88%, transparent); border: 1px solid var(--linea-suave); }
+.interfaz__clase { translate: 0 -100%; padding: 6px 14px; border-radius: var(--radio-chico); font-family: var(--f-mono); font-size: 24px; color: var(--exito);
+  background: color-mix(in srgb, var(--fondo-hondo) 88%, transparent); border: 1px solid var(--exito); white-space: nowrap; }
+.interfaz__clase--tablero { color: var(--tinta-2); border-color: var(--linea-media); }
+
+/* Sin WebGL: las capturas en fila */
+.interfaz__respaldo { position: absolute; left: var(--margen); right: var(--margen); top: 420px; display: flex; gap: 24px; }
+.interfaz__respaldo-item { margin: 0; flex: 1; }
+.interfaz__respaldo-item img { width: 100%; border-radius: var(--radio-chico); border: 1px solid var(--linea-media); }
+.interfaz__respaldo-item figcaption { margin-top: 10px; font-size: var(--t-dato); color: var(--tinta); font-weight: 600; }
+.interfaz__nombre--izq { translate: 0 -100%; }

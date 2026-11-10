@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1640 800" width="1640" height="800" font-family="Inter, Arial, sans-serif">
+<style>text{white-space:pre}</style>
+<rect width="1640" height="800" fill="#FFFFFF"/>
+<text x="30" y="40" font-size="22" font-weight="700" fill="#6E1A2C">Patrón Strategy (comportamiento): las tres cajas</text>
+<text x="30" y="62" font-size="12.5" fill="#6B6B6B">Cada caja guarda un objeto «comportamiento». Para cambiar qué hace una caja al ser empujada se cambia ese objeto, no la clase Caja.</text>
+<path d="M 266.0 192.0 L 470.0 192.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="459.0,186.0 470.0,192.0 459.0,198.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polygon points="266.0,192.0 276.0,198.0 286.0,192.0 276.0,186.0" fill="#1E1A17" stroke="#1E1A17" stroke-width="1.4"/>
+<rect x="349.0078125" y="183.0" width="37.984375" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="368.0" y="195.5" font-size="10.5" text-anchor="middle" fill="#3A332E">cajas</text>
+<text x="454" y="186.0" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">0..*</text>
+<path d="M 763.0 192.0 L 1020.0 192.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="1009.0,186.0 1020.0,192.0 1009.0,198.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<rect x="860.859375" y="183.0" width="61.28125" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="891.5" y="195.5" font-size="10.5" text-anchor="middle" fill="#3A332E">estrategia</text><circle cx="851.859375" cy="192.0" r="8.5" fill="#B8892A"/><text x="851.859375" y="195.5" font-size="10" font-weight="700" text-anchor="middle" fill="#FFFFFF">1</text>
+<text x="1004" y="186.0" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
+<path d="M 297.5 400.0 L 297.5 360.0 L 1197.5 360.0 L 1197.5 234.0" fill="none" stroke="#7B3FA0" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polygon points="1197.5,234.0 1189.5,249.0 1205.5,249.0" fill="#FFFFFF" stroke="#7B3FA0" stroke-width="1.6"/>
+<path d="M 777.5 400.0 L 777.5 360.0 L 1197.5 360.0 L 1197.5 234.0" fill="none" stroke="#7B3FA0" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polygon points="1197.5,234.0 1189.5,249.0 1205.5,249.0" fill="#FFFFFF" stroke="#7B3FA0" stroke-width="1.6"/>
+<path d="M 1257.5 400.0 L 1257.5 360.0 L 1197.5 360.0 L 1197.5 234.0" fill="none" stroke="#7B3FA0" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polygon points="1197.5,234.0 1189.5,249.0 1205.5,249.0" fill="#FFFFFF" stroke="#7B3FA0" stroke-width="1.6"/>
+<g class="caja" id="EstadoNivel">
+<rect x="50" y="121" width="143.9375" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="58" y="133" font-size="10.5" font-weight="600" fill="#7A5A12">Cliente: elige la estrategia</text>
+<rect x="50" y="140" width="216" height="80" rx="6" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.4"/>
+<text x="158.0" y="158" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">EstadoNivel</text>
+<line x1="50" y1="166" x2="266" y2="166" stroke="#C8683A" stroke-width="1"/>
+<text x="59.0" y="183.5" font-size="12" fill="#1E1A17">- cajas: List&lt;Caja&gt;</text>
+<line x1="50" y1="193" x2="266" y2="193" stroke="#C8683A" stroke-width="1"/>
+<text x="59.0" y="210.5" font-size="12" fill="#1E1A17">+ EstadoNivel(lineas: List&lt;String&gt;)</text>
+</g>
+<g class="caja" id="Caja">
+<rect x="470" y="121" width="110.328125" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="478" y="133" font-size="10.5" font-weight="600" fill="#7A5A12">Contexto (Context)</text>
+<rect x="470" y="140" width="293" height="131" rx="6" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.4"/>
+<text x="616.5" y="158" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">Caja</text>
+<line x1="470" y1="166" x2="763" y2="166" stroke="#C8683A" stroke-width="1"/>
+<text x="479.0" y="183.5" font-size="12" fill="#1E1A17">- estrategia: ComportamientoCaja</text>
+<text x="479.0" y="200.5" font-size="12" fill="#1E1A17">- resistencia: int</text>
+<line x1="470" y1="210" x2="763" y2="210" stroke="#C8683A" stroke-width="1"/>
+<text x="479.0" y="227.5" font-size="12" fill="#1E1A17">+ quitarResistencia(): void</text>
+<text x="479.0" y="244.5" font-size="12" fill="#1E1A17">+ getSimbolo(): char</text>
+<text x="479.0" y="261.5" font-size="12" fill="#1E1A17">+ despuesDeEmpujar(estado: EstadoNivel): void</text>
+</g>
+<g class="caja" id="ComportamientoCaja">
+<rect x="1020" y="131" width="117.890625" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="1028" y="143" font-size="10.5" font-weight="600" fill="#7A5A12">Estrategia (Strategy)</text>
+<rect x="1020" y="150" width="355" height="84" rx="6" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.4"/>
+<text x="1197.5" y="167" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«interface»</text>
+<text x="1197.5" y="182" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17" font-style="italic">ComportamientoCaja</text>
+<line x1="1020" y1="190" x2="1375" y2="190" stroke="#C8683A" stroke-width="1"/>
+<text x="1029.0" y="207.5" font-size="12" fill="#1E1A17" font-style="italic">+ despuesDeEmpujar(caja: Caja, estado: EstadoNivel): void</text>
+<text x="1029.0" y="224.5" font-size="12" fill="#1E1A17" font-style="italic">+ simbolo(caja: Caja): char</text>
+</g>
+<g class="caja" id="CajaNormalStrategy">
+<rect x="120" y="381" width="112.203125" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="128" y="393" font-size="10.5" font-weight="600" fill="#7A5A12">Estrategia concreta</text>
+<rect x="120" y="400" width="355" height="80" rx="6" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.4"/>
+<text x="297.5" y="418" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">CajaNormalStrategy</text>
+<line x1="120" y1="426" x2="475" y2="426" stroke="#C8683A" stroke-width="1"/>
+<line x1="120" y1="436" x2="475" y2="436" stroke="#C8683A" stroke-width="1"/>
+<text x="129.0" y="453.5" font-size="12" fill="#1E1A17">+ despuesDeEmpujar(caja: Caja, estado: EstadoNivel): void</text>
+<text x="129.0" y="470.5" font-size="12" fill="#1E1A17">+ simbolo(caja: Caja): char</text>
+</g>
+<g class="caja" id="CajaFragilStrategy">
+<rect x="600" y="381" width="112.203125" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="608" y="393" font-size="10.5" font-weight="600" fill="#7A5A12">Estrategia concreta</text>
+<rect x="600" y="400" width="355" height="80" rx="6" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.4"/>
+<text x="777.5" y="418" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">CajaFragilStrategy</text>
+<line x1="600" y1="426" x2="955" y2="426" stroke="#C8683A" stroke-width="1"/>
+<line x1="600" y1="436" x2="955" y2="436" stroke="#C8683A" stroke-width="1"/>
+<text x="609.0" y="453.5" font-size="12" fill="#1E1A17">+ despuesDeEmpujar(caja: Caja, estado: EstadoNivel): void</text>
+<text x="609.0" y="470.5" font-size="12" fill="#1E1A17">+ simbolo(caja: Caja): char</text>
+</g>
+<g class="caja" id="CajaLlaveStrategy">
+<rect x="1080" y="381" width="112.203125" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="1088" y="393" font-size="10.5" font-weight="600" fill="#7A5A12">Estrategia concreta</text>
+<rect x="1080" y="400" width="355" height="80" rx="6" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.4"/>
+<text x="1257.5" y="418" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">CajaLlaveStrategy</text>
+<line x1="1080" y1="426" x2="1435" y2="426" stroke="#C8683A" stroke-width="1"/>
+<line x1="1080" y1="436" x2="1435" y2="436" stroke="#C8683A" stroke-width="1"/>
+<text x="1089.0" y="453.5" font-size="12" fill="#1E1A17">+ despuesDeEmpujar(caja: Caja, estado: EstadoNivel): void</text>
+<text x="1089.0" y="470.5" font-size="12" fill="#1E1A17">+ simbolo(caja: Caja): char</text>
+</g>
+<text x="1207.5" y="300" font-size="11" font-weight="400" fill="#7B3FA0" text-anchor="start">implementan</text>
+<circle cx="1179.5" cy="296" r="8.5" fill="#B8892A"/><text x="1179.5" y="299.5" font-size="10" font-weight="700" text-anchor="middle" fill="#FFFFFF">2</text>
+<text x="120" y="504" font-size="11" fill="#4A403A" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace">// no hace nada más</text>
+<text x="120" y="520" font-size="11" fill="#4A403A" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace">simbolo: &#x27;$&#x27;</text>
+<text x="600" y="504" font-size="11" fill="#4A403A" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace">caja.quitarResistencia();</text>
+<text x="600" y="520" font-size="11" fill="#4A403A" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace">if (caja.getResistencia() &lt;= 0)</text>
+<text x="600" y="536" font-size="11" fill="#4A403A" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace">    estado.quitarCaja(caja);</text>
+<text x="600" y="552" font-size="11" fill="#4A403A" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace">simbolo: &#x27;f&#x27; si queda 1, si no &#x27;F&#x27;</text>
+<text x="1080" y="504" font-size="11" fill="#4A403A" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace">if (estado.esCerrojo(caja.getPosicion()))</text>
+<text x="1080" y="520" font-size="11" fill="#4A403A" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace">    estado.abrirMuros();</text>
+<text x="1080" y="536" font-size="11" fill="#4A403A" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace">simbolo: &#x27;L&#x27;</text>
+<path d="M 50 610 L 678 610 L 690 622 L 690 738 L 50 738 Z" fill="#FFFDF5" stroke="#B8892A" stroke-width="1.2"/>
+<text x="60" y="628" font-size="12" font-weight="700" fill="#6E1A2C">Cómo se lee (seguí los números)</text>
+<text x="60" y="646" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">1</tspan> Cada Caja guarda su estrategia en un atributo (la recibe al crearse).</text>
+<text x="60" y="662" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">2</tspan> Las tres estrategias cumplen el mismo contrato ComportamientoCaja.</text>
+<text x="60" y="678" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">3</tspan> Después de un empuje, la Caja no pregunta «¿qué tipo soy?»:</text>
+<text x="60" y="694" font-size="11.5" fill="#1E1A17">     le pasa el pedido a su estrategia (código de la derecha).</text>
+<text x="60" y="710" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">Quién elige:</tspan> el constructor de EstadoNivel, según la letra del .txt:</text>
+<text x="60" y="726" font-size="11.5" fill="#1E1A17">     $ normal · F frágil (resistencia 3) · L llave.</text>
+<path d="M 740 610 L 1578 610 L 1590 622 L 1590 738 L 740 738 Z" fill="#FFFDF5" stroke="#B8892A" stroke-width="1.2"/>
+<text x="750" y="628" font-size="12" font-weight="700" fill="#6E1A2C">El código clave (entidades/Caja.java)</text>
+<text x="750" y="646" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace" font-size="11" fill="#1E1A17">public void despuesDeEmpujar(EstadoNivel estado) {    // 3. la Caja delega</text>
+<text x="750" y="662" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace" font-size="11" fill="#1E1A17">    estrategia.despuesDeEmpujar(this, estado);</text>
+<text x="750" y="678" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace" font-size="11" fill="#1E1A17">}</text>
+<text x="750" y="694" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace" font-size="11" fill="#1E1A17">public char getSimbolo() { return estrategia.simbolo(this); }</text>
+<text x="750" y="710" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace" font-size="11" fill="#1E1A17">// Una caja nueva (por ejemplo, explosiva) = una clase nueva que implemente</text>
+<text x="750" y="726" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace" font-size="11" fill="#1E1A17">// ComportamientoCaja y una letra más en EstadoNivel. Caja no cambia (OCP).</text>
+</svg>

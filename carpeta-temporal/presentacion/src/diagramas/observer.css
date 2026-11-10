@@ -1,0 +1,50 @@
+/* ── Observer: núcleo 3D, observadores en órbita y la foto que viaja ── */
+.obs__velo { position: absolute; inset: calc(var(--ey, 0px) * -1) calc(var(--ex, 0px) * -1); pointer-events: none; z-index: 1;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--fondo-hondo) 96%, transparent) 0%, color-mix(in srgb, var(--fondo-hondo) 90%, transparent) 26%, transparent 38%); }
+
+.obs__ancla { position: absolute; left: 0; top: 0; z-index: 2; pointer-events: none;
+  transform: translate(calc(var(--ax, -2000) * 1px), calc(var(--ay, -2000) * 1px)) translate(var(--ox, 0px), var(--oy, -50%)); }
+.obs__ancla--panel { --ox: 26px; }
+.obs__ancla--aviso { --ox: -50%; --oy: -100%; z-index: 3; }
+.obs__ancla--foto { --ox: -50%; z-index: 4; }
+
+/* Cartel con golpe de luz cuando le llega la foto */
+.obs__panel, .obs__sujeto { --golpe: 0; background: linear-gradient(180deg, var(--superficie-2), var(--superficie)); border: 1px solid var(--linea-media);
+  border-radius: var(--radio); box-shadow: var(--sombra-caja), 0 0 0 calc(var(--golpe) * 3px) var(--linea), 0 0 calc(var(--golpe) * 46px) color-mix(in srgb, var(--linea) 55%, transparent); }
+.obs__panel { position: relative; width: 520px; padding: 14px 22px 18px; overflow: hidden; }
+.obs__cab { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; margin-bottom: 12px; }
+.obs__clase { margin: 0; font-family: var(--f-display); font-size: 30px; line-height: 1.1; color: var(--titulo); font-weight: 600; white-space: nowrap; }
+.obs__clase span { margin-left: 10px; font-family: var(--f-texto); font-size: var(--t-rotulo); color: var(--tinta-2); font-weight: 400; }
+.obs__metodo { --golpe: 0; font-family: var(--f-mono); font-size: 22px; white-space: nowrap; padding: 2px 10px; border-radius: var(--radio-chico);
+  color: color-mix(in srgb, var(--exito) calc(var(--golpe) * 100%), var(--tinta-2)); background: color-mix(in srgb, var(--exito) calc(var(--golpe) * 22%), var(--superficie)); }
+.obs__dibujo { display: block; width: 370px; height: 110px; margin: 0 auto; image-rendering: pixelated; }
+.obs__dibujo--tablero { width: 432px; height: 270px; border-radius: 6px; }
+.obs__barrido { position: absolute; left: 0; right: 0; top: 0; bottom: 0; pointer-events: none; opacity: 0;
+  background: linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--exito) 30%, transparent) 46%, color-mix(in srgb, var(--tinta) 55%, transparent) 50%, transparent 54%); }
+
+/* El sujeto: lista de observadores y la foto completa */
+.obs__sujeto { position: absolute; left: var(--margen); bottom: 40px; z-index: 2; width: 1010px; padding: 16px 24px 18px; }
+.obs__sujeto > .obs__clase span { font-size: 22px; }
+.obs__fila { display: flex; align-items: center; gap: 16px; margin-top: 8px; }
+.obs__lista { font-family: var(--f-mono); font-size: 24px; color: var(--exito); white-space: nowrap; }
+.obs__registro { overflow: hidden; }
+.obs__registro-int { padding-top: 14px; margin-top: 14px; border-top: 1px solid var(--linea-suave); }
+.obs__registro-titulo { margin: 0 0 10px; font-size: 24px; color: var(--tinta-2); }
+.obs__registro-titulo b { color: var(--tinta); font-weight: 600; }
+.obs__registro-titulo code { font-family: var(--f-mono); font-size: 22px; color: var(--titulo); }
+.obs__registro-cuerpo { display: flex; align-items: center; gap: 26px; }
+.obs__campos { flex: 1; display: grid; grid-template-columns: repeat(3, auto); gap: 6px 22px; margin: 0; }
+.obs__campos div { display: flex; align-items: baseline; gap: 10px; white-space: nowrap; }
+.obs__campos dt { font-family: var(--f-mono); font-size: 22px; color: var(--tinta-2); }
+.obs__campos dd { --golpe: 0; margin: 0; padding: 0 6px; border-radius: 4px; font-family: var(--f-mono); font-size: 26px; font-weight: 500; font-variant-numeric: tabular-nums;
+  color: color-mix(in srgb, var(--acento) calc(var(--golpe) * 100%), var(--exito)); background: color-mix(in srgb, var(--acento) calc(var(--golpe) * 22%), transparent); }
+.obs__mini { width: 144px; height: 90px; image-rendering: pixelated; border-radius: 4px; flex: none; }
+
+/* Avisos sobre el personaje y la foto que viaja */
+.obs__aviso { display: block; margin-bottom: 14px; padding: 6px 14px; border-radius: var(--radio-chico); white-space: nowrap; opacity: 0;
+  font-family: var(--f-mono); font-size: 22px; color: var(--titulo); background: var(--superficie-2); border: 1px solid var(--acento); box-shadow: var(--sombra-lejos); }
+.obs__aviso--apagado { color: var(--tinta-2); border-style: dashed; border-color: var(--tinta-3); }
+.obs__foto { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 8px 6px; border-radius: 6px; transform: scale(var(--as, 1));
+  background: var(--papel); box-shadow: 0 0 26px color-mix(in srgb, var(--linea) 70%, transparent), var(--sombra-lejos); }
+.obs__foto canvas { width: 96px; height: 60px; image-rendering: pixelated; background: var(--fondo); }
+.obs__foto span { font-family: var(--f-mono); font-size: 22px; color: var(--fondo); font-weight: 500; }

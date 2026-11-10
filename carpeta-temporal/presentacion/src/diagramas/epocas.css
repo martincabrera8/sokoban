@@ -1,0 +1,23 @@
+/* Épocas: velo para la cabecera y la ficha, contador del año y las tres imágenes que cambian */
+.epocas__velo { position: absolute; inset: calc(var(--ey, 0px) * -1) calc(var(--ex, 0px) * -1); pointer-events: none;
+  background:
+    radial-gradient(70% 55% at 0% 100%, color-mix(in srgb, var(--fondo-hondo) 92%, transparent) 0%, color-mix(in srgb, var(--fondo-hondo) 70%, transparent) 55%, transparent 100%),
+    linear-gradient(180deg, color-mix(in srgb, var(--fondo-hondo) 88%, transparent) 0%, color-mix(in srgb, var(--fondo-hondo) 55%, transparent) 26%, transparent 42%); }
+.epocas__ficha { width: 820px; }
+.epocas__nivel { margin: 0; font-size: var(--t-rotulo); letter-spacing: .08em; text-transform: uppercase; color: var(--tinta-3); font-weight: 600; }
+.epocas__nivel b { color: var(--tinta); }
+.epocas__anio { --desde: var(--e1955); --hasta: var(--e1955); --m: 0; --tono: color-mix(in oklab, var(--hasta) calc(var(--m) * 100%), var(--desde));
+  margin: 14px 0 18px; height: 126px; }
+.epocas__digitos { display: block; height: 100%; width: auto; fill: var(--tono); overflow: visible;
+  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--tono) 60%, transparent)); }
+.epocas__anio--corre .epocas__digitos { filter: drop-shadow(0 0 26px var(--tono)) blur(.5px); }
+.epocas__capas { display: grid; }
+.epocas__capa { grid-area: 1 / 1; }
+.epocas__texto { margin: 0 0 18px; font-size: var(--t-cuerpo); line-height: 1.35; color: var(--tinta); }
+.epocas__piezas { display: flex; gap: 28px; align-items: flex-end; }
+.epocas__pieza { margin: 0; display: flex; align-items: center; gap: 12px; }
+.epocas__pieza figcaption { display: flex; flex-direction: column; gap: 2px; }
+.epocas__baldosa { width: 56px; height: 56px; border-radius: 4px; box-shadow: 0 0 0 1px var(--linea-media), var(--sombra-cerca); image-rendering: pixelated; }
+.epocas__fondo { width: 100px; height: 56px; border-radius: 4px; object-fit: cover; box-shadow: 0 0 0 1px var(--linea-media), var(--sombra-cerca); image-rendering: pixelated; }
+.epocas__rol { font-size: 22px; color: var(--tinta-3); }
+.epocas__archivo { font-family: var(--f-mono); font-size: var(--t-codigo); color: var(--titulo); }

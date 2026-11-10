@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1860 600" width="1860" height="600" font-family="Inter, Arial, sans-serif">
+<style>text{white-space:pre}</style>
+<rect width="1860" height="600" fill="#FFFFFF"/>
+<text x="30" y="40" font-size="22" font-weight="700" fill="#6E1A2C">MVC: quién hace qué</text>
+<text x="30" y="62" font-size="12.5" fill="#6B6B6B">Modelo = reglas del juego · Vista = lo que se ve · Controlador = traduce lo que hace el usuario en pedidos al modelo.</text>
+<path d="M 370.0 167.2 L 540.0 167.2" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="529.0,161.2 540.0,167.2 529.0,173.2" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<rect x="416.6796875" y="158.2" width="76.640625" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="455.0" y="170.7" font-size="10.5" text-anchor="middle" fill="#3A332E">tecla o botón</text><circle cx="407.6796875" cy="167.2" r="8.5" fill="#B8892A"/><text x="407.6796875" y="170.7" font-size="10" font-weight="700" text-anchor="middle" fill="#FFFFFF">1</text>
+<path d="M 880.0 167.2 L 1050.0 167.2" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="1039.0,161.2 1050.0,167.2 1039.0,173.2" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<rect x="916.6484375" y="158.2" width="106.703125" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="970" y="170.7" font-size="10.5" text-anchor="middle" fill="#3A332E">mover · deshacer…</text><circle cx="907.6484375" cy="167.2" r="8.5" fill="#B8892A"/><text x="907.6484375" y="170.7" font-size="10" font-weight="700" text-anchor="middle" fill="#FFFFFF">2</text>
+<path d="M 1290.0 167.2 L 1460.0 167.2" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="1449.0,161.2 1460.0,167.2 1449.0,173.2" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<rect x="1327.484375" y="158.2" width="95.03125" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="1375.0" y="170.7" font-size="10.5" text-anchor="middle" fill="#3A332E">le pasa lo mismo</text><circle cx="1318.484375" cy="167.2" r="8.5" fill="#B8892A"/><text x="1318.484375" y="170.7" font-size="10" font-weight="700" text-anchor="middle" fill="#FFFFFF">3</text>
+<path d="M 1630.0 255.0 L 1630.0 390.0 L 205.0 390.0 L 205.0 238.0" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="199.0,249.0 205.0,238.0 211.0,249.0" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<rect x="801.0859375" y="381" width="237.828125" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="920" y="393.5" font-size="10.5" text-anchor="middle" fill="#3A332E">avisa con EstadoJuego (Observer: actualizar)</text><circle cx="792.0859375" cy="390" r="8.5" fill="#B8892A"/><text x="792.0859375" y="393.5" font-size="10" font-weight="700" text-anchor="middle" fill="#FFFFFF">4</text>
+<g class="caja" id="V">
+<rect x="40" y="120" width="330" height="118" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="205.0" y="137" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«lo que se ve»</text>
+<text x="205.0" y="152" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">VISTA</text>
+<line x1="40" y1="160" x2="370" y2="160" stroke="#6C8EBF" stroke-width="1"/>
+<text x="49.0" y="177.5" font-size="12" fill="#1E1A17">VentanaPrincipal, MenuPrincipal, Cartel</text>
+<text x="49.0" y="194.5" font-size="12" fill="#1E1A17">PanelHUD: muestra nivel, movimientos, empujes</text>
+<text x="49.0" y="211.5" font-size="12" fill="#1E1A17">PanelTablero: dibuja el tablero</text>
+<text x="49.0" y="228.5" font-size="12" fill="#1E1A17">Imagenes, Epoca: imágenes y estilo</text>
+</g>
+<g class="caja" id="C">
+<rect x="540" y="120" width="340" height="118" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="710.0" y="137" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«traduce acciones»</text>
+<text x="710.0" y="152" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">CONTROLADOR</text>
+<line x1="540" y1="160" x2="880" y2="160" stroke="#6C8EBF" stroke-width="1"/>
+<text x="549.0" y="177.5" font-size="12" fill="#1E1A17">PantallaJuego: flecha → juego.mover(dir)</text>
+<text x="549.0" y="194.5" font-size="12" fill="#1E1A17">PanelHUD: botón → juego.deshacer() / reiniciar()</text>
+<text x="549.0" y="211.5" font-size="12" fill="#1E1A17">(controlador de entrada de Swing,</text>
+<text x="552.4" y="228.5" font-size="12" fill="#1E1A17">vive en la vista)</text>
+</g>
+<g class="caja" id="S">
+<rect x="1050" y="120" width="240" height="101" rx="6" fill="#EEDDF3" stroke="#A0559F" stroke-width="1.4"/>
+<text x="1170.0" y="137" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«decora al modelo»</text>
+<text x="1170.0" y="152" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">SONIDO</text>
+<line x1="1050" y1="160" x2="1290" y2="160" stroke="#A0559F" stroke-width="1"/>
+<text x="1059.0" y="177.5" font-size="12" fill="#1E1A17">JuegoConSonido: deja pasar</text>
+<text x="1059.0" y="194.5" font-size="12" fill="#1E1A17">cada pedido y hace sonar</text>
+<text x="1059.0" y="211.5" font-size="12" fill="#1E1A17">el efecto que corresponde</text>
+</g>
+<g class="caja" id="M">
+<rect x="1460" y="120" width="340" height="135" rx="6" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.4"/>
+<text x="1630.0" y="137" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«reglas del juego»</text>
+<text x="1630.0" y="152" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">MODELO</text>
+<line x1="1460" y1="160" x2="1800" y2="160" stroke="#C8683A" stroke-width="1"/>
+<text x="1469.0" y="177.5" font-size="12" fill="#1E1A17">JuegoSokoban: recibe los pedidos y</text>
+<text x="1469.0" y="194.5" font-size="12" fill="#1E1A17">coordina (Controlador de GRASP)</text>
+<text x="1469.0" y="211.5" font-size="12" fill="#1E1A17">EstadoNivel, Jugador, Caja, MotorMovimiento,</text>
+<text x="1469.0" y="228.5" font-size="12" fill="#1E1A17">niveles, deshacer, puntaje</text>
+<text x="1469.0" y="245.5" font-size="12" fill="#1E1A17">Se accede SOLO por la interfaz Juego</text>
+</g>
+<path d="M 40 440 L 1788 440 L 1800 452 L 1800 536 L 40 536 Z" fill="#FFFDF5" stroke="#B8892A" stroke-width="1.2"/>
+<text x="50" y="458" font-size="12" font-weight="700" fill="#6E1A2C">Para validar</text>
+<text x="50" y="476" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">Regla de oro:</tspan> el modelo no conoce a la vista. Le avisa a una interfaz (ObservadorJuego) y le manda un <tspan font-weight="700">DTO inmutable</tspan></text>
+<text x="50" y="492" font-size="11.5" fill="#1E1A17">(EstadoJuego), nunca un EstadoNivel ni una Caja. Así la vista no puede romper las reglas del juego por accidente.</text>
+<text x="50" y="508" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">Ojo:</tspan> en Swing es normal que la parte de «controlador de entrada» (teclas y botones) quede dentro de los paneles.</text>
+<text x="50" y="524" font-size="11.5" fill="#1E1A17">El controlador GRASP (quien recibe los pedidos y coordina el dominio) es JuegoSokoban. El sonido se mete en el medio sin que nadie cambie.</text>
+</svg>
