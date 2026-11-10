@@ -1,0 +1,79 @@
+/* Único lugar con colores, tipografías, tamaños, radios, sombras y tiempos.
+   La paleta sale de los PNG de assets/ (ver DIRECCION.md). */
+:root {
+  color-scheme: dark;
+  /* Superficies (cielo nocturno de los fondos y paneles del cartel del juego) */
+  --fondo: #0B1630;
+  --fondo-hondo: #070F22;
+  --superficie: #142035;
+  --superficie-2: #1C2F4E;
+  --linea: #79DCF4;
+  --linea-suave: rgb(121 220 244 / .14);
+  --linea-media: rgb(121 220 244 / .32);
+
+  /* Texto */
+  --tinta: #EBF8FF;
+  --tinta-2: #B9C8DA;
+  --tinta-3: #9DAEC8;
+  --titulo: #F8E4A5;
+
+  /* Roles */
+  --acento: #FFB245;           /* el destino: lo que ya está en su lugar */
+  --acento-suave: rgb(255 178 69 / .18);
+  --exito: #8CEAF5;            /* números del HUD */
+  --pendiente: #D69765;        /* madera de la caja sin ubicar */
+  --pendiente-suave: rgb(214 151 101 / .16);
+  --papel: #F4F7FB;            /* hoja del plano UML */
+  --brillo: rgb(255 178 69 / .55); /* luz del destino */
+  --sonido: #C79BEA;           /* lila del paquete sokoban.sonido en el UML (Mora) */
+  --sonido-suave: rgb(199 155 234 / .16);
+
+  /* Personaje (colores del sprite characters/player_down) */
+  --pj-campera: #E13E3B;
+  --pj-jean: #347DB2;
+  --pj-piel: #EFB287;
+  --pj-pelo: #894D2E;
+  --pj-oscuro: #6D3823;
+
+  /* Épocas (validadas: separación para daltonismo y contraste) */
+  --e1955: #D0614F;
+  --e1985: #8E7CE0;
+  --e2015: #27A898;
+
+  /* Sombras con luz de arriba */
+  --sombra-cerca: 0 1px 0 rgb(255 255 255 / .06) inset, 0 2px 4px rgb(3 8 20 / .45);
+  --sombra-lejos: 0 18px 48px rgb(3 8 20 / .55);
+  --sombra-caja: var(--sombra-cerca), var(--sombra-lejos);
+
+  /* Tipografía */
+  --f-display: "Pixelify Sans", "Atkinson Hyperlegible Next", sans-serif;
+  --f-texto: "Atkinson Hyperlegible Next", "Segoe UI", Arial, sans-serif;
+  --f-mono: "JetBrains Mono", Consolas, monospace;
+  --t-intro: 250px;
+  --t-portada: 120px;
+  --t-titulo: 72px;
+  --t-bajada: 31px;
+  --t-cuerpo: 26px;
+  --t-rotulo: 24px;
+  --t-dato: 26px;
+  --t-cifra: 96px;
+  --t-codigo: 22px;
+
+  /* Medidas */
+  --baldosa: 64px;
+  --radio: 14px;
+  --radio-chico: 8px;
+  --margen: 120px;
+  --ancho-lectura: 1240px;
+
+  /* Movimiento */
+  --dur-micro: .18s;
+  --dur-ui: .32s;
+  --dur-escena: .9s;
+  --dur-vuelo: 1.3s;
+  --dur-transicion: 1.05s;
+  --ease-entrada: power3.out;
+  --ease-salida: power2.in;
+  --ease-vuelo: expo.inOut;
+  --ease-empuje: "M0,0 C0.3,0 0.38,0.06 0.5,0.5 0.62,0.94 0.7,1 1,1";
+}

@@ -7,6 +7,10 @@ import sokoban.sonido.JuegoConSonido;     // [Sonido - M. Coghlan]
 import sokoban.sonido.SonidosDeInterfaz;  // [Sonido - M. Coghlan]
 import sokoban.vista.VentanaPrincipal;
 
+/**
+ * Punto de entrada. Es el único lugar que conoce las clases concretas y las conecta:
+ * el dominio (JuegoSokoban), el sonido que lo envuelve (JuegoConSonido) y la ventana.
+ */
 public final class Main {
     private Main() { }
 

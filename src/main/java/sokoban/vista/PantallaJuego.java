@@ -32,6 +32,7 @@ public class PantallaJuego extends JPanel {
 
     private final Juego juego;
     private final Runnable volverAlMenu;
+    private final PanelTablero tablero = new PanelTablero();
 
     public PantallaJuego(Juego juego, Runnable volverAlMenu) {
         super(new BorderLayout());
@@ -39,7 +40,6 @@ public class PantallaJuego extends JPanel {
         this.volverAlMenu = volverAlMenu;
 
         PanelHUD hud = new PanelHUD(juego, this::pausar);
-        PanelTablero tablero = new PanelTablero();
         juego.agregarObservador(hud);
         juego.agregarObservador(tablero);
         add(hud, BorderLayout.NORTH);
@@ -48,6 +48,7 @@ public class PantallaJuego extends JPanel {
     }
 
     public void iniciar(int nivel) {
+        tablero.mirarHacia(Direccion.ABAJO);
         juego.iniciarNivel(nivel);
     }
 
@@ -68,6 +69,7 @@ public class PantallaJuego extends JPanel {
     }
 
     private void mover(Direccion direccion) {
+        tablero.mirarHacia(direccion);
         juego.mover(direccion);
         EstadoJuego estado = juego.getEstado();
         if (estado.completado()) {

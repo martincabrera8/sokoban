@@ -1,14 +1,6 @@
-# Integración Mediator + Strategy — Sokoban
+# Dominio: Mediator + Strategy (Pedro y Lucía)
 
-## Opción 1: Copiar sobre el proyecto existente
-
-1. Descomprimí este ZIP.
-2. Copiá su contenido en la raíz de tu proyecto `sokoban-main/`, es decir donde están `pom.xml`, `assets/` y `src/`.
-3. Cuando el explorador pregunte, elegí **reemplazar** los archivos con igual nombre.
-4. Se incorporan archivos bajo `src/main/java/sokoban/modelo/` y `niveles/`.
-5. Se reemplazan los archivos `src/main/java/sokoban/Main.java`, `src/main/java/sokoban/vista/PanelTablero.java` y `pom.xml`.
-6. El resto de archivos del proyecto se conserva. `sokoban/prueba/JuegoDePrueba.java` puede quedar: ya no se usa.
-7. Ejecutá `sokoban.Main` desde tu IDE (Java 17+) o, si tenés Maven, ejecutá `mvn clean package` y `java -jar target/sokoban.jar`.
+Esta parte ya está integrada en el proyecto: el dominio vive en `src/main/java/sokoban/modelo/` (con `entidades/`, `estrategias/` y `movimiento/`) y los niveles en `niveles/`. Se ejecuta desde `sokoban.Main`.
 
 ## Diseño
 
@@ -17,6 +9,7 @@
 - EstadoNivel: almacena el estado interno dinámico del tablero.
 - JuegoSokoban: implementa la interfaz `Juego` existente; notifica a `PanelHUD` y `PanelTablero`.
 - EstadoJuego, Direccion, ObservadorJuego, VentanaPrincipal, PantallaJuego y PanelHUD se mantienen sin cambios.
+- Main crea `new JuegoConSonido(new JuegoSokoban())`: el sonido (Mora) envuelve al dominio.
 
 ## Comprobaciones
 

@@ -1,0 +1,73 @@
+@startuml 7-secuencia-mover
+' Diagrama de secuencia: qué pasa cuando el jugador aprieta la flecha DERECHA y empuja una caja.
+' Se genera con:  java -jar plantuml.jar -tsvg -o .. docs/uml/fuentes/7-secuencia-mover.puml
+'           y:    java -jar plantuml.jar -tpng -Sdpi=150 -o .. docs/uml/fuentes/7-secuencia-mover.puml
+skinparam shadowing false
+skinparam defaultFontName Inter
+skinparam defaultFontSize 13
+skinparam sequenceMessageAlign center
+skinparam roundCorner 8
+skinparam ArrowColor #4A403A
+skinparam ArrowThickness 1.3
+skinparam sequenceLifeLineBorderColor #8A7F76
+skinparam sequenceParticipantBorderColor #6C8EBF
+skinparam sequenceParticipantBackgroundColor #DAE8FC
+skinparam sequenceActorBorderColor #6E1A2C
+skinparam sequenceGroupBorderColor #C9A24A
+skinparam sequenceGroupHeaderFontColor #6E1A2C
+skinparam noteBackgroundColor #FFFDF5
+skinparam noteBorderColor #C9A24A
+skinparam titleFontColor #6E1A2C
+skinparam titleFontSize 20
+
+title Qué pasa cuando apretás la flecha → y empujás una caja (diagrama de secuencia)
+
+actor Jugador as U
+participant "PantallaJuego" as PJ
+participant "JuegoConSonido\n(Decorator)" as JS #EEDDF3
+participant "JuegoSokoban\n(dominio)" as JK #FCDDC7
+participant "jugador:\nJugador" as JU #FCDDC7
+participant "MotorMovimiento\n(Mediator)" as MM #FCDDC7
+participant "caja:\nCaja" as CA #FCDDC7
+participant "PanelHUD y\nPanelTablero" as OBS
+participant "Sonidos\n(Singleton)" as SO #EEDDF3
+
+U -> PJ : tecla DERECHA
+note right of PJ : TECLAS traduce la tecla\nen Direccion.DERECHA\n(antes gira el sprite con\ntablero.mirarHacia)
+PJ -> JS : mover(DERECHA)
+activate JS
+JS -> JK : getEstado()
+JK --> JS : antes: EstadoJuego
+JS -> JK : mover(DERECHA)
+activate JK
+JK -> JK : guarda una Foto\n(estado.copiar(), movimientos, empujes)
+JK -> JU : mover(DERECHA)
+JU -> MM : intentarMover(DERECHA)
+activate MM
+MM -> MM : mira la celda siguiente:\nhay una caja y atrás está libre\n(si es hielo, sigue deslizando)
+MM -> CA : setPosicion(destino)
+MM -> CA : despuesDeEmpujar(estado)
+note right of CA : Strategy: la caja le pasa\nel pedido a su estrategia\n(normal, frágil o llave)
+MM -> JU : setPosicion(siguiente)
+MM --> JU : true
+deactivate MM
+JU --> JK : true
+JK -> JK : historial.push(foto)\nmovimientos++, empujes++\n(fueEmpuje() es true)
+group Observer: notificar()
+  JK -> OBS : actualizar(estado)
+  OBS -> OBS : redibujan HUD y tablero
+end
+deactivate JK
+JS -> JK : getEstado()
+JK --> JS : despues: EstadoJuego
+JS -> JS : queSonidoCorresponde(antes, despues)
+JS -> SO : reproducir(Sonido.EMPUJE)
+deactivate JS
+PJ -> JS : getEstado()
+JS -> JK : getEstado()
+JK --> JS : EstadoJuego
+JS --> PJ : EstadoJuego
+alt estado.completado()
+  PJ -> PJ : mostrarResultado(estado)\n(cartel "¡NIVEL COMPLETADO!")
+end
+@enduml

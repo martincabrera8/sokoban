@@ -1,0 +1,697 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3370 2050" width="3370" height="2050" font-family="Inter, Arial, sans-serif">
+<style>text{white-space:pre}</style>
+<rect width="3370" height="2050" fill="#FFFFFF"/>
+<text x="30" y="40" font-size="22" font-weight="700" fill="#6E1A2C">Sokoban · Diagrama de clases completo</text>
+<text x="30" y="62" font-size="12.5" fill="#6B6B6B">Estado al 09/11/2026 · todas las clases, atributos, métodos y relaciones · violeta = implementa / es un · negro = tiene · gris punteado = usa / crea</text>
+<rect x="30" y="200" width="1120" height="1165" rx="10" fill="#FBF8F2" stroke="#8A7F76" stroke-width="1.2"/><path d="M 30 222 L 30 210 Q 30 200 40 200 L 251.37750000000003 200 L 251.37750000000003 222 Z" fill="#8A7F76" fill-opacity="0.16"/><text x="41" y="215" font-size="11.5" font-weight="700" fill="#4A403A" letter-spacing="0.3">sokoban.vista · VISTA (lo que se ve)</text>
+<rect x="1190" y="200" width="580" height="900" rx="10" fill="#FBF8F2" stroke="#8A7F76" stroke-width="1.2"/><path d="M 1190 222 L 1190 210 Q 1190 200 1200 200 L 1475.1825 200 L 1475.1825 222 Z" fill="#8A7F76" fill-opacity="0.16"/><text x="1201" y="215" font-size="11.5" font-weight="700" fill="#4A403A" letter-spacing="0.3">sokoban.modelo · CONTRATO vista ↔ dominio</text>
+<rect x="1820" y="200" width="1480" height="640" rx="10" fill="#FBF6FC" stroke="#A0559F" stroke-width="1.2"/><path d="M 1820 222 L 1820 210 Q 1820 200 1830 200 L 2026.695 200 L 2026.695 222 Z" fill="#A0559F" fill-opacity="0.16"/><text x="1831" y="215" font-size="11.5" font-weight="700" fill="#4A403A" letter-spacing="0.3">sokoban.sonido · SONIDO (Mora)</text>
+<rect x="1820" y="890" width="1480" height="1100" rx="10" fill="#FEF7F1" stroke="#C8683A" stroke-width="1.2"/><path d="M 1820 912 L 1820 900 Q 1820 890 1830 890 L 2310.755 890 L 2310.755 912 Z" fill="#C8683A" fill-opacity="0.16"/><text x="1831" y="905" font-size="11.5" font-weight="700" fill="#4A403A" letter-spacing="0.3">sokoban.modelo (+ .entidades, .estrategias, .movimiento) · DOMINIO (Pedro y Lucía)</text>
+<rect x="640" y="1400" width="360" height="230" rx="10" fill="#F3FAF1" stroke="#82B366" stroke-width="1.2"/><path d="M 640 1422 L 640 1410 Q 640 1400 650 1400 L 789.7850000000001 1400 L 789.7850000000001 1422 Z" fill="#82B366" fill-opacity="0.16"/><text x="651" y="1415" font-size="11.5" font-weight="700" fill="#4A403A" letter-spacing="0.3">assets/ · ARTE (Martín)</text>
+<path d="M 700.0 128.0 L 434.5 128.0 L 434.5 240.0" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="440.5,229.0 434.5,240.0 428.5,229.0" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<rect x="543.046875" y="119" width="33.90625" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="560" y="131.5" font-size="10.5" text-anchor="middle" fill="#3A332E">crea</text>
+<path d="M 872.0 144.0 L 2110.0 144.0 L 2110.0 240.0" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="2116.0,229.0 2110.0,240.0 2104.0,229.0" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<rect x="1381.796875" y="135" width="176.40625" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="1470" y="147.5" font-size="10.5" text-anchor="middle" fill="#3A332E">crea y le pasa el dominio adentro</text>
+<path d="M 872.0 128.0 L 3320.0 128.0 L 3320.0 617.0 L 2969.0 617.0" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="2980.0,623.0 2969.0,617.0 2980.0,611.0" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<rect x="2672.140625" y="119" width="55.71875" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="2700" y="131.5" font-size="10.5" text-anchor="middle" fill="#3A332E">instalar()</text>
+<path d="M 872.0 112.0 L 3345.0 112.0 L 3345.0 865.0 L 1795.0 865.0 L 1795.0 985.0 L 1850.0 985.0" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="1839.0,979.0 1850.0,985.0 1839.0,991.0" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<rect x="2556.0" y="856" width="88.0" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="2600" y="868.5" font-size="10.5" text-anchor="middle" fill="#3A332E">crea el dominio</text>
+<path d="M 330.0 352.7 L 207.0 352.7 L 207.0 460.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="213.0,449.0 207.0,460.0 201.0,449.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polygon points="330.0,352.7 320.0,346.7 310.0,352.7 320.0,358.7" fill="#1E1A17" stroke="#1E1A17" stroke-width="1.4"/>
+<rect x="241.03125" y="343.7" width="54.9375" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="268.5" y="356.2" font-size="10.5" text-anchor="middle" fill="#3A332E">contiene</text>
+<text x="219.0" y="450" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
+<path d="M 539.0 352.7 L 789.0 352.7 L 789.0 450.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="795.0,439.0 789.0,450.0 783.0,439.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polygon points="539.0,352.7 549.0,358.7 559.0,352.7 549.0,346.7" fill="#1E1A17" stroke="#1E1A17" stroke-width="1.4"/>
+<rect x="636.53125" y="343.7" width="54.9375" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="664.0" y="356.2" font-size="10.5" text-anchor="middle" fill="#3A332E">contiene</text>
+<text x="801.0" y="440" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
+<path d="M 207.0 570.0 L 207.0 640.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="213.0,629.0 207.0,640.0 201.0,629.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polygon points="207.0,570.0 201.0,580.0 207.0,590.0 213.0,580.0" fill="#1E1A17" stroke="#1E1A17" stroke-width="1.4"/>
+<rect x="179.53125" y="596.0" width="54.9375" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="207.0" y="608.5" font-size="10.5" text-anchor="middle" fill="#3A332E">contiene</text>
+<text x="219.0" y="630" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
+<path d="M 620.0 688.0 L 383.0 688.0" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="394.0,694.0 383.0,688.0 394.0,682.0" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<rect x="435.140625" y="679.0" width="132.71875" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="501.5" y="691.5" font-size="10.5" text-anchor="middle" fill="#3A332E">crea (pausa y resultado)</text>
+<path d="M 670.7 730.0 L 670.7 800.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="676.7,789.0 670.7,800.0 664.7,789.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polygon points="670.7,730.0 664.7,740.0 670.7,750.0 676.7,740.0" fill="#1E1A17" stroke="#1E1A17" stroke-width="1.4"/>
+<rect x="643.23125" y="756" width="54.9375" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="670.7" y="768.5" font-size="10.5" text-anchor="middle" fill="#3A332E">contiene</text>
+<text x="682.7" y="790" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
+<path d="M 873.5 730.0 L 873.5 800.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="879.5,789.0 873.5,800.0 867.5,789.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polygon points="873.5,730.0 867.5,740.0 873.5,750.0 879.5,740.0" fill="#1E1A17" stroke="#1E1A17" stroke-width="1.4"/>
+<rect x="846.03125" y="756" width="54.9375" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="873.5" y="768.5" font-size="10.5" text-anchor="middle" fill="#3A332E">contiene</text>
+<text x="885.5" y="790" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
+<path d="M 510.8 1029.0 L 510.8 1080.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="516.8,1069.0 510.8,1080.0 504.8,1069.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<rect x="489.328125" y="1043" width="42.84375" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="510.75" y="1055.5" font-size="10.5" text-anchor="middle" fill="#3A332E">epoca</text>
+<text x="522.75" y="1070" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
+<path d="M 652.2 1029.0 L 652.2 1080.0" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="658.2,1069.0 652.2,1080.0 646.2,1069.0" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<rect x="630.1796875" y="1043" width="29.640625" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="645" y="1055.5" font-size="10.5" text-anchor="middle" fill="#3A332E">usa</text>
+<path d="M 814.4 978.0 L 814.4 1080.0" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="820.4,1069.0 814.4,1080.0 808.4,1069.0" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<rect x="775.1796875" y="1001" width="29.640625" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="790" y="1013.5" font-size="10.5" text-anchor="middle" fill="#3A332E">usa</text>
+<path d="M 60.0 526.0 L 42.0 526.0 L 42.0 1340.0 L 744.0 1340.0 L 744.0 1293.0" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="738.0,1304.0 744.0,1293.0 750.0,1304.0" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<rect x="385.1796875" y="1331" width="29.640625" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="400" y="1343.5" font-size="10.5" text-anchor="middle" fill="#3A332E">usa</text>
+<path d="M 868.0 1122.6 L 905.0 1122.6 L 905.0 1156.7 L 868.0 1156.7" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="879.0,1162.7 868.0,1156.7 879.0,1150.7" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<rect x="916.84375" y="1131" width="56.3125" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="945" y="1143.5" font-size="10.5" text-anchor="middle" fill="#3A332E">instancia</text>
+<text x="885" y="1175" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">0..1</text>
+<path d="M 818.4 1293.0 L 818.4 1440.0" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="824.4,1429.0 818.4,1440.0 812.4,1429.0" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<rect x="757.859375" y="1356" width="120.28125" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="818" y="1368.5" font-size="10.5" text-anchor="middle" fill="#3A332E">lee del disco o del .jar</text>
+<path d="M 958.0 506.0 L 1094.0 506.0 L 1094.0 380.0 L 1230.0 380.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="1219.0,374.0 1230.0,380.0 1219.0,386.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<rect x="1006.1953125" y="497" width="39.609375" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="1026" y="509.5" font-size="10.5" text-anchor="middle" fill="#3A332E">juego</text>
+<text x="1214" y="374.0" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
+<path d="M 1087.0 817.8 L 1120.0 817.8 L 1120.0 420.0 L 1230.0 420.0" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="1219.0,414.0 1230.0,420.0 1219.0,426.0" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<rect x="1058.5703125" y="461" width="122.859375" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="1120" y="473.5" font-size="10.5" text-anchor="middle" fill="#3A332E">deshacer() / reiniciar()</text>
+<path d="M 1087.0 889.0 L 1170.0 889.0 L 1170.0 593.5 L 1230.0 593.5" fill="none" stroke="#7B3FA0" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polygon points="1230.0,593.5 1215.0,585.5 1215.0,601.5" fill="#FFFFFF" stroke="#7B3FA0" stroke-width="1.6"/>
+<rect x="1135.125" y="691" width="69.75" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="1170" y="703.5" font-size="10.5" text-anchor="middle" fill="#3A332E">implementa</text>
+<path d="M 708.8 1029.0 L 708.9 1040.0 L 808.4 1040.0 A 6 6 0 0 1 820.4 1040.0 L 1170.0 1040.0 L 1170.0 593.5 L 1230.0 593.5" fill="none" stroke="#7B3FA0" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polygon points="1230.0,593.5 1215.0,585.5 1215.0,601.5" fill="#FFFFFF" stroke="#7B3FA0" stroke-width="1.6"/>
+<path d="M 694.7 1029.0 L 694.7 1061.0 L 808.4 1061.0 A 6 6 0 0 1 820.4 1061.0 L 1269.0 1061.0 L 1269.0 1042.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="1263.0,1053.0 1269.0,1042.0 1275.0,1053.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<rect x="966.140625" y="1052" width="67.71875" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="1000" y="1064.5" font-size="10.5" text-anchor="middle" fill="#3A332E">orientacion</text>
+<text x="1282" y="1056" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
+<path d="M 1336.5 439.0 L 1336.5 560.0" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="1342.5,549.0 1336.5,560.0 1330.5,549.0" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<rect x="1313.265625" y="491" width="46.46875" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="1336.5" y="503.5" font-size="10.5" text-anchor="middle" fill="#3A332E">avisa a</text>
+<path d="M 1549.5 439.0 L 1549.5 480.0" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="1555.5,469.0 1549.5,480.0 1543.5,469.0" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<rect x="1571.5" y="450" width="57.0" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="1600" y="462.5" font-size="10.5" text-anchor="middle" fill="#3A332E">devuelve</text>
+<path d="M 1475.0 593.5 L 1530.0 593.5" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="1519.0,587.5 1530.0,593.5 1519.0,599.5" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<rect x="1481.5" y="571" width="43.0" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="1503" y="583.5" font-size="10.5" text-anchor="middle" fill="#3A332E">recibe</text>
+<path d="M 1850.0 292.0 L 1585.0 292.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="1596.0,298.0 1585.0,292.0 1596.0,286.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<rect x="1695.9375" y="283" width="128.125" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="1760" y="295.5" font-size="10.5" text-anchor="middle" fill="#3A332E">juego (el que envuelve)</text>
+<text x="1600" y="286" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
+<path d="M 1850.0 337.6 L 1585.0 337.6" fill="none" stroke="#7B3FA0" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polygon points="1585.0,337.6 1600.0,345.6 1600.0,329.6" fill="#FFFFFF" stroke="#7B3FA0" stroke-width="1.6"/>
+<rect x="1745.125" y="328.6" width="69.75" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="1780" y="341.1" font-size="10.5" text-anchor="middle" fill="#3A332E">implementa</text>
+<path d="M 1850.0 540.0 L 1726.0 540.0 A 6 6 0 0 0 1714.0 540.0 L 1678.0 540.0" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="1689.0,546.0 1678.0,540.0 1689.0,534.0" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<rect x="1762.1171875" y="531" width="55.765625" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="1790" y="543.5" font-size="10.5" text-anchor="middle" fill="#3A332E">compara</text>
+<path d="M 2164.0 300.0 L 2250.0 300.0" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="2239.0,294.0 2250.0,300.0 2239.0,306.0" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<rect x="2192.1796875" y="291.0" width="29.640625" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="2207.0" y="303.5" font-size="10.5" text-anchor="middle" fill="#3A332E">usa</text>
+<path d="M 2164.0 575.0 L 2250.0 575.0" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="2239.0,569.0 2250.0,575.0 2239.0,581.0" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<rect x="2166.09375" y="566.0" width="81.8125" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="2207.0" y="578.5" font-size="10.5" text-anchor="middle" fill="#3A332E">elige el efecto</text>
+<path d="M 2577.0 292.0 L 2755.0 292.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="2744.0,286.0 2755.0,292.0 2744.0,298.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<rect x="2637.1171875" y="283" width="45.765625" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="2660" y="295.5" font-size="10.5" text-anchor="middle" fill="#3A332E">estado</text>
+<text x="2739" y="286.0" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
+<path d="M 2768.0 410.0 L 2768.0 378.0 L 2863.0 378.0 L 2863.0 334.0" fill="none" stroke="#7B3FA0" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polygon points="2863.0,334.0 2855.0,349.0 2871.0,349.0" fill="#FFFFFF" stroke="#7B3FA0" stroke-width="1.6"/>
+<path d="M 2953.5 410.0 L 2953.5 378.0 L 2863.0 378.0 L 2863.0 334.0" fill="none" stroke="#7B3FA0" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polygon points="2863.0,334.0 2855.0,349.0 2871.0,349.0" fill="#FFFFFF" stroke="#7B3FA0" stroke-width="1.6"/>
+<path d="M 2700.0 433.0 L 2577.0 433.0" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="2588.0,439.0 2577.0,433.0 2588.0,427.0" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<path d="M 2953.5 456.0 L 2953.5 475.0 L 2577.0 475.0" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="2588.0,481.0 2577.0,475.0 2588.0,469.0" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<rect x="2717.8828125" y="466" width="114.234375" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="2775" y="478.5" font-size="10.5" text-anchor="middle" fill="#3A332E">le cambian el estado</text>
+<path d="M 2330.0 487.0 L 2330.0 560.0" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="2336.0,549.0 2330.0,560.0 2324.0,549.0" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<rect x="2272.453125" y="514" width="115.09375" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="2330" y="526.5" font-size="10.5" text-anchor="middle" fill="#3A332E">un Clip por cada uno</text>
+<path d="M 2700.0 590.0 L 2545.0 590.0 L 2545.0 487.0" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="2539.0,498.0 2545.0,487.0 2551.0,498.0" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<rect x="2605.1796875" y="581" width="29.640625" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="2620" y="593.5" font-size="10.5" text-anchor="middle" fill="#3A332E">usa</text>
+<path d="M 2700.0 650.0 L 2506.0 650.0 A 6 6 0 0 0 2494.0 650.0 L 2461.0 650.0" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="2472.0,656.0 2461.0,650.0 2472.0,644.0" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<rect x="2559.9296875" y="641" width="100.140625" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="2610" y="653.5" font-size="10.5" text-anchor="middle" fill="#3A332E">ARRANQUE, CLIC</text>
+<path d="M 2500.0 487.0 L 2500.0 772.0 L 2700.0 772.0" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="2689.0,766.0 2700.0,772.0 2689.0,778.0" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<rect x="2539.0234375" y="763" width="121.953125" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="2600" y="775.5" font-size="10.5" text-anchor="middle" fill="#3A332E">lee cada .wav una vez</text>
+<path d="M 1850.0 1045.0 L 1720.0 1045.0 L 1720.0 337.6 L 1585.0 337.6" fill="none" stroke="#7B3FA0" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polygon points="1585.0,337.6 1600.0,345.6 1600.0,329.6" fill="#FFFFFF" stroke="#7B3FA0" stroke-width="1.6"/>
+<rect x="1685.125" y="791" width="69.75" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="1720" y="803.5" font-size="10.5" text-anchor="middle" fill="#3A332E">implementa</text>
+<path d="M 1850.0 1095.0 L 1400.0 1095.0 L 1400.0 627.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="1394.0,638.0 1400.0,627.0 1406.0,638.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polygon points="1850.0,1095.0 1840.0,1089.0 1830.0,1095.0 1840.0,1101.0" fill="#FFFFFF" stroke="#1E1A17" stroke-width="1.4"/>
+<rect x="1579.78125" y="1086" width="80.4375" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="1620" y="1098.5" font-size="10.5" text-anchor="middle" fill="#3A332E">observadores</text>
+<text x="1424" y="650" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">0..*</text>
+<path d="M 1975.0 1268.0 L 1975.0 1330.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="1981.0,1319.0 1975.0,1330.0 1969.0,1319.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polygon points="1975.0,1268.0 1969.0,1278.0 1975.0,1288.0 1981.0,1278.0" fill="#1E1A17" stroke="#1E1A17" stroke-width="1.4"/>
+<rect x="1999.484375" y="1291" width="51.03125" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="2025" y="1303.5" font-size="10.5" text-anchor="middle" fill="#3A332E">historial</text>
+<text x="1945" y="1318" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">0..15</text>
+<path d="M 2101.0 1021.5 L 2200.0 1021.5" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="2189.0,1015.5 2200.0,1021.5 2189.0,1027.5" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polygon points="2101.0,1021.5 2111.0,1027.5 2121.0,1021.5 2111.0,1015.5" fill="#1E1A17" stroke="#1E1A17" stroke-width="1.4"/>
+<rect x="2122.109375" y="1012.5" width="56.78125" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="2150.5" y="1025.0" font-size="10.5" text-anchor="middle" fill="#3A332E">cargador</text>
+<text x="2184" y="1015.5" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
+<path d="M 2101.0 1245.0 L 2560.0 1245.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="2549.0,1239.0 2560.0,1245.0 2549.0,1251.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<rect x="2268.5390625" y="1236.0" width="123.921875" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="2330.5" y="1248.5" font-size="10.5" text-anchor="middle" fill="#3A332E">estado (el nivel actual)</text>
+<text x="2544" y="1239.0" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
+<path d="M 2051.0 950.0 L 2051.0 925.0 L 3131.0 925.0 L 3131.0 1000.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="3137.0,989.0 3131.0,1000.0 3125.0,989.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<rect x="2879.4609375" y="916" width="41.078125" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="2900" y="928.5" font-size="10.5" text-anchor="middle" fill="#3A332E">motor</text>
+<text x="3143.0" y="990" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
+<path d="M 2095.0 1340.0 L 2560.0 1340.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="2549.0,1334.0 2560.0,1340.0 2549.0,1346.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<rect x="2263.734375" y="1331.0" width="127.53125" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="2327.5" y="1343.5" font-size="10.5" text-anchor="middle" fill="#3A332E">estado (copia del nivel)</text>
+<text x="2544" y="1334.0" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
+<path d="M 2414.0 1021.5 L 2560.0 1021.5" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="2549.0,1015.5 2560.0,1021.5 2549.0,1027.5" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<rect x="2470.046875" y="1012.5" width="33.90625" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="2487.0" y="1025.0" font-size="10.5" text-anchor="middle" fill="#3A332E">crea</text>
+<path d="M 2307.0 1053.0 L 2307.0 1100.0" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="2313.0,1089.0 2307.0,1100.0 2301.0,1089.0" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<rect x="2326.6875" y="1067" width="76.625" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="2365" y="1079.5" font-size="10.5" text-anchor="middle" fill="#3A332E">lee nivelN.txt</text>
+<path d="M 3005.0 1040.0 L 2857.0 1040.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="2868.0,1046.0 2857.0,1040.0 2868.0,1034.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<rect x="2908.1171875" y="1031.0" width="45.765625" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="2931.0" y="1043.5" font-size="10.5" text-anchor="middle" fill="#3A332E">estado</text>
+<text x="2873" y="1034.0" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
+<path d="M 3131.0 1097.0 L 3131.0 1440.0" fill="none" stroke="#7B3FA0" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polygon points="3131.0,1440.0 3139.0,1425.0 3123.0,1425.0" fill="#FFFFFF" stroke="#7B3FA0" stroke-width="1.6"/>
+<rect x="3096.125" y="1261" width="69.75" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="3131" y="1273.5" font-size="10.5" text-anchor="middle" fill="#3A332E">implementa</text>
+<path d="M 2740.0 1352.0 L 2740.0 1440.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="2746.0,1429.0 2740.0,1440.0 2734.0,1429.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polygon points="2740.0,1352.0 2734.0,1362.0 2740.0,1372.0 2746.0,1362.0" fill="#1E1A17" stroke="#1E1A17" stroke-width="1.4"/>
+<rect x="2715.125" y="1387" width="49.75" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="2740" y="1399.5" font-size="10.5" text-anchor="middle" fill="#3A332E">jugador</text>
+<text x="2752.0" y="1430" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
+<path d="M 2600.0 1352.0 L 2600.0 1396.0 L 2340.0 1396.0 L 2340.0 1440.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="2346.0,1429.0 2340.0,1440.0 2334.0,1429.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polygon points="2600.0,1352.0 2594.0,1362.0 2600.0,1372.0 2606.0,1362.0" fill="#1E1A17" stroke="#1E1A17" stroke-width="1.4"/>
+<rect x="2431.0078125" y="1387" width="37.984375" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="2450" y="1399.5" font-size="10.5" text-anchor="middle" fill="#3A332E">cajas</text>
+<text x="2362" y="1430" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">0..*</text>
+<path d="M 2891.0 1482.0 L 2989.0 1482.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="2978.0,1476.0 2989.0,1482.0 2978.0,1488.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<rect x="2910.5703125" y="1473.0" width="58.859375" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="2940.0" y="1485.5" font-size="10.5" text-anchor="middle" fill="#3A332E">mediador</text>
+<text x="2973" y="1476.0" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
+<path d="M 2700.0 1588.0 L 2700.0 1660.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="2706.0,1649.0 2700.0,1660.0 2694.0,1649.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<rect x="2673.0703125" y="1615" width="53.859375" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="2700" y="1627.5" font-size="10.5" text-anchor="middle" fill="#3A332E">posicion</text>
+<text x="2712.0" y="1650" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
+<path d="M 2496.0 1700.0 L 2590.0 1700.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="2579.0,1694.0 2590.0,1700.0 2579.0,1706.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<rect x="2516.0703125" y="1691.0" width="53.859375" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="2543.0" y="1703.5" font-size="10.5" text-anchor="middle" fill="#3A332E">posicion</text>
+<text x="2574" y="1694.0" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
+<path d="M 2337.5 1656.0 L 2337.5 1730.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="2343.5,1719.0 2337.5,1730.0 2331.5,1719.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<rect x="2306.859375" y="1684" width="61.28125" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="2337.5" y="1696.5" font-size="10.5" text-anchor="middle" fill="#3A332E">estrategia</text>
+<text x="2349.5" y="1720" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
+<path d="M 2143.0 1880.0 L 2143.0 1848.0 L 2337.5 1848.0 L 2337.5 1814.0" fill="none" stroke="#7B3FA0" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polygon points="2337.5,1814.0 2329.5,1829.0 2345.5,1829.0" fill="#FFFFFF" stroke="#7B3FA0" stroke-width="1.6"/>
+<path d="M 2339.5 1880.0 L 2339.5 1848.0 L 2337.5 1848.0 L 2337.5 1814.0" fill="none" stroke="#7B3FA0" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polygon points="2337.5,1814.0 2329.5,1829.0 2345.5,1829.0" fill="#FFFFFF" stroke="#7B3FA0" stroke-width="1.6"/>
+<path d="M 2529.5 1880.0 L 2529.5 1848.0 L 2337.5 1848.0 L 2337.5 1814.0" fill="none" stroke="#7B3FA0" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polygon points="2337.5,1814.0 2329.5,1829.0 2345.5,1829.0" fill="#FFFFFF" stroke="#7B3FA0" stroke-width="1.6"/>
+<g class="caja" id="Main">
+<rect x="700" y="88" width="172" height="80" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="786.0" y="106" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">Main</text>
+<line x1="700" y1="114" x2="872" y2="114" stroke="#6C8EBF" stroke-width="1"/>
+<line x1="700" y1="124" x2="872" y2="124" stroke="#6C8EBF" stroke-width="1"/>
+<text x="709.0" y="141.5" font-size="12" fill="#1E1A17">- Main()</text>
+<text x="709.0" y="158.5" font-size="12" fill="#1E1A17" text-decoration="underline">+ main(args: String[]): void</text>
+</g>
+<g class="caja" id="VentanaPrincipal">
+<rect x="330" y="240" width="209" height="161" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="434.5" y="258" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">VentanaPrincipal</text>
+<text x="434.5" y="272" text-anchor="middle" font-size="10.5" fill="#7B3FA0">extiende JFrame</text>
+<line x1="330" y1="279" x2="539" y2="279" stroke="#6C8EBF" stroke-width="1"/>
+<text x="339.0" y="296.5" font-size="12" fill="#1E1A17">- pantallas: CardLayout</text>
+<text x="339.0" y="313.5" font-size="12" fill="#1E1A17">- contenido: JPanel</text>
+<text x="339.0" y="330.5" font-size="12" fill="#1E1A17">- pantallaJuego: PantallaJuego</text>
+<line x1="330" y1="340" x2="539" y2="340" stroke="#6C8EBF" stroke-width="1"/>
+<text x="339.0" y="357.5" font-size="12" fill="#1E1A17">+ VentanaPrincipal(juego: Juego)</text>
+<text x="339.0" y="374.5" font-size="12" fill="#1E1A17">- mostrarMenu(): void</text>
+<text x="339.0" y="391.5" font-size="12" fill="#1E1A17">- jugar(nivel: int): void</text>
+</g>
+<g class="caja" id="MenuPrincipal">
+<rect x="60" y="460" width="294" height="110" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="207.0" y="478" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">MenuPrincipal</text>
+<text x="207.0" y="492" text-anchor="middle" font-size="10.5" fill="#7B3FA0">extiende JPanel</text>
+<line x1="60" y1="499" x2="354" y2="499" stroke="#6C8EBF" stroke-width="1"/>
+<line x1="60" y1="509" x2="354" y2="509" stroke="#6C8EBF" stroke-width="1"/>
+<text x="69.0" y="526.5" font-size="12" fill="#1E1A17">+ MenuPrincipal(cantidadNiveles: int,</text>
+<text x="89.4" y="543.5" font-size="12" fill="#1E1A17">alElegirNivel: IntConsumer, alSalir: Runnable)</text>
+<text x="69.0" y="560.5" font-size="12" fill="#1E1A17"># paintComponent(g: Graphics): void</text>
+</g>
+<g class="caja" id="PantallaJuego">
+<rect x="620" y="450" width="338" height="280" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="789.0" y="468" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">PantallaJuego</text>
+<text x="789.0" y="482" text-anchor="middle" font-size="10.5" fill="#7B3FA0">extiende JPanel</text>
+<line x1="620" y1="489" x2="958" y2="489" stroke="#6C8EBF" stroke-width="1"/>
+<text x="629.0" y="506.5" font-size="12" fill="#1E1A17" text-decoration="underline">- TECLAS: Map&lt;Integer, Direccion&gt;</text>
+<text x="629.0" y="523.5" font-size="12" fill="#1E1A17">- juego: Juego</text>
+<text x="629.0" y="540.5" font-size="12" fill="#1E1A17">- volverAlMenu: Runnable</text>
+<text x="629.0" y="557.5" font-size="12" fill="#1E1A17">- tablero: PanelTablero</text>
+<line x1="620" y1="567" x2="958" y2="567" stroke="#6C8EBF" stroke-width="1"/>
+<text x="629.0" y="584.5" font-size="12" fill="#1E1A17">+ PantallaJuego(juego: Juego, volverAlMenu: Runnable)</text>
+<text x="629.0" y="601.5" font-size="12" fill="#1E1A17">+ iniciar(nivel: int): void</text>
+<text x="629.0" y="618.5" font-size="12" fill="#1E1A17">- configurarTeclado(): void</text>
+<text x="629.0" y="635.5" font-size="12" fill="#1E1A17">- asignarTecla(tecla: int, accion: Runnable): void</text>
+<text x="629.0" y="652.5" font-size="12" fill="#1E1A17">- mover(direccion: Direccion): void</text>
+<text x="629.0" y="669.5" font-size="12" fill="#1E1A17">- pausar(): void</text>
+<text x="629.0" y="686.5" font-size="12" fill="#1E1A17">- mostrarResultado(estado: EstadoJuego): void</text>
+<text x="629.0" y="703.5" font-size="12" fill="#1E1A17">- mostrarCartel(titulo: String, mensaje: String,</text>
+<text x="649.4" y="720.5" font-size="12" fill="#1E1A17">opciones: Map&lt;String, Runnable&gt;): void</text>
+</g>
+<g class="caja" id="Cartel">
+<rect x="60" y="640" width="323" height="178" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="221.5" y="658" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">Cartel</text>
+<text x="221.5" y="672" text-anchor="middle" font-size="10.5" fill="#7B3FA0">extiende JPanel</text>
+<line x1="60" y1="679" x2="383" y2="679" stroke="#6C8EBF" stroke-width="1"/>
+<text x="69.0" y="696.5" font-size="12" fill="#1E1A17" text-decoration="underline">+ FONDO: Color</text>
+<line x1="60" y1="706" x2="383" y2="706" stroke="#6C8EBF" stroke-width="1"/>
+<text x="69.0" y="723.5" font-size="12" fill="#1E1A17">+ Cartel(titulo: String, mensaje: String,</text>
+<text x="89.4" y="740.5" font-size="12" fill="#1E1A17">opciones: Map&lt;String, Runnable&gt;)</text>
+<text x="69.0" y="757.5" font-size="12" fill="#1E1A17"># paintComponent(g: Graphics): void</text>
+<text x="69.0" y="774.5" font-size="12" fill="#1E1A17" text-decoration="underline">- crearEtiqueta(texto: String, fuente: Font,</text>
+<text x="89.4" y="791.5" font-size="12" fill="#1E1A17" text-decoration="underline">color: Color): JLabel</text>
+<text x="69.0" y="808.5" font-size="12" fill="#1E1A17" text-decoration="underline">- crearBoton(texto: String, accion: Runnable): JButton</text>
+</g>
+<g class="caja" id="PanelTablero">
+<rect x="440" y="800" width="283" height="229" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="581.5" y="818" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">PanelTablero</text>
+<text x="581.5" y="832" text-anchor="middle" font-size="10.5" fill="#7B3FA0">extiende JPanel</text>
+<line x1="440" y1="839" x2="723" y2="839" stroke="#6C8EBF" stroke-width="1"/>
+<text x="449.0" y="856.5" font-size="12" fill="#1E1A17" text-decoration="underline">- SPRITES_JUGADOR: Map&lt;Direccion, String&gt;</text>
+<text x="449.0" y="873.5" font-size="12" fill="#1E1A17" text-decoration="underline">- CAPAS: Map&lt;Character, List&lt;String&gt;&gt;</text>
+<text x="449.0" y="890.5" font-size="12" fill="#1E1A17">- tablero: List&lt;String&gt;</text>
+<text x="449.0" y="907.5" font-size="12" fill="#1E1A17">- epoca: Epoca</text>
+<text x="449.0" y="924.5" font-size="12" fill="#1E1A17">- orientacion: Direccion</text>
+<line x1="440" y1="934" x2="723" y2="934" stroke="#6C8EBF" stroke-width="1"/>
+<text x="449.0" y="951.5" font-size="12" fill="#1E1A17">+ mirarHacia(direccion: Direccion): void</text>
+<text x="449.0" y="968.5" font-size="12" fill="#1E1A17"># paintComponent(g: Graphics): void</text>
+<text x="449.0" y="985.5" font-size="12" fill="#1E1A17">- dibujarCelda(g: Graphics, simbolo: char,</text>
+<text x="469.4" y="1002.5" font-size="12" fill="#1E1A17">x: int, y: int, tamano: int): void</text>
+<text x="449.0" y="1019.5" font-size="12" fill="#1E1A17">- rutaDe(capa: String): String</text>
+</g>
+<g class="caja" id="PanelHUD">
+<rect x="800" y="800" width="287" height="178" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="943.5" y="818" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">PanelHUD</text>
+<text x="943.5" y="832" text-anchor="middle" font-size="10.5" fill="#7B3FA0">extiende JPanel</text>
+<line x1="800" y1="839" x2="1087" y2="839" stroke="#6C8EBF" stroke-width="1"/>
+<text x="809.0" y="856.5" font-size="12" fill="#1E1A17">- nivel: JLabel</text>
+<text x="809.0" y="873.5" font-size="12" fill="#1E1A17">- movimientos: JLabel</text>
+<text x="809.0" y="890.5" font-size="12" fill="#1E1A17">- empujes: JLabel</text>
+<line x1="800" y1="900" x2="1087" y2="900" stroke="#6C8EBF" stroke-width="1"/>
+<text x="809.0" y="917.5" font-size="12" fill="#1E1A17">+ PanelHUD(juego: Juego, alPausar: Runnable)</text>
+<text x="809.0" y="934.5" font-size="12" fill="#1E1A17" text-decoration="underline">- crearIndicador(ruta: String, valor: int): Icon</text>
+<text x="809.0" y="951.5" font-size="12" fill="#1E1A17" text-decoration="underline">- crearBoton(ruta: String, descripcion: String,</text>
+<text x="829.4" y="968.5" font-size="12" fill="#1E1A17" text-decoration="underline">accion: Runnable): JButton</text>
+</g>
+<g class="caja" id="Epoca">
+<rect x="380" y="1080" width="194" height="240" rx="6" fill="#FFF2CC" stroke="#D6B656" stroke-width="1.4"/>
+<text x="477.0" y="1097" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«enumeration»</text>
+<text x="477.0" y="1112" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">Epoca</text>
+<line x1="380" y1="1120" x2="574" y2="1120" stroke="#D6B656" stroke-width="1"/>
+<text x="389.0" y="1137.5" font-size="12" fill="#1E1A17">HILL_VALLEY_1955</text>
+<text x="389.0" y="1154.5" font-size="12" fill="#1E1A17">MALL_1985</text>
+<text x="389.0" y="1171.5" font-size="12" fill="#1E1A17">FUTURO_2015</text>
+<line x1="380" y1="1181" x2="574" y2="1181" stroke="#D6B656" stroke-width="1"/>
+<text x="389.0" y="1198.5" font-size="12" fill="#1E1A17" text-decoration="underline">+ PISO: String</text>
+<text x="389.0" y="1215.5" font-size="12" fill="#1E1A17" text-decoration="underline">+ PARED: String</text>
+<text x="389.0" y="1232.5" font-size="12" fill="#1E1A17">- fondo: String</text>
+<text x="389.0" y="1249.5" font-size="12" fill="#1E1A17">- piso: String</text>
+<text x="389.0" y="1266.5" font-size="12" fill="#1E1A17">- pared: String</text>
+<line x1="380" y1="1276" x2="574" y2="1276" stroke="#D6B656" stroke-width="1"/>
+<text x="389.0" y="1293.5" font-size="12" fill="#1E1A17" text-decoration="underline">+ delNivel(nivel: int): Epoca</text>
+<text x="389.0" y="1310.5" font-size="12" fill="#1E1A17">+ resolver(capa: String): String</text>
+</g>
+<g class="caja" id="Imagenes">
+<rect x="620" y="1080" width="248" height="213" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="744.0" y="1097" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«Singleton»</text>
+<text x="744.0" y="1112" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">Imagenes</text>
+<line x1="620" y1="1120" x2="868" y2="1120" stroke="#6C8EBF" stroke-width="1"/>
+<text x="629.0" y="1137.5" font-size="12" fill="#1E1A17" text-decoration="underline">- CARPETA: String</text>
+<text x="629.0" y="1154.5" font-size="12" fill="#1E1A17" text-decoration="underline">- instancia: Imagenes</text>
+<text x="629.0" y="1171.5" font-size="12" fill="#1E1A17">- cache: Map&lt;String, Image&gt;</text>
+<line x1="620" y1="1181" x2="868" y2="1181" stroke="#6C8EBF" stroke-width="1"/>
+<text x="629.0" y="1198.5" font-size="12" fill="#1E1A17">- Imagenes()</text>
+<text x="629.0" y="1215.5" font-size="12" fill="#1E1A17" text-decoration="underline">+ obtenerInstancia(): Imagenes</text>
+<text x="629.0" y="1232.5" font-size="12" fill="#1E1A17">+ obtener(ruta: String): Image</text>
+<text x="629.0" y="1249.5" font-size="12" fill="#1E1A17">+ dibujarFondo(g: Graphics, ruta: String,</text>
+<text x="649.4" y="1266.5" font-size="12" fill="#1E1A17">ancho: int, alto: int): void</text>
+<text x="629.0" y="1283.5" font-size="12" fill="#1E1A17">- cargar(ruta: String): Image</text>
+</g>
+<g class="caja" id="Assets">
+<rect x="700" y="1440" width="189" height="152" rx="6" fill="#D5E8D4" stroke="#82B366" stroke-width="1.4"/>
+<text x="794.5" y="1457" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«carpeta de recursos»</text>
+<text x="794.5" y="1472" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">assets/  (104 PNG)</text>
+<line x1="700" y1="1480" x2="889" y2="1480" stroke="#82B366" stroke-width="1"/>
+<text x="709.0" y="1497.5" font-size="12" fill="#1E1A17">characters/    4   (se usan 4)</text>
+<text x="709.0" y="1514.5" font-size="12" fill="#1E1A17">backgrounds/   3   (se usan 3)</text>
+<text x="709.0" y="1531.5" font-size="12" fill="#1E1A17">boxes/         8   (se usan 4)</text>
+<text x="709.0" y="1548.5" font-size="12" fill="#1E1A17">goals/         3   (se usan 2)</text>
+<text x="709.0" y="1565.5" font-size="12" fill="#1E1A17">tiles/        69   (se usan 11)</text>
+<text x="709.0" y="1582.5" font-size="12" fill="#1E1A17">ui/           17   (se usan 6)</text>
+</g>
+<g class="caja" id="Juego">
+<rect x="1230" y="270" width="355" height="169" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="1407.5" y="287" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«interface»</text>
+<text x="1407.5" y="302" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17" font-style="italic">Juego</text>
+<line x1="1230" y1="310" x2="1585" y2="310" stroke="#6C8EBF" stroke-width="1"/>
+<text x="1239.0" y="327.5" font-size="12" fill="#1E1A17" font-style="italic">+ getCantidadNiveles(): int</text>
+<text x="1239.0" y="344.5" font-size="12" fill="#1E1A17" font-style="italic">+ iniciarNivel(numero: int): void</text>
+<text x="1239.0" y="361.5" font-size="12" fill="#1E1A17" font-style="italic">+ mover(direccion: Direccion): void</text>
+<text x="1239.0" y="378.5" font-size="12" fill="#1E1A17" font-style="italic">+ deshacer(): void</text>
+<text x="1239.0" y="395.5" font-size="12" fill="#1E1A17" font-style="italic">+ reiniciar(): void</text>
+<text x="1239.0" y="412.5" font-size="12" fill="#1E1A17" font-style="italic">+ getEstado(): EstadoJuego</text>
+<text x="1239.0" y="429.5" font-size="12" fill="#1E1A17" font-style="italic">+ agregarObservador(observador: ObservadorJuego): void</text>
+</g>
+<g class="caja" id="ObservadorJuego">
+<rect x="1230" y="560" width="245" height="67" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="1352.5" y="577" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«interface»</text>
+<text x="1352.5" y="592" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17" font-style="italic">ObservadorJuego</text>
+<line x1="1230" y1="600" x2="1475" y2="600" stroke="#6C8EBF" stroke-width="1"/>
+<text x="1239.0" y="617.5" font-size="12" fill="#1E1A17" font-style="italic">+ actualizar(estado: EstadoJuego): void</text>
+</g>
+<g class="caja" id="EstadoJuego">
+<rect x="1530" y="480" width="148" height="169" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="1604.0" y="497" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«record»</text>
+<text x="1604.0" y="512" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">EstadoJuego</text>
+<line x1="1530" y1="520" x2="1678" y2="520" stroke="#6C8EBF" stroke-width="1"/>
+<text x="1539.0" y="537.5" font-size="12" fill="#1E1A17">- nivel: int</text>
+<text x="1539.0" y="554.5" font-size="12" fill="#1E1A17">- movimientos: int</text>
+<text x="1539.0" y="571.5" font-size="12" fill="#1E1A17">- empujes: int</text>
+<text x="1539.0" y="588.5" font-size="12" fill="#1E1A17">- undosUsados: int</text>
+<text x="1539.0" y="605.5" font-size="12" fill="#1E1A17">- puntaje: int</text>
+<text x="1539.0" y="622.5" font-size="12" fill="#1E1A17">- completado: boolean</text>
+<text x="1539.0" y="639.5" font-size="12" fill="#1E1A17">- tablero: List&lt;String&gt;</text>
+</g>
+<g class="caja" id="Direccion">
+<rect x="1205" y="880" width="128" height="162" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="1269.0" y="897" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«enumeration»</text>
+<text x="1269.0" y="912" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">Direccion</text>
+<line x1="1205" y1="920" x2="1333" y2="920" stroke="#6C8EBF" stroke-width="1"/>
+<text x="1214.0" y="937.5" font-size="12" fill="#1E1A17">ARRIBA</text>
+<text x="1214.0" y="954.5" font-size="12" fill="#1E1A17">ABAJO</text>
+<text x="1214.0" y="971.5" font-size="12" fill="#1E1A17">IZQUIERDA</text>
+<text x="1214.0" y="988.5" font-size="12" fill="#1E1A17">DERECHA</text>
+<line x1="1205" y1="998" x2="1333" y2="998" stroke="#6C8EBF" stroke-width="1"/>
+<text x="1214.0" y="1015.5" font-size="12" fill="#1E1A17">- deltaFila: int</text>
+<text x="1214.0" y="1032.5" font-size="12" fill="#1E1A17">- deltaColumna: int</text>
+</g>
+<g class="caja" id="JuegoConSonido">
+<rect x="1850" y="240" width="314" height="352" rx="6" fill="#EEDDF3" stroke="#A0559F" stroke-width="1.4"/>
+<text x="2007.0" y="258" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">JuegoConSonido</text>
+<line x1="1850" y1="266" x2="2164" y2="266" stroke="#A0559F" stroke-width="1"/>
+<text x="1859.0" y="283.5" font-size="12" fill="#1E1A17" text-decoration="underline">- CAJAS: String</text>
+<text x="1859.0" y="300.5" font-size="12" fill="#1E1A17" text-decoration="underline">- DESTINOS: String</text>
+<text x="1859.0" y="317.5" font-size="12" fill="#1E1A17" text-decoration="underline">- CAJAS_EN_DESTINO: String</text>
+<text x="1859.0" y="334.5" font-size="12" fill="#1E1A17" text-decoration="underline">- CAJAS_FRAGILES: String</text>
+<text x="1859.0" y="351.5" font-size="12" fill="#1E1A17" text-decoration="underline">- ABIERTOS: String</text>
+<text x="1859.0" y="368.5" font-size="12" fill="#1E1A17" text-decoration="underline">- MURO_CERRADO: char</text>
+<text x="1859.0" y="385.5" font-size="12" fill="#1E1A17" text-decoration="underline">- DEMORA_DERROTA_MS: int</text>
+<text x="1859.0" y="402.5" font-size="12" fill="#1E1A17">- juego: Juego</text>
+<line x1="1850" y1="412" x2="2164" y2="412" stroke="#A0559F" stroke-width="1"/>
+<text x="1859.0" y="429.5" font-size="12" fill="#1E1A17">+ JuegoConSonido(juego: Juego)</text>
+<text x="1859.0" y="446.5" font-size="12" fill="#1E1A17" text-decoration="underline">~ queSonidoCorresponde(antes: EstadoJuego,</text>
+<text x="1879.4" y="463.5" font-size="12" fill="#1E1A17" text-decoration="underline">despues: EstadoJuego): Sonido</text>
+<text x="1859.0" y="480.5" font-size="12" fill="#1E1A17" text-decoration="underline">~ quedoSinSolucion(estado: EstadoJuego): boolean</text>
+<text x="1859.0" y="497.5" font-size="12" fill="#1E1A17" text-decoration="underline">- sonar(sonido: Sonido): void</text>
+<text x="1859.0" y="514.5" font-size="12" fill="#1E1A17" text-decoration="underline">- sonarMasTarde(sonido: Sonido): void</text>
+<text x="1859.0" y="531.5" font-size="12" fill="#1E1A17" text-decoration="underline">- contar(estado: EstadoJuego, simbolo: char): int</text>
+<text x="1859.0" y="548.5" font-size="12" fill="#1E1A17" text-decoration="underline">- contar(estado: EstadoJuego, simbolos: String): int</text>
+<text x="1859.0" y="565.5" font-size="12" fill="#1E1A17" text-decoration="underline">- posiciones(estado: EstadoJuego,</text>
+<text x="1879.4" y="582.5" font-size="12" fill="#1E1A17" text-decoration="underline">simbolos: String): Set&lt;Integer&gt;</text>
+</g>
+<g class="caja" id="Sonidos">
+<rect x="2250" y="240" width="327" height="247" rx="6" fill="#EEDDF3" stroke="#A0559F" stroke-width="1.4"/>
+<text x="2413.5" y="257" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«Singleton»</text>
+<text x="2413.5" y="272" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">Sonidos</text>
+<line x1="2250" y1="280" x2="2577" y2="280" stroke="#A0559F" stroke-width="1"/>
+<text x="2259.0" y="297.5" font-size="12" fill="#1E1A17" text-decoration="underline">- instancia: Sonidos</text>
+<text x="2259.0" y="314.5" font-size="12" fill="#1E1A17">- clips: Map&lt;Sonido, Clip&gt;</text>
+<text x="2259.0" y="331.5" font-size="12" fill="#1E1A17">- estado: EstadoSonido</text>
+<line x1="2250" y1="341" x2="2577" y2="341" stroke="#A0559F" stroke-width="1"/>
+<text x="2259.0" y="358.5" font-size="12" fill="#1E1A17">- Sonidos()</text>
+<text x="2259.0" y="375.5" font-size="12" fill="#1E1A17" text-decoration="underline">+ obtenerInstancia(): Sonidos</text>
+<text x="2259.0" y="392.5" font-size="12" fill="#1E1A17">+ reproducir(sonido: Sonido): void</text>
+<text x="2259.0" y="409.5" font-size="12" fill="#1E1A17">+ alternarSonido(): void</text>
+<text x="2259.0" y="426.5" font-size="12" fill="#1E1A17">~ establecerEstado(nuevoEstado: EstadoSonido): void</text>
+<text x="2259.0" y="443.5" font-size="12" fill="#1E1A17">~ detenerTodo(): void</text>
+<text x="2259.0" y="460.5" font-size="12" fill="#1E1A17">- cargar(sonido: Sonido): void</text>
+<text x="2259.0" y="477.5" font-size="12" fill="#1E1A17" text-decoration="underline">- abrir(ruta: String): AudioInputStream</text>
+</g>
+<g class="caja" id="EstadoSonido">
+<rect x="2755" y="250" width="216" height="84" rx="6" fill="#EEDDF3" stroke="#A0559F" stroke-width="1.4"/>
+<text x="2863.0" y="267" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«interface»</text>
+<text x="2863.0" y="282" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17" font-style="italic">EstadoSonido</text>
+<line x1="2755" y1="290" x2="2971" y2="290" stroke="#A0559F" stroke-width="1"/>
+<text x="2764.0" y="307.5" font-size="12" fill="#1E1A17" font-style="italic">+ reproducir(clip: Clip): void</text>
+<text x="2764.0" y="324.5" font-size="12" fill="#1E1A17" font-style="italic">+ alternar(contexto: Sonidos): void</text>
+</g>
+<g class="caja" id="SonidoActivado">
+<rect x="2700" y="410" width="136" height="46" rx="6" fill="#EEDDF3" stroke="#A0559F" stroke-width="1.4"/>
+<text x="2768.0" y="428" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">SonidoActivado</text>
+<line x1="2700" y1="436" x2="2836" y2="436" stroke="#A0559F" stroke-width="1"/>
+<line x1="2700" y1="446" x2="2836" y2="446" stroke="#A0559F" stroke-width="1"/>
+</g>
+<g class="caja" id="SonidoSilenciado">
+<rect x="2880" y="410" width="147" height="46" rx="6" fill="#EEDDF3" stroke="#A0559F" stroke-width="1.4"/>
+<text x="2953.5" y="428" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">SonidoSilenciado</text>
+<line x1="2880" y1="436" x2="3027" y2="436" stroke="#A0559F" stroke-width="1"/>
+<line x1="2880" y1="446" x2="3027" y2="446" stroke="#A0559F" stroke-width="1"/>
+</g>
+<g class="caja" id="Sonido">
+<rect x="2250" y="560" width="211" height="179" rx="6" fill="#EEDDF3" stroke="#A0559F" stroke-width="1.4"/>
+<text x="2355.5" y="577" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«enumeration»</text>
+<text x="2355.5" y="592" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">Sonido</text>
+<line x1="2250" y1="600" x2="2461" y2="600" stroke="#A0559F" stroke-width="1"/>
+<text x="2259.0" y="617.5" font-size="12" fill="#1E1A17">ARRANQUE, INICIO_NIVEL, PASO,</text>
+<text x="2259.0" y="634.5" font-size="12" fill="#1E1A17">EMPUJE, CAJA_EN_DESTINO,</text>
+<text x="2259.0" y="651.5" font-size="12" fill="#1E1A17">CAJA_DANADA, CAJA_ROTA,</text>
+<text x="2259.0" y="668.5" font-size="12" fill="#1E1A17">CERROJO_ABIERTO, DESHACER,</text>
+<text x="2259.0" y="685.5" font-size="12" fill="#1E1A17">REINICIAR, VICTORIA, DERROTA,</text>
+<text x="2259.0" y="702.5" font-size="12" fill="#1E1A17">CHOQUE, CLIC  (14 efectos)</text>
+<line x1="2250" y1="712" x2="2461" y2="712" stroke="#A0559F" stroke-width="1"/>
+<text x="2259.0" y="729.5" font-size="12" fill="#1E1A17">- archivo: String</text>
+</g>
+<g class="caja" id="SonidosDeInterfaz">
+<rect x="2700" y="560" width="269" height="114" rx="6" fill="#EEDDF3" stroke="#A0559F" stroke-width="1.4"/>
+<text x="2834.5" y="578" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">SonidosDeInterfaz</text>
+<line x1="2700" y1="586" x2="2969" y2="586" stroke="#A0559F" stroke-width="1"/>
+<line x1="2700" y1="596" x2="2969" y2="596" stroke="#A0559F" stroke-width="1"/>
+<text x="2709.0" y="613.5" font-size="12" fill="#1E1A17">- SonidosDeInterfaz()</text>
+<text x="2709.0" y="630.5" font-size="12" fill="#1E1A17" text-decoration="underline">+ instalar(): void</text>
+<text x="2709.0" y="647.5" font-size="12" fill="#1E1A17" text-decoration="underline">- alHacerClic(evento: MouseEvent): void</text>
+<text x="2709.0" y="664.5" font-size="12" fill="#1E1A17" text-decoration="underline">- alApretarTecla(evento: KeyEvent): boolean</text>
+</g>
+<g class="caja" id="AssetsSonidos">
+<rect x="2700" y="722" width="251" height="101" rx="6" fill="#EEDDF3" stroke="#A0559F" stroke-width="1.4"/>
+<text x="2825.5" y="739" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«carpeta de recursos»</text>
+<text x="2825.5" y="754" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">assets/sonidos/  (14 WAV)</text>
+<line x1="2700" y1="762" x2="2951" y2="762" stroke="#A0559F" stroke-width="1"/>
+<text x="2709.0" y="779.5" font-size="12" fill="#1E1A17">un .wav por cada efecto de Sonido</text>
+<text x="2709.0" y="796.5" font-size="12" fill="#1E1A17">generados con docs/generar_sonidos.py</text>
+<text x="2709.0" y="813.5" font-size="12" fill="#1E1A17">propios, de dominio público</text>
+</g>
+<g class="caja" id="JuegoSokoban">
+<rect x="1850" y="950" width="251" height="318" rx="6" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.4"/>
+<text x="1975.5" y="968" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">JuegoSokoban</text>
+<line x1="1850" y1="976" x2="2101" y2="976" stroke="#C8683A" stroke-width="1"/>
+<text x="1859.0" y="993.5" font-size="12" fill="#1E1A17" text-decoration="underline">- NIVELES: int</text>
+<text x="1859.0" y="1010.5" font-size="12" fill="#1E1A17" text-decoration="underline">- MAX_HISTORIAL: int</text>
+<text x="1859.0" y="1027.5" font-size="12" fill="#1E1A17" text-decoration="underline">- PASOS_POR_UNDO: int</text>
+<text x="1859.0" y="1044.5" font-size="12" fill="#1E1A17" text-decoration="underline">- MAX_UNDOS_CONSECUTIVOS: int</text>
+<text x="1859.0" y="1061.5" font-size="12" fill="#1E1A17">- cargador: CargadorNivel</text>
+<text x="1859.0" y="1078.5" font-size="12" fill="#1E1A17">- observadores: List&lt;ObservadorJuego&gt;</text>
+<text x="1859.0" y="1095.5" font-size="12" fill="#1E1A17">- historial: Deque&lt;Foto&gt;</text>
+<text x="1859.0" y="1112.5" font-size="12" fill="#1E1A17">- estado: EstadoNivel</text>
+<text x="1859.0" y="1129.5" font-size="12" fill="#1E1A17">- motor: MotorMovimiento</text>
+<text x="1859.0" y="1146.5" font-size="12" fill="#1E1A17">- nivel: int</text>
+<text x="1859.0" y="1163.5" font-size="12" fill="#1E1A17">- movimientos: int</text>
+<text x="1859.0" y="1180.5" font-size="12" fill="#1E1A17">- empujes: int</text>
+<text x="1859.0" y="1197.5" font-size="12" fill="#1E1A17">- undosUsados: int</text>
+<text x="1859.0" y="1214.5" font-size="12" fill="#1E1A17">- undosConsecutivos: int</text>
+<line x1="1850" y1="1224" x2="2101" y2="1224" stroke="#C8683A" stroke-width="1"/>
+<text x="1859.0" y="1241.5" font-size="12" fill="#1E1A17">- conectarMotor(): void</text>
+<text x="1859.0" y="1258.5" font-size="12" fill="#1E1A17">- notificar(): void</text>
+</g>
+<g class="caja" id="Foto">
+<rect x="1855" y="1330" width="240" height="101" rx="6" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.4"/>
+<text x="1975.0" y="1347" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«record · privado, dentro de JuegoSokoban»</text>
+<text x="1975.0" y="1362" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">Foto</text>
+<line x1="1855" y1="1370" x2="2095" y2="1370" stroke="#C8683A" stroke-width="1"/>
+<text x="1864.0" y="1387.5" font-size="12" fill="#1E1A17">- estado: EstadoNivel</text>
+<text x="1864.0" y="1404.5" font-size="12" fill="#1E1A17">- movimientos: int</text>
+<text x="1864.0" y="1421.5" font-size="12" fill="#1E1A17">- empujes: int</text>
+</g>
+<g class="caja" id="CargadorNivel">
+<rect x="2200" y="990" width="214" height="63" rx="6" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.4"/>
+<text x="2307.0" y="1008" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">CargadorNivel</text>
+<line x1="2200" y1="1016" x2="2414" y2="1016" stroke="#C8683A" stroke-width="1"/>
+<line x1="2200" y1="1026" x2="2414" y2="1026" stroke="#C8683A" stroke-width="1"/>
+<text x="2209.0" y="1043.5" font-size="12" fill="#1E1A17">+ cargar(numero: int): EstadoNivel</text>
+</g>
+<g class="caja" id="Niveles">
+<rect x="2195" y="1100" width="226" height="101" rx="6" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.4"/>
+<text x="2308.0" y="1117" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«carpeta de recursos»</text>
+<text x="2308.0" y="1132" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">niveles/  (3 TXT)</text>
+<line x1="2195" y1="1140" x2="2421" y2="1140" stroke="#C8683A" stroke-width="1"/>
+<text x="2204.0" y="1157.5" font-size="12" fill="#1E1A17">nivel1.txt   caja normal</text>
+<text x="2204.0" y="1174.5" font-size="12" fill="#1E1A17">nivel2.txt   frágil, llave, cerrojo, muro</text>
+<text x="2204.0" y="1191.5" font-size="12" fill="#1E1A17">nivel3.txt   hielo</text>
+</g>
+<g class="caja" id="EstadoNivel">
+<rect x="2560" y="1000" width="297" height="352" rx="6" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.4"/>
+<text x="2708.5" y="1018" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">EstadoNivel</text>
+<line x1="2560" y1="1026" x2="2857" y2="1026" stroke="#C8683A" stroke-width="1"/>
+<text x="2569.0" y="1043.5" font-size="12" fill="#1E1A17">- terreno: char[][]</text>
+<text x="2569.0" y="1060.5" font-size="12" fill="#1E1A17">- jugador: Jugador</text>
+<text x="2569.0" y="1077.5" font-size="12" fill="#1E1A17">- cajas: List&lt;Caja&gt;</text>
+<text x="2569.0" y="1094.5" font-size="12" fill="#1E1A17">- cantidadDestinos: int</text>
+<line x1="2560" y1="1104" x2="2857" y2="1104" stroke="#C8683A" stroke-width="1"/>
+<text x="2569.0" y="1121.5" font-size="12" fill="#1E1A17">+ EstadoNivel(lineas: List&lt;String&gt;)</text>
+<text x="2569.0" y="1138.5" font-size="12" fill="#1E1A17">- EstadoNivel(terreno: char[][], jugador: Jugador,</text>
+<text x="2589.4" y="1155.5" font-size="12" fill="#1E1A17">cajas: List&lt;Caja&gt;, cantidadDestinos: int)</text>
+<text x="2569.0" y="1172.5" font-size="12" fill="#1E1A17">+ cajaEn(posicion: Posicion): Caja</text>
+<text x="2569.0" y="1189.5" font-size="12" fill="#1E1A17">- dentro(p: Posicion): boolean</text>
+<text x="2569.0" y="1206.5" font-size="12" fill="#1E1A17">+ estaLibre(p: Posicion): boolean</text>
+<text x="2569.0" y="1223.5" font-size="12" fill="#1E1A17">+ esHielo(p: Posicion): boolean</text>
+<text x="2569.0" y="1240.5" font-size="12" fill="#1E1A17">+ esCerrojo(p: Posicion): boolean</text>
+<text x="2569.0" y="1257.5" font-size="12" fill="#1E1A17">+ abrirMuros(): void</text>
+<text x="2569.0" y="1274.5" font-size="12" fill="#1E1A17">+ quitarCaja(caja: Caja): void</text>
+<text x="2569.0" y="1291.5" font-size="12" fill="#1E1A17">+ estaCompleto(): boolean</text>
+<text x="2569.0" y="1308.5" font-size="12" fill="#1E1A17">+ tableroParaVista(): List&lt;String&gt;</text>
+<text x="2569.0" y="1325.5" font-size="12" fill="#1E1A17">- copiarTerreno(): char[][]</text>
+<text x="2569.0" y="1342.5" font-size="12" fill="#1E1A17">+ copiar(): EstadoNivel</text>
+</g>
+<g class="caja" id="MotorMovimiento">
+<rect x="3005" y="1000" width="252" height="97" rx="6" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.4"/>
+<text x="3131.0" y="1018" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">MotorMovimiento</text>
+<line x1="3005" y1="1026" x2="3257" y2="1026" stroke="#C8683A" stroke-width="1"/>
+<text x="3014.0" y="1043.5" font-size="12" fill="#1E1A17">- estado: EstadoNivel</text>
+<text x="3014.0" y="1060.5" font-size="12" fill="#1E1A17">- empuje: boolean</text>
+<line x1="3005" y1="1070" x2="3257" y2="1070" stroke="#C8683A" stroke-width="1"/>
+<text x="3014.0" y="1087.5" font-size="12" fill="#1E1A17">+ MotorMovimiento(estado: EstadoNivel)</text>
+</g>
+<g class="caja" id="MediadorMovimiento">
+<rect x="2989" y="1440" width="284" height="84" rx="6" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.4"/>
+<text x="3131.0" y="1457" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«interface»</text>
+<text x="3131.0" y="1472" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17" font-style="italic">MediadorMovimiento</text>
+<line x1="2989" y1="1480" x2="3273" y2="1480" stroke="#C8683A" stroke-width="1"/>
+<text x="2998.0" y="1497.5" font-size="12" fill="#1E1A17" font-style="italic">+ intentarMover(direccion: Direccion): boolean</text>
+<text x="2998.0" y="1514.5" font-size="12" fill="#1E1A17" font-style="italic">+ fueEmpuje(): boolean</text>
+</g>
+<g class="caja" id="Jugador">
+<rect x="2590" y="1440" width="301" height="148" rx="6" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.4"/>
+<text x="2740.5" y="1458" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">Jugador</text>
+<line x1="2590" y1="1466" x2="2891" y2="1466" stroke="#C8683A" stroke-width="1"/>
+<text x="2599.0" y="1483.5" font-size="12" fill="#1E1A17">- posicion: Posicion</text>
+<text x="2599.0" y="1500.5" font-size="12" fill="#1E1A17">- mediador: MediadorMovimiento</text>
+<line x1="2590" y1="1510" x2="2891" y2="1510" stroke="#C8683A" stroke-width="1"/>
+<text x="2599.0" y="1527.5" font-size="12" fill="#1E1A17">+ Jugador(posicion: Posicion)</text>
+<text x="2599.0" y="1544.5" font-size="12" fill="#1E1A17">+ setPosicion(posicion: Posicion): void</text>
+<text x="2599.0" y="1561.5" font-size="12" fill="#1E1A17">+ conectar(mediador: MediadorMovimiento): void</text>
+<text x="2599.0" y="1578.5" font-size="12" fill="#1E1A17">+ mover(direccion: Direccion): boolean</text>
+</g>
+<g class="caja" id="Caja">
+<rect x="2180" y="1440" width="316" height="216" rx="6" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.4"/>
+<text x="2338.0" y="1458" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">Caja</text>
+<line x1="2180" y1="1466" x2="2496" y2="1466" stroke="#C8683A" stroke-width="1"/>
+<text x="2189.0" y="1483.5" font-size="12" fill="#1E1A17">- posicion: Posicion</text>
+<text x="2189.0" y="1500.5" font-size="12" fill="#1E1A17">- estrategia: ComportamientoCaja</text>
+<text x="2189.0" y="1517.5" font-size="12" fill="#1E1A17">- resistencia: int</text>
+<line x1="2180" y1="1527" x2="2496" y2="1527" stroke="#C8683A" stroke-width="1"/>
+<text x="2189.0" y="1544.5" font-size="12" fill="#1E1A17">+ Caja(posicion: Posicion,</text>
+<text x="2209.4" y="1561.5" font-size="12" fill="#1E1A17">estrategia: ComportamientoCaja, resistencia: int)</text>
+<text x="2189.0" y="1578.5" font-size="12" fill="#1E1A17">+ setPosicion(posicion: Posicion): void</text>
+<text x="2189.0" y="1595.5" font-size="12" fill="#1E1A17">+ quitarResistencia(): void</text>
+<text x="2189.0" y="1612.5" font-size="12" fill="#1E1A17">+ getSimbolo(): char</text>
+<text x="2189.0" y="1629.5" font-size="12" fill="#1E1A17">+ despuesDeEmpujar(estado: EstadoNivel): void</text>
+<text x="2189.0" y="1646.5" font-size="12" fill="#1E1A17">+ copiar(): Caja</text>
+</g>
+<g class="caja" id="Posicion">
+<rect x="2590" y="1660" width="259" height="111" rx="6" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.4"/>
+<text x="2719.5" y="1677" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«record»</text>
+<text x="2719.5" y="1692" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">Posicion</text>
+<line x1="2590" y1="1700" x2="2849" y2="1700" stroke="#C8683A" stroke-width="1"/>
+<text x="2599.0" y="1717.5" font-size="12" fill="#1E1A17">- fila: int</text>
+<text x="2599.0" y="1734.5" font-size="12" fill="#1E1A17">- columna: int</text>
+<line x1="2590" y1="1744" x2="2849" y2="1744" stroke="#C8683A" stroke-width="1"/>
+<text x="2599.0" y="1761.5" font-size="12" fill="#1E1A17">+ siguiente(direccion: Direccion): Posicion</text>
+</g>
+<g class="caja" id="ComportamientoCaja">
+<rect x="2160" y="1730" width="355" height="84" rx="6" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.4"/>
+<text x="2337.5" y="1747" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«interface»</text>
+<text x="2337.5" y="1762" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17" font-style="italic">ComportamientoCaja</text>
+<line x1="2160" y1="1770" x2="2515" y2="1770" stroke="#C8683A" stroke-width="1"/>
+<text x="2169.0" y="1787.5" font-size="12" fill="#1E1A17" font-style="italic">+ despuesDeEmpujar(caja: Caja, estado: EstadoNivel): void</text>
+<text x="2169.0" y="1804.5" font-size="12" fill="#1E1A17" font-style="italic">+ simbolo(caja: Caja): char</text>
+</g>
+<g class="caja" id="CajaNormalStrategy">
+<rect x="2060" y="1880" width="166" height="46" rx="6" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.4"/>
+<text x="2143.0" y="1898" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">CajaNormalStrategy</text>
+<line x1="2060" y1="1906" x2="2226" y2="1906" stroke="#C8683A" stroke-width="1"/>
+<line x1="2060" y1="1916" x2="2226" y2="1916" stroke="#C8683A" stroke-width="1"/>
+</g>
+<g class="caja" id="CajaFragilStrategy">
+<rect x="2262" y="1880" width="155" height="46" rx="6" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.4"/>
+<text x="2339.5" y="1898" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">CajaFragilStrategy</text>
+<line x1="2262" y1="1906" x2="2417" y2="1906" stroke="#C8683A" stroke-width="1"/>
+<line x1="2262" y1="1916" x2="2417" y2="1916" stroke="#C8683A" stroke-width="1"/>
+</g>
+<g class="caja" id="CajaLlaveStrategy">
+<rect x="2453" y="1880" width="153" height="46" rx="6" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.4"/>
+<text x="2529.5" y="1898" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">CajaLlaveStrategy</text>
+<line x1="2453" y1="1906" x2="2606" y2="1906" stroke="#C8683A" stroke-width="1"/>
+<line x1="2453" y1="1916" x2="2606" y2="1916" stroke="#C8683A" stroke-width="1"/>
+</g>
+<text x="700" y="80" font-size="11" font-weight="400" fill="#8A7F76" text-anchor="start" font-style="italic">sokoban · arranque</text>
+<text x="2143.0" y="1943" font-size="10.5" font-weight="400" fill="#8A7F76" text-anchor="middle" font-style="italic">no agrega nada · símbolo $</text>
+<text x="2339.5" y="1943" font-size="10.5" font-weight="400" fill="#8A7F76" text-anchor="middle" font-style="italic">resta resistencia;</text>
+<text x="2529.5" y="1943" font-size="10.5" font-weight="400" fill="#8A7F76" text-anchor="middle" font-style="italic">sobre un cerrojo</text>
+<text x="2339.5" y="1957" font-size="10.5" font-weight="400" fill="#8A7F76" text-anchor="middle" font-style="italic">en 0 se rompe · F / f</text>
+<text x="2529.5" y="1957" font-size="10.5" font-weight="400" fill="#8A7F76" text-anchor="middle" font-style="italic">abre los muros · L</text>
+<text x="2871.0" y="372" font-size="10.5" font-weight="400" fill="#7B3FA0" text-anchor="start">implementan</text>
+<text x="2345.5" y="1842" font-size="10.5" font-weight="400" fill="#7B3FA0" text-anchor="start">implementan</text>
+<text x="1200" y="1170" font-size="12.5" font-weight="400" fill="#1E1A17" text-anchor="start"><tspan font-weight="700">Quién hizo cada parte</tspan></text>
+<rect x="1200" y="1184" width="30" height="16" rx="3" fill="#DAE8FC" stroke="#6C8EBF"/>
+<text x="1240" y="1196.5" font-size="12" font-weight="400" fill="#1E1A17" text-anchor="start">Luca · interfaz gráfica Swing y contrato</text>
+<rect x="1200" y="1206" width="30" height="16" rx="3" fill="#D5E8D4" stroke="#82B366"/>
+<text x="1240" y="1218.5" font-size="12" font-weight="400" fill="#1E1A17" text-anchor="start">Martín · arte (assets/)</text>
+<rect x="1200" y="1228" width="30" height="16" rx="3" fill="#FFF2CC" stroke="#D6B656"/>
+<text x="1240" y="1240.5" font-size="12" font-weight="400" fill="#1E1A17" text-anchor="start">Integración Luca + Martín (asistida por IA)</text>
+<rect x="1200" y="1250" width="30" height="16" rx="3" fill="#FCDDC7" stroke="#C8683A"/>
+<text x="1240" y="1262.5" font-size="12" font-weight="400" fill="#1E1A17" text-anchor="start">Pedro y Lucía · dominio y personaje</text>
+<rect x="1200" y="1272" width="30" height="16" rx="3" fill="#EEDDF3" stroke="#A0559F"/>
+<text x="1240" y="1284.5" font-size="12" font-weight="400" fill="#1E1A17" text-anchor="start">Mora · sonido</text>
+<text x="1200" y="1340" font-size="12.5" font-weight="400" fill="#1E1A17" text-anchor="start"><tspan font-weight="700">Cómo leer las flechas</tspan>  (la flecha sale de quien depende y apunta a quien conoce)</text>
+<path d="M 1200.0 1362.0 L 1270.0 1362.0" stroke="#7B3FA0" stroke-width="1.6" fill="none" stroke-dasharray="7 5"/>
+<polygon points="1270.0,1362.0 1255.0,1354.0 1255.0,1370.0" fill="#FFFFFF" stroke="#7B3FA0" stroke-width="1.6"/>
+<text x="1285" y="1366" font-size="12" font-weight="400" fill="#1E1A17" text-anchor="start">implementa / es un  (realización o herencia)</text>
+<path d="M 1200.0 1384.0 L 1270.0 1384.0" stroke="#1E1A17" stroke-width="1.6" fill="none"/>
+<polyline points="1259.0,1378.0 1270.0,1384.0 1259.0,1390.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polygon points="1200.0,1384.0 1210.0,1390.0 1220.0,1384.0 1210.0,1378.0" fill="#1E1A17" stroke="#1E1A17" stroke-width="1.4"/>
+<text x="1285" y="1388" font-size="12" font-weight="400" fill="#1E1A17" text-anchor="start">contiene: la crea y vive dentro de ella</text>
+<path d="M 1200.0 1406.0 L 1270.0 1406.0" stroke="#1E1A17" stroke-width="1.6" fill="none"/>
+<polyline points="1259.0,1400.0 1270.0,1406.0 1259.0,1412.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polygon points="1200.0,1406.0 1210.0,1412.0 1220.0,1406.0 1210.0,1400.0" fill="#FFFFFF" stroke="#1E1A17" stroke-width="1.4"/>
+<text x="1285" y="1410" font-size="12" font-weight="400" fill="#1E1A17" text-anchor="start">tiene una lista de… (no las crea)</text>
+<path d="M 1200.0 1428.0 L 1270.0 1428.0" stroke="#1E1A17" stroke-width="1.6" fill="none"/>
+<polyline points="1259.0,1422.0 1270.0,1428.0 1259.0,1434.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<text x="1285" y="1432" font-size="12" font-weight="400" fill="#1E1A17" text-anchor="start">tiene una referencia guardada en un atributo</text>
+<path d="M 1200.0 1450.0 L 1270.0 1450.0" stroke="#5F5650" stroke-width="1.6" fill="none" stroke-dasharray="7 5"/>
+<polyline points="1259.0,1444.0 1270.0,1450.0 1259.0,1456.0" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<text x="1285" y="1454" font-size="12" font-weight="400" fill="#1E1A17" text-anchor="start">usa o crea, pero no lo guarda</text>
+<path d="M 1200 1472 L 1229 1472 A 6 6 0 0 1 1241 1472 L 1270 1472" stroke="#5F5650" stroke-width="1.6" fill="none"/>
+<text x="1285" y="1476" font-size="12" font-weight="400" fill="#1E1A17" text-anchor="start">puentecito: las líneas se cruzan pero NO se conectan</text>
+<path d="M 60 1400 L 588 1400 L 600 1412 L 600 1576 L 60 1576 Z" fill="#FFFDF5" stroke="#B8892A" stroke-width="1.2"/>
+<text x="70" y="1418" font-size="12" font-weight="700" fill="#6E1A2C">Notas para leer el diagrama</text>
+<text x="70" y="1436" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">Herencia de Swing:</tspan> debajo del nombre dice «extiende JPanel / JFrame».</text>
+<text x="70" y="1452" font-size="11.5" fill="#1E1A17">No se dibuja la flecha a JPanel para no cruzar todo el diagrama.</text>
+<text x="70" y="1468" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">Direccion</tspan> también la usan PantallaJuego (TECLAS), Juego.mover,</text>
+<text x="70" y="1484" font-size="11.5" fill="#1E1A17">Jugador.mover, Posicion.siguiente y MediadorMovimiento.</text>
+<text x="70" y="1500" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">MotorMovimiento</tspan> mueve al Jugador y a la Caja que encuentra en el</text>
+<text x="70" y="1516" font-size="11.5" fill="#1E1A17">EstadoNivel (no las guarda: por eso no tiene flecha propia).</text>
+<text x="70" y="1532" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">Subrayado</tspan> = static · <tspan font-weight="700">+</tspan> público · <tspan font-weight="700">-</tspan> privado · <tspan font-weight="700">#</tspan> protegido</text>
+<text x="70" y="1548" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">~</tspan> de paquete. Se omiten constantes de estilo, getters y los</text>
+<text x="70" y="1564" font-size="11.5" fill="#1E1A17">métodos que solo implementan una interfaz (actualizar, mover...).</text>
+</svg>

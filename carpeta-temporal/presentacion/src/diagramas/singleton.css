@@ -1,0 +1,44 @@
+/* ── Singleton: una sola bóveda de imágenes entre los clientes y el disco ── */
+.sin__velo { position: absolute; inset: calc(var(--ey, 0px) * -1) calc(var(--ex, 0px) * -1); pointer-events: none; z-index: 1;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--fondo-hondo) 94%, transparent) 0%, color-mix(in srgb, var(--fondo-hondo) 78%, transparent) 25%, transparent 42%),
+    linear-gradient(90deg, color-mix(in srgb, var(--fondo-hondo) 70%, transparent) 0%, transparent 30%); }
+
+.sin__ancla { position: absolute; left: 0; top: 0; z-index: 3; pointer-events: none;
+  transform: translate(calc(var(--ax, -2000) * 1px), calc(var(--ay, -2000) * 1px)) translate(var(--ox, -50%), var(--oy, -50%)); }
+.sin__ancla--arriba { --oy: -100%; z-index: 2; }
+.sin__ancla--izq { --oy: 0%; }
+
+.sin__cliente, .sin__cartel { --golpe: 0; background: linear-gradient(180deg, var(--superficie-2), var(--superficie)); border: 1px solid var(--linea-media);
+  border-radius: var(--radio); box-shadow: var(--sombra-caja), 0 0 0 calc(var(--golpe) * 2px) var(--exito), 0 0 calc(var(--golpe) * 34px) color-mix(in srgb, var(--exito) 45%, transparent); }
+.sin__cliente { z-index: 2; width: 350px; padding: 16px 24px 18px; }
+.sin__rotulo { margin: 0 0 4px; font-size: 22px; letter-spacing: .06em; text-transform: uppercase; color: var(--tinta-3); font-weight: 600; }
+.sin__nombre { margin: 0; font-family: var(--f-display); font-size: 32px; color: var(--titulo); font-weight: 600; }
+.sin__cuenta { margin: 6px 0 0; font-size: 22px; color: var(--exito); font-variant-numeric: tabular-nums; }
+
+.sin__cartel { padding: 12px 22px 14px; text-align: center; white-space: nowrap; margin-bottom: 18px; }
+.sin__cartel--disco { --golpe: 0; }
+.sin__titulo { margin: 0; font-family: var(--f-display); font-size: 36px; color: var(--titulo); font-weight: 600; }
+.sin__titulo span { margin-left: 8px; font-family: var(--f-texto); font-size: var(--t-rotulo); color: var(--tinta-2); font-weight: 400; }
+.sin__codigo { --ok: 0; display: inline-block; margin-top: 6px; font-family: var(--f-mono); font-size: 22px;
+  color: color-mix(in srgb, var(--acento) calc(var(--ok) * 100%), var(--tinta-2)); }
+
+.sin__cuentas { position: absolute; left: 1090px; bottom: 40px; z-index: 2; display: grid; grid-template-columns: 330px 330px; gap: 4px 48px; align-items: start; }
+.sin__cifra { display: flex; flex-direction: column; gap: 8px; }
+.sin__numero { --golpe: 0; font-family: var(--f-display); font-size: 80px; line-height: .9; font-weight: 600; font-variant-numeric: tabular-nums;
+  color: var(--acento); text-shadow: 0 0 calc(var(--golpe) * 30px) var(--brillo); }
+.sin__numero--pedidos { color: var(--exito); }
+.sin__cifra span { font-size: 22px; line-height: 1.35; color: var(--tinta-2); }
+.sin__cifra code { font-family: var(--f-mono); font-size: 22px; color: var(--titulo); }
+.sin__simulado { --rapido: 0; grid-column: 1 / -1; margin: 10px 0 0; font-size: 22px; color: color-mix(in srgb, var(--acento) calc(var(--rapido) * 100%), var(--tinta-3)); }
+
+.sin__intento { display: block; padding: 6px 14px; border-radius: var(--radio-chico); white-space: nowrap; font-family: var(--f-mono); font-size: 24px;
+  color: var(--tinta); background: var(--superficie-2); border: 2px dashed var(--pendiente); box-shadow: var(--sombra-lejos); }
+.sin__intento--ok { color: var(--fondo-hondo); background: var(--exito); border: 0; box-shadow: 0 0 26px color-mix(in srgb, var(--exito) 60%, transparent); opacity: 0; }
+.sin__privado { margin: 0; padding: 8px 16px; border-radius: var(--radio-chico); white-space: nowrap; font-size: 22px; color: var(--tinta-2);
+  background: color-mix(in srgb, var(--fondo-hondo) 90%, transparent); border: 1px solid var(--pendiente); box-shadow: var(--sombra-lejos); }
+.sin__privado code { margin-right: 8px; font-family: var(--f-mono); color: var(--pendiente); }
+
+.sin__respaldo { display: grid; grid-template-columns: repeat(7, 56px); gap: 8px; }
+.sin__respaldo div { width: 56px; height: 56px; border-radius: 6px; border: 1px dashed var(--linea-media); background: var(--fondo-hondo); padding: 4px; }
+.sin__respaldo .sin__ranura--llena { border-style: solid; background: var(--superficie); }
+.sin__respaldo img { width: 100%; height: 100%; image-rendering: pixelated; }

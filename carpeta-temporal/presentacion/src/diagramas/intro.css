@@ -1,0 +1,18 @@
+/* Intro: escena 3D a sangre, velo para el crédito y respaldo sin WebGL. */
+.intro__escena { cursor: grab; touch-action: none; }
+.intro__escena:active { cursor: grabbing; }
+
+/* Velo bajo el crédito: el texto nunca queda directo sobre el 3D */
+.intro__velo { position: absolute; left: calc(var(--ex, 0px) * -1); right: calc(var(--ex, 0px) * -1); bottom: calc(var(--ey, 0px) * -1);
+  height: calc(320px + var(--ey, 0px)); pointer-events: none; opacity: 0;
+  background: linear-gradient(to top, color-mix(in srgb, var(--fondo-hondo) 94%, transparent) 0%, color-mix(in srgb, var(--fondo-hondo) 72%, transparent) 45%, transparent 100%); }
+.intro__linea { width: 300px; height: 2px; pointer-events: none; transform: scaleX(0);
+  background: linear-gradient(90deg, transparent, var(--acento) 30%, var(--titulo) 50%, var(--acento) 70%, transparent); }
+.intro__credito.intro__bajada { width: 1920px; margin: 0; text-align: center; font-size: 30px; font-weight: 600; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--tinta); pointer-events: none; text-shadow: 0 2px 18px var(--fondo-hondo); }
+
+/* Respaldo sin WebGL: la palabra armada con la caja real del juego */
+.intro__respaldo2 { position: absolute; left: 0; top: 330px; width: 1920px; display: flex; justify-content: center; gap: 48px; }
+.intro__letra { display: grid; grid-template-columns: repeat(5, 40px); grid-auto-rows: 40px; }
+.intro__celda { display: block; width: 40px; height: 40px; }
+.intro__caja { width: 100%; height: 100%; transform: scale(1.35); }

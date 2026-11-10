@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 860" width="1500" height="860" font-family="Inter, Arial, sans-serif">
+<style>text{white-space:pre}</style>
+<rect width="1500" height="860" fill="#FFFFFF"/>
+<text x="30" y="40" font-size="22" font-weight="700" fill="#6E1A2C">Cómo leer las flechas del UML</text>
+<text x="30" y="62" font-size="12.5" fill="#6B6B6B">Cada fila es un ejemplo real del proyecto: la flecha sale de la clase que depende y apunta a la que conoce.</text>
+<path d="M 230.0 123.0 L 430.0 123.0" fill="none" stroke="#7B3FA0" stroke-width="1.6"/>
+<polygon points="430.0,123.0 415.0,115.0 415.0,131.0" fill="#FFFFFF" stroke="#7B3FA0" stroke-width="1.6"/>
+<path d="M 230.0 231.0 L 430.0 231.0" fill="none" stroke="#7B3FA0" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polygon points="430.0,231.0 415.0,223.0 415.0,239.0" fill="#FFFFFF" stroke="#7B3FA0" stroke-width="1.6"/>
+<path d="M 230.0 339.0 L 430.0 339.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="419.0,333.0 430.0,339.0 419.0,345.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polygon points="230.0,339.0 240.0,345.0 250.0,339.0 240.0,333.0" fill="#1E1A17" stroke="#1E1A17" stroke-width="1.4"/>
+<path d="M 230.0 447.0 L 430.0 447.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="419.0,441.0 430.0,447.0 419.0,453.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polygon points="230.0,447.0 240.0,453.0 250.0,447.0 240.0,441.0" fill="#FFFFFF" stroke="#1E1A17" stroke-width="1.4"/>
+<path d="M 230.0 555.0 L 430.0 555.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="419.0,549.0 430.0,555.0 419.0,561.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<path d="M 230.0 663.0 L 430.0 663.0" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="419.0,657.0 430.0,663.0 419.0,669.0" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<g class="caja" id="a0">
+<rect x="40" y="100" width="190" height="46" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="135.0" y="118" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">PanelHUD</text>
+<line x1="40" y1="126" x2="230" y2="126" stroke="#6C8EBF" stroke-width="1"/>
+<line x1="40" y1="136" x2="230" y2="136" stroke="#6C8EBF" stroke-width="1"/>
+</g>
+<g class="caja" id="b0">
+<rect x="430" y="100" width="190" height="46" rx="6" fill="#FFFFFF" stroke="#9E9E9E" stroke-width="1.4"/>
+<text x="525.0" y="118" text-anchor="middle" font-size="14" font-weight="600" fill="#6B6B6B">JPanel</text>
+<line x1="430" y1="126" x2="620" y2="126" stroke="#9E9E9E" stroke-width="1"/>
+<line x1="430" y1="136" x2="620" y2="136" stroke="#9E9E9E" stroke-width="1"/>
+</g>
+<g class="caja" id="a1">
+<rect x="40" y="208" width="190" height="46" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="135.0" y="226" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">PanelHUD</text>
+<line x1="40" y1="234" x2="230" y2="234" stroke="#6C8EBF" stroke-width="1"/>
+<line x1="40" y1="244" x2="230" y2="244" stroke="#6C8EBF" stroke-width="1"/>
+</g>
+<g class="caja" id="b1">
+<rect x="430" y="208" width="190" height="40" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="525.0" y="225" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«interface»</text>
+<text x="525.0" y="240" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17" font-style="italic">ObservadorJuego</text>
+</g>
+<g class="caja" id="a2">
+<rect x="40" y="316" width="190" height="46" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="135.0" y="334" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">PantallaJuego</text>
+<line x1="40" y1="342" x2="230" y2="342" stroke="#6C8EBF" stroke-width="1"/>
+<line x1="40" y1="352" x2="230" y2="352" stroke="#6C8EBF" stroke-width="1"/>
+</g>
+<g class="caja" id="b2">
+<rect x="430" y="316" width="190" height="46" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="525.0" y="334" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">PanelHUD</text>
+<line x1="430" y1="342" x2="620" y2="342" stroke="#6C8EBF" stroke-width="1"/>
+<line x1="430" y1="352" x2="620" y2="352" stroke="#6C8EBF" stroke-width="1"/>
+</g>
+<g class="caja" id="a3">
+<rect x="40" y="424" width="190" height="46" rx="6" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.4"/>
+<text x="135.0" y="442" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">JuegoSokoban</text>
+<line x1="40" y1="450" x2="230" y2="450" stroke="#C8683A" stroke-width="1"/>
+<line x1="40" y1="460" x2="230" y2="460" stroke="#C8683A" stroke-width="1"/>
+</g>
+<g class="caja" id="b3">
+<rect x="430" y="424" width="190" height="40" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="525.0" y="441" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«interface»</text>
+<text x="525.0" y="456" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17" font-style="italic">ObservadorJuego</text>
+</g>
+<g class="caja" id="a4">
+<rect x="40" y="532" width="190" height="46" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="135.0" y="550" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">PantallaJuego</text>
+<line x1="40" y1="558" x2="230" y2="558" stroke="#6C8EBF" stroke-width="1"/>
+<line x1="40" y1="568" x2="230" y2="568" stroke="#6C8EBF" stroke-width="1"/>
+</g>
+<g class="caja" id="b4">
+<rect x="430" y="532" width="190" height="40" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="525.0" y="549" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«interface»</text>
+<text x="525.0" y="564" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17" font-style="italic">Juego</text>
+</g>
+<g class="caja" id="a5">
+<rect x="40" y="640" width="190" height="46" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="135.0" y="658" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">PantallaJuego</text>
+<line x1="40" y1="666" x2="230" y2="666" stroke="#6C8EBF" stroke-width="1"/>
+<line x1="40" y1="676" x2="230" y2="676" stroke="#6C8EBF" stroke-width="1"/>
+</g>
+<g class="caja" id="b5">
+<rect x="430" y="640" width="190" height="46" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="525.0" y="658" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">Cartel</text>
+<line x1="430" y1="666" x2="620" y2="666" stroke="#6C8EBF" stroke-width="1"/>
+<line x1="430" y1="676" x2="620" y2="676" stroke="#6C8EBF" stroke-width="1"/>
+</g>
+<text x="670" y="114" font-size="13" font-weight="700" fill="#6E1A2C" text-anchor="start">ES UN  ·  herencia (extends)</text>
+<text x="670" y="134" font-size="12.5" font-weight="400" fill="#1E1A17" text-anchor="start">PanelHUD es un panel de Swing: hereda todo lo de JPanel.</text>
+<text x="670" y="156" font-size="11.5" fill="#4A403A" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace">public class PanelHUD extends JPanel</text>
+<text x="670" y="222" font-size="13" font-weight="700" fill="#6E1A2C" text-anchor="start">CUMPLE UN CONTRATO  ·  realización (implements)</text>
+<text x="670" y="242" font-size="12.5" font-weight="400" fill="#1E1A17" text-anchor="start">Promete tener el método actualizar(estado).</text>
+<text x="670" y="264" font-size="11.5" fill="#4A403A" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace">public class PanelHUD extends JPanel implements ObservadorJuego</text>
+<text x="670" y="330" font-size="13" font-weight="700" fill="#6E1A2C" text-anchor="start">LO CREA Y LO CONTIENE  ·  composición (◆ lleno)</text>
+<text x="670" y="350" font-size="12.5" font-weight="400" fill="#1E1A17" text-anchor="start">PantallaJuego crea su HUD; el HUD no existe sin la pantalla.</text>
+<text x="670" y="372" font-size="11.5" fill="#4A403A" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace">PanelHUD hud = new PanelHUD(juego, this::pausar);  add(hud);</text>
+<text x="670" y="438" font-size="13" font-weight="700" fill="#6E1A2C" text-anchor="start">TIENE UNA LISTA, SIN CREARLOS  ·  agregación (◇ vacío)</text>
+<text x="670" y="458" font-size="12.5" font-weight="400" fill="#1E1A17" text-anchor="start">Se los pasan desde afuera con agregarObservador(...).</text>
+<text x="670" y="480" font-size="11.5" fill="#4A403A" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace">private final List&lt;ObservadorJuego&gt; observadores = new ArrayList&lt;&gt;();</text>
+<text x="670" y="546" font-size="13" font-weight="700" fill="#6E1A2C" text-anchor="start">LO GUARDA EN UN ATRIBUTO  ·  asociación</text>
+<text x="670" y="566" font-size="12.5" font-weight="400" fill="#1E1A17" text-anchor="start">Lo recibe en el constructor y lo usa toda la partida.</text>
+<text x="670" y="588" font-size="11.5" fill="#4A403A" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace">private final Juego juego;</text>
+<text x="670" y="654" font-size="13" font-weight="700" fill="#6E1A2C" text-anchor="start">LO USA O LO CREA Y LO SUELTA  ·  dependencia (punteada)</text>
+<text x="670" y="674" font-size="12.5" font-weight="400" fill="#1E1A17" text-anchor="start">Lo crea dentro de un método y no lo guarda.</text>
+<text x="670" y="696" font-size="11.5" fill="#4A403A" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace">dialogo.add(new Cartel(titulo, mensaje, alElegir));</text>
+<path d="M 40 760 L 1448 760 L 1460 772 L 1460 840 L 40 840 Z" fill="#FFFDF5" stroke="#B8892A" stroke-width="1.2"/>
+<text x="50" y="778" font-size="12" font-weight="700" fill="#6E1A2C">Además</text>
+<text x="50" y="796" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">Multiplicidad</tspan> (número en la punta): 1 = exactamente uno · 0..1 = cero o uno · 0..* = cualquier cantidad.</text>
+<text x="50" y="812" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">Visibilidad</tspan>: + público · - privado · # protegido.  <tspan font-weight="700">Subrayado</tspan> = static (es de la clase, no de cada objeto).  <tspan font-weight="700">Cursiva</tspan> = abstracto (método de interfaz, sin código).</text>
+<text x="50" y="828" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">«interface», «enumeration», «record»</tspan>: el tipo de la clase. Violeta = jerarquía · negro = tener · gris punteado = usar.</text>
+</svg>
