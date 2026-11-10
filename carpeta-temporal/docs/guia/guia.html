@@ -138,7 +138,7 @@ dl.def { break-inside: avoid; }
   <tr><td><code>sokoban.modelo</code> (contrato)</td><td><span class="ce">El contrato entre la vista y el dominio: 2 interfaces, 1 record y 1 enum.</span></td><td>Luca</td><td><span class="ok">✓ listo</span></td></tr>
   <tr><td><code>sokoban.modelo</code> (dominio) y <code>.entidades</code>, <code>.estrategias</code>, <code>.movimiento</code></td><td><span class="ce">Las reglas: carga de niveles, tablero, jugador, cajas normal / frágil / llave, hielo, cerrojo y muros, deshacer y puntaje.</span></td><td>Pedro y Lucía</td><td><span class="ok">✓ integrado</span></td></tr>
   <tr><td><code>sokoban.sonido</code></td><td><span class="ce">Efectos de sonido del juego y de la interfaz, y la tecla M para silenciar.</span></td><td>Mora</td><td><span class="ok">✓ integrado</span> <span class="med">⚠ falta aprobar el pull request</span></td></tr>
-  <tr><td><code>sokoban.prueba</code></td><td><span class="ce">JuegoDePrueba: el Sokoban mínimo que se usó para probar la vista.</span></td><td>Luca</td><td><span class="med">⚠ ya no se usa: borrarlo</span></td></tr>
+  <tr><td><code>sokoban.prueba</code></td><td><span class="ce">JuegoDePrueba: el Sokoban mínimo que se usó para probar la vista.</span></td><td>Luca</td><td><span class="ce">Se borró al unificar: ya lo reemplaza JuegoSokoban</span></td></tr>
   <tr><td><code>assets/</code></td><td><span class="ce">104 imágenes: personaje, cajas, pisos, paredes, fondos, HUD.</span></td><td>Martín</td><td><span class="ok">✓ listo (30 en uso)</span></td></tr>
   <tr><td><code>assets/sonidos/</code></td><td><span class="ce">14 efectos .wav generados por código (<code>docs/generar_sonidos.py</code>).</span></td><td>Mora</td><td><span class="ok">✓ listo</span></td></tr>
   <tr><td><code>niveles/</code></td><td><span class="ce">3 niveles en .txt, un carácter por celda.</span></td><td>Pedro y Lucía</td><td><span class="med">⚠ son de prueba, muy chicos</span></td></tr>
@@ -256,7 +256,7 @@ dl.def { break-inside: avoid; }
 <table>
   <thead><tr><th style="width:26mm">Clase</th><th>Qué hace</th><th style="width:42mm">Relaciones clave</th><th style="width:46mm">Mirá esto para validarla</th></tr></thead>
   <tr><td><b>Main</b></td><td><span class="ce">Crea el dominio, lo envuelve con el sonido, crea la ventana e instala los sonidos de la interfaz. Es la «raíz de composición»: el único lugar que conoce las clases concretas.</span></td><td>crea JuegoSokoban, JuegoConSonido y VentanaPrincipal; usa SonidosDeInterfaz</td><td><span class="ve">Usa <code>SwingUtilities.invokeLater</code>, como pide Swing.</span></td></tr>
-  <tr><td><b>JuegoDePrueba</b><br><span class="pie-nota">sin uso</span></td><td><span class="ce">El Sokoban mínimo que permitió probar la vista antes de que llegara el dominio.</span></td><td>nadie lo crea</td><td><span class="ro">Ya no se usa: conviene borrar el paquete <code>sokoban.prueba</code> antes de entregar.</span> <span class="ce">Por eso no aparece en los diagramas.</span></td></tr>
+  <tr><td><b>JuegoDePrueba</b><br><span class="pie-nota">sin uso</span></td><td><span class="ce">El Sokoban mínimo que permitió probar la vista antes de que llegara el dominio.</span></td><td>nadie lo crea</td><td><span class="ce">Se borró al unificar todo en <code>main</code>.</span> <span class="ce">Por eso no aparece en los diagramas.</span></td></tr>
 </table></div>
 
 <!-- ═══════════════════════════ 6 ═══════════════════════════ -->
@@ -751,14 +751,14 @@ public void alternar(Sonidos contexto) {
 <p class="pie-nota" style="margin-bottom:2mm">Son observaciones de la revisión del código integrado. Ninguna es grave; la idea es que todos sepan dónde están y decidan juntos.</p>
 <ol>
   <li><span class="ce">Al copiar el ZIP del dominio, se borraron los comentarios de documentación de <code>Juego</code>, <code>EstadoJuego</code>, <code>ObservadorJuego</code>, <code>Direccion</code> y <code>Main</code>.</span> <span class="ve">Ya se recuperaron.</span> <span class="ce">Para la próxima, conviene traer los cambios con git (rama y pull request) y no copiando archivos.</span></li>
-  <li><span class="ce"><code>JuegoDePrueba</code> ya no se usa.</span> <span class="ve">Conviene borrar el paquete <code>sokoban.prueba</code> antes de entregar.</span></li>
+  <li><span class="ce"><code>JuegoDePrueba</code> ya no se usaba.</span> <span class="ve">Se borró el paquete <code>sokoban.prueba</code> al unificar todo en <code>main</code>.</span></li>
   <li><span class="ce">Mediator: solo el Jugador usa el mediador; la Caja no.</span> <span class="ve">Para la defensa, o la Caja pasa también por el mediador, o se explica por qué no (sección 11).</span></li>
   <li><span class="ce">El deshacer guarda fotos del nivel.</span> <span class="ve">Se puede presentar como Memento si se nombra así en el informe (sección 12).</span></li>
   <li><span class="ce">Cuando la caja frágil se rompe y el nivel queda sin solución, solo suena «derrota»: no hay cartel que avise que hay que reiniciar.</span></li>
   <li><span class="ce">Detalles visuales: la caja llave tapa el dibujo del cerrojo y el jugador sobre hielo tapa el hielo.</span></li>
   <li><span class="ce">Los 3 niveles son de prueba y muy chicos.</span> <span class="ve">Vale la pena diseñar niveles que muestren cada regla.</span></li>
-  <li><span class="ce">Los dos commits del dominio tienen el mismo mensaje («Added Player and boxes»), y <code>INTEGRACION_MEDIATOR_STRATEGY.md</code> habla de un ZIP.</span> <span class="ve">Conviene actualizar ese archivo o borrarlo.</span></li>
-  <li><span class="ce">El pull request del sonido sigue abierto: hay que aprobarlo en GitHub.</span> <span class="ro"><code>main</code> todavía no tiene la integración del arte (épocas) ni estas correcciones.</span></li>
+  <li><span class="ce">Los dos commits del dominio tienen el mismo mensaje («Added Player and boxes»).</span> <span class="ve">Las notas del ZIP se pasaron a <code>docs/dominio.md</code>, ya sin las instrucciones de copiado.</span></li>
+  <li><span class="ce">El pull request del sonido quedó incorporado en <code>main</code>.</span> <span class="ve">Ahora <code>main</code> tiene todo junto: arte, interfaz, épocas, dominio y sonido.</span></li>
 </ol>
 </div>
 

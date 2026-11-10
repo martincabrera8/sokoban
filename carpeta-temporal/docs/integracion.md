@@ -18,7 +18,7 @@ Este documento junta las cuatro partes que ya están en el repositorio (arte, in
 | README inicial y consigna | **Martín** | `README.md`, `docs/consigna-prof-pepe.pdf` |
 | Interfaz gráfica Swing: ventana, menú, partida, HUD, tablero, carteles de pausa y resultado, caché de imágenes | **Luca** | `src/main/java/sokoban/vista/*` (salvo `Epoca`), `Main.java` |
 | Contrato vista-dominio: `Juego` (Facade), `ObservadorJuego` (Observer), `EstadoJuego` (DTO), `Direccion` | **Luca** | `src/main/java/sokoban/modelo/` (esas 4) |
-| Juego de prueba (ya no se usa) | **Luca** | `src/main/java/sokoban/prueba/JuegoDePrueba.java` |
+| Juego de prueba (se borró al unificar) | **Luca** | estaba en `src/main/java/sokoban/prueba/` |
 | Proyecto Maven, documentación y UML de la interfaz | **Luca** | `pom.xml`, `docs/interfaz.md`, `docs/uml/diagrama-interfaz-sokoban.*`, `docs/capturas/` |
 | Dominio y personaje: `JuegoSokoban`, `CargadorNivel`, `EstadoNivel`, `Posicion`, `Jugador`, `Caja`, las estrategias de caja (Strategy) y el motor de movimiento (Mediator), 5 símbolos nuevos en `PanelTablero` | **Pedro y Lucía** | `src/main/java/sokoban/modelo/` (el resto), `modelo/entidades/`, `modelo/estrategias/`, `modelo/movimiento/`, `niveles/` |
 | Sonido: `JuegoConSonido` (Decorator), `Sonidos` (Singleton + Facade), `EstadoSonido` y sus dos estados (State), `Sonido`, `SonidosDeInterfaz`, 14 efectos generados por código | **Mora** | `src/main/java/sokoban/sonido/`, `assets/sonidos/`, `docs/generar_sonidos.py`, `docs/sonido.md`, 4 líneas de `Main` |
@@ -88,14 +88,14 @@ Niveles `.txt` ✓ · caja normal, frágil y llave ✓ · piso resbaladizo ✓ �
 
 **Observaciones** (ninguna rompe el juego)
 1. Al copiar el ZIP, el commit del dominio borró la documentación de `Juego`, `EstadoJuego`, `ObservadorJuego`, `Direccion` y `Main`. Ya se recuperó. Para la próxima conviene traer los cambios con una rama y un pull request.
-2. `JuegoDePrueba` ya no se usa: conviene borrar el paquete `sokoban.prueba` antes de entregar.
+2. `JuegoDePrueba` ya no se usaba: se borró el paquete `sokoban.prueba` al unificar todo en `main`.
 3. Mediator: solo el `Jugador` usa el mediador; la `Caja` no. Para la defensa, o la Caja también pasa por él, o se explica por qué no.
 4. El deshacer guarda fotos completas del nivel: se puede presentar como **Memento** si se nombra así en el informe.
 5. Cuando la caja frágil se rompe y el nivel queda sin solución, solo suena «derrota»: no hay cartel que avise que hay que reiniciar.
 6. Detalles visuales: la caja llave tapa el dibujo del cerrojo y el jugador sobre hielo tapa el hielo.
 7. Los 3 niveles son de prueba y muy chicos.
-8. Los dos commits del dominio tienen el mismo mensaje y `INTEGRACION_MEDIATOR_STRATEGY.md` habla de un ZIP: conviene actualizarlo o borrarlo.
-9. El pull request del sonido sigue abierto y hay que aprobarlo en GitHub. `main` todavía no tiene la integración del arte (épocas) ni estas correcciones.
+8. Los dos commits del dominio tienen el mismo mensaje. Las notas del ZIP (`INTEGRACION_MEDIATOR_STRATEGY.md`) se pasaron a `docs/dominio.md`, sin las instrucciones de copiado.
+9. El pull request del sonido quedó incorporado en `main`, y `main` ya tiene todo junto: arte, interfaz, épocas, dominio y sonido.
 
 Detalles menores que pueden aparecer en la defensa: `JuegoSokoban` guarda el motor como `MotorMovimiento` aunque alcanza con la interfaz `MediadorMovimiento`; la caja llave abre **todos** los muros `X` del nivel (con un cerrojo por nivel da lo mismo); `JuegoConSonido` deduce qué pasó leyendo los símbolos del tablero, así que si el dominio cambia una letra hay que actualizar sus constantes.
 
