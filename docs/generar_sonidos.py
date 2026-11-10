@@ -121,6 +121,12 @@ def main():
     guardar("choque", mezclar(tono(80, 0.1, 0.6, "seno", 40), ruido(0.06, 0.2, 60, 0.9)))
     # Clic de botón de la interfaz
     guardar("clic", mezclar(tono(1200, 0.03, 0.35, "cuadrada", 120), ruido(0.015, 0.15, 200)))
+    # DeLorean: el jugador junta plutonio (zumbido que sube)
+    guardar("plutonio", mezclar(tono(440, 0.25, 0.35, "cuadrada", 6, 1320), tono(880, 0.25, 0.2, "seno", 6, 1760)))
+    # DeLorean: viaje en el tiempo (barrido que sube, destello y eco que baja)
+    guardar("viaje_tiempo", seguido(mezclar(tono(150, 0.45, 0.45, "cuadrada", 1.5, 1800), ruido(0.45, 0.15, 2, 0.4)),
+                                    mezclar(ruido(0.08, 0.8, 30, 0.0), tono(2200, 0.1, 0.3, "seno", 20)),
+                                    tono(1600, 0.5, 0.35, "triangulo", 5, 200)))
 
 
 if __name__ == "__main__":

@@ -31,7 +31,7 @@ public class EstadoNivel {
                 char s = lineas.get(f).charAt(c);
                 Posicion p = new Posicion(f, c);
                 switch (s) {
-                    case '#', ' ', '.', '~', 'C', 'X', 'O' -> terreno[f][c] = s;
+                    case '#', ' ', '.', '~', 'C', 'X', 'O', 'P' -> terreno[f][c] = s;
                     case '@', '+' -> {
                         if (encontrado != null) throw new IllegalArgumentException("Mas de un jugador");
                         encontrado = new Jugador(p);
@@ -108,6 +108,31 @@ public class EstadoNivel {
     }
 
     public void quitarCaja(Caja caja) { cajas.remove(caja); }
+
+    /** DeLorean: si en esa casilla hay plutonio ('P'), el jugador lo junta y desaparece. */
+    public boolean recogerPlutonio(Posicion p) {
+        if (!dentro(p) || terreno[p.fila()][p.columna()] != 'P') return false;
+        terreno[p.fila()][p.columna()] = ' ';
+        return true;
+    }
+
+    /** DeLorean: el plutonio que ya se juntó en el presente no vuelve a aparecer en el pasado. */
+    public void conservarPlutonioRecogido(EstadoNivel presente) {
+        for (int f = 0; f < terreno.length; f++) {
+            for (int c = 0; c < terreno[f].length; c++) {
+                if (terreno[f][c] == 'P' && presente.terreno[f][c] != 'P') terreno[f][c] = ' ';
+            }
+        }
+    }
+
+    public int cajasEnDestino() {
+        int cantidad = 0;
+        for (Caja caja : cajas) {
+            Posicion p = caja.getPosicion();
+            if (terreno[p.fila()][p.columna()] == '.') cantidad++;
+        }
+        return cantidad;
+    }
 
     public boolean estaCompleto() {
         if (cajas.size() != cantidadDestinos) return false;

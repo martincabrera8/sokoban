@@ -50,7 +50,8 @@ public class PanelTablero extends JPanel implements ObservadorJuego {
             Map.entry('C', List.of("tiles/cerrojo_cerrado")),
             Map.entry('c', List.of("tiles/cerrojo_abierto")),
             Map.entry('X', List.of("tiles/muro_cerrado")),
-            Map.entry('O', List.of("tiles/muro_abierto")));
+            Map.entry('O', List.of("tiles/muro_abierto")),
+            Map.entry('P', List.of(PISO, "items/plutonio")));
 
     private List<String> tablero = List.of();
     private Epoca epoca = Epoca.delNivel(1);
@@ -58,6 +59,10 @@ public class PanelTablero extends JPanel implements ObservadorJuego {
 
     @Override
     public void actualizar(EstadoJuego estado) {
+        Direccion paso = pasoDelJugador(tablero, estado.tablero());
+        if (paso != null) {
+            orientacion = paso; // también gira al personaje durante la repetición
+        }
         tablero = estado.tablero();
         epoca = Epoca.delNivel(estado.nivel());
         repaint();
@@ -93,6 +98,34 @@ public class PanelTablero extends JPanel implements ObservadorJuego {
         for (String capa : CAPAS.getOrDefault(simbolo, List.of())) {
             g.drawImage(Imagenes.obtenerInstancia().obtener(rutaDe(capa)), x, y, tamano, tamano, null);
         }
+    }
+
+    /** Si el jugador avanzó una casilla entre dos estados, devuelve hacia dónde. */
+    private static Direccion pasoDelJugador(List<String> antes, List<String> despues) {
+        int[] desde = buscarJugador(antes);
+        int[] hasta = buscarJugador(despues);
+        if (desde == null || hasta == null) {
+            return null;
+        }
+        for (Direccion direccion : Direccion.values()) {
+            if (hasta[0] - desde[0] == direccion.getDeltaFila() && hasta[1] - desde[1] == direccion.getDeltaColumna()) {
+                return direccion;
+            }
+        }
+        return null;
+    }
+
+    private static int[] buscarJugador(List<String> filas) {
+        for (int fila = 0; fila < filas.size(); fila++) {
+            String linea = filas.get(fila);
+            for (int columna = 0; columna < linea.length(); columna++) {
+                char celda = linea.charAt(columna);
+                if (celda == '@' || celda == '+') {
+                    return new int[] {fila, columna};
+                }
+            }
+        }
+        return null;
     }
 
     private String rutaDe(String capa) {
