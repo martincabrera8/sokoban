@@ -61,7 +61,7 @@ src/main/java/sokoban/
 └── sonido/            Efectos de sonido
 assets/                Imágenes (personaje, cajas, pisos, fondos, HUD) y sonidos (.wav)
 niveles/               Niveles en texto
-docs/                  Notas del dominio y del sonido
+docs/                  Informe técnico, diagrama de clases en StarUML (Sokoban.mdj) y notas del dominio y del sonido
 ```
 
 ## Patrones de diseño
@@ -78,6 +78,11 @@ docs/                  Notas del dominio y del sonido
 | State | `SonidoActivado` / `SonidoSilenciado` | La tecla M cambia el comportamiento del sonido |
 | Memento | `RecuerdoNivel`, `JuegoSokoban`, `MaquinaDelTiempo` | Deshacer y DeLorean: guardar y restaurar momentos del nivel sin exponer su interior |
 | Command | `Comando`, `GrabadoraDePartida`, `Repeticion` | Grabar las acciones del jugador y repetir la partida |
+
+## Documentación
+
+- `docs/informe/Informe-tecnico-Sokoban.pdf` (y `.docx`): decisiones de diseño, patrones, reglas, puntaje y declaración de uso de IA.
+- `docs/Sokoban.mdj`: diagrama de clases completo y un diagrama por patrón (abrir con StarUML).
 
 ## Equipo
 
