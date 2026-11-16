@@ -114,6 +114,7 @@ TIPOS = {
     "composicion": (TINTA, False, "flecha", "rombo_lleno"),
     "agregacion": (TINTA, False, "flecha", "rombo_vacio"),
     "dependencia": (DEP, True, "flecha", None),
+    "bidireccional": (TINTA, False, "flecha", "flecha"),
     "pend_implementa": ("#A0A0A0", True, "triangulo", None),
     "pend_dependencia": ("#A0A0A0", True, "flecha", None),
 }

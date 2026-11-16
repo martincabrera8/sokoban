@@ -27,7 +27,8 @@ participant "PantallaJuego" as PJ
 participant "GrabadoraDePartida\n(Command)" as GR #D5E8D4
 participant "ComandoMover" as CM #D5E8D4
 participant "JuegoConSonido\n(Decorator)" as JS #EEDDF3
-participant "JuegoSokoban\n(dominio)" as JK #FCDDC7
+participant "JuegoSokoban\n(Facade)" as JK #FCDDC7
+participant "nivel:\nEstadoNivel" as EN #FCDDC7
 participant "jugador:\nJugador" as JU #FCDDC7
 participant "MotorMovimiento\n(Mediator)" as MM #FCDDC7
 participant "caja:\nCaja" as CA #FCDDC7
@@ -35,43 +36,44 @@ participant "PanelHUD y\nPanelTablero" as OBS
 participant "Sonidos\n(Singleton)" as SO #EEDDF3
 
 U -> PJ : tecla DERECHA
-note right of PJ : TECLAS traduce la tecla\nen Direccion.DERECHA\n(antes gira el sprite con\ntablero.mirarHacia)
+note right of PJ : FLECHAS traduce la tecla\nen Direccion.DERECHA\n(antes gira el sprite con\ntablero.mirarHacia)
 PJ -> GR : ejecutar(new ComandoMover(juego, DERECHA))
 activate GR
 GR -> CM : ejecutar()
 CM -> JS : mover(DERECHA)
 activate JS
-JS -> JK : getEstado()
-JK --> JS : antes: EstadoJuego
-JS -> JK : mover(DERECHA)
+JS -> JK : mover(DERECHA)\n(JuegoDecorado delega en el juego envuelto)
 activate JK
-JK -> JK : anterior = crearRecuerdo()\n(Memento: copia del nivel y contadores)
-JK -> JU : mover(DERECHA)
+JK -> EN : antes = crearRecuerdo()
+note right of EN : Memento: copia del terreno,\nla posición del jugador,\nlas cajas y los contadores
+JK -> EN : moverJugador(DERECHA)
+EN -> JU : mover(DERECHA)
 JU -> MM : intentarMover(DERECHA)
 activate MM
-MM -> MM : mira la celda siguiente:\nhay una caja y atrás está libre\n(si es hielo, sigue deslizando)
-MM -> CA : setPosicion(destino)
+MM -> MM : mira la celda siguiente:\nhay una caja y atrás está libre\n(si es hielo, deslizar sigue de largo)
+MM -> CA : setPosicion(deslizar(destino, DERECHA))
 MM -> CA : despuesDeEmpujar()
-note right of CA : Strategy: la caja le pasa el pedido\na su estrategia con el mediador.\nFrágil rota: mediador.cajaRota(caja)\nLlave: mediador.llaveEmpujada(caja)
+note right of CA : Strategy: la caja le pasa el pedido\na su comportamiento con el mediador.\nFrágil: mediador.cajaDanada o cajaRota\nLlave: mediador.llaveEmpujada(caja)
 MM -> JU : setPosicion(siguiente)
-MM --> JU : true
+MM -> EN : contarMovimiento(true)\nrecogerPlutonio(siguiente)
+MM --> JU : Evento.EMPUJE
 deactivate MM
-JU --> JK : true
-JK -> JK : historial.push(anterior)\nmovimientos++, empujes++\nrecoge plutonio si hay
+JU --> EN : EMPUJE
+EN --> JK : evento = EMPUJE
+JK -> JK : historial.guardar(antes)
 opt una caja más llegó a su destino
-  JK -> JK : maquinaDelTiempo.guardar(crearRecuerdo())\n(punto en el tiempo para el DeLorean)
+  JK -> JK : maquinaDelTiempo.guardar(movimientos, nivel.crearRecuerdo())\nevento = CAJA_EN_DESTINO (punto en el tiempo para el DeLorean)
 end
-group Observer: notificar()
+group Observer: notificarObservadores()
   JK -> OBS : actualizar(estado)
   OBS -> OBS : redibujan HUD y tablero
 end
 deactivate JK
 JS -> JK : getEstado()
-JK --> JS : despues: EstadoJuego
-JS -> JS : queSonidoCorresponde(antes, despues)
-JS -> SO : reproducir(Sonido.EMPUJE)
+JK --> JS : estado (con su evento)
+JS -> SO : reproducir(Sonido.de(estado.evento()))\n(aquí, Sonido.EMPUJE)
 deactivate JS
-GR -> GR : grabados.add(comando)\n(para la repetición)
+GR -> GR : comandos.add(comando)\n(para la repetición)
 deactivate GR
 PJ -> JS : getEstado()
 JS --> PJ : EstadoJuego
@@ -80,5 +82,7 @@ alt se guardó un punto en el tiempo
 end
 alt estado.completado()
   PJ -> PJ : mostrarResultado(estado)\n(cartel con «Ver repetición»)
+else estado.sinSolucion()
+  PJ -> PJ : mostrarCajaRota(estado)
 end
 @enduml

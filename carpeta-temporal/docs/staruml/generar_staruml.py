@@ -40,6 +40,9 @@ SALIDA = os.path.join(CARPETA, "Sokoban.mdj")
 # ════════════════════════════════════════════════════════════════════════════
 # paquete: ruta de paquetes Java. tipo: clase, interfaz, enum, record, externa.
 # autor: luca, martin, integ, dominio (Pedro y Lucía), sonido (Mora), swing (biblioteca).
+# Miembros: una línea cada uno. "_" = static. "*" al principio = redefine un método de una interfaz
+# o de una clase abstracta: está en el modelo, pero en el diagrama completo no se dibuja (se lee en
+# la interfaz); los diagramas de cada patrón lo muestran cuando hace falta.
 
 CLASES = {}
 
@@ -54,7 +57,7 @@ def clase(nombre, paquete, autor, tipo="clase", miembros="", literales="", ester
 
 # ───────── sokoban ─────────
 clase("Main", "sokoban", "luca", final=True,
-      doc="Punto de entrada: arma new VentanaPrincipal(new JuegoConSonido(new JuegoSokoban())) e instala los sonidos de interfaz.",
+      doc="Punto de entrada: new VentanaPrincipal(new JuegoConSonido(new JuegoSokoban(new CargadorNivel(carpeta)))).",
       miembros="""
 - Main()
 _+ main(args: String[]): void
@@ -84,36 +87,31 @@ _- CASILLAS: String[][]
 _- crearFila(imagen: String, texto: String): JLabel
 """)
 clase("PantallaJuego", "sokoban.vista", "luca",
-      doc="Pantalla de la partida: HUD arriba, tablero al centro. Traduce teclas en comandos (cliente del Command) "
-          "y muestra los carteles de pausa, caja rota, resultado y repetición, y los avisos de abajo.",
+      doc="Pantalla de la partida: HUD arriba, tablero al centro. Cliente del Command: cada tecla o botón "
+          "es un comando que ejecuta la grabadora.",
       miembros="""
-_- TECLAS: Map<Integer, Direccion>
+_- FLECHAS: Map<Integer, Direccion>
 - juego: Juego
 - volverAlMenu: Runnable
 - tablero: PanelTablero
 - grabadora: GrabadoraDePartida
-- avisoRepeticion: JLabel
+- aviso: JLabel
 - ocultarAviso: Timer
-- repeticion: Repeticion
 + PantallaJuego(juego: Juego, volverAlMenu: Runnable)
 + iniciar(nivel: int): void
-- configurarTeclado(): void
-- asignarTecla(tecla: int, accion: Runnable): void
 - mover(direccion: Direccion): void
 - deshacer(): void
 - viajarEnElTiempo(): void
 - reiniciar(): void
 - alApretarEscape(): void
-- pausar(): void
-- mostrarResultadoSiTermino(): void
-- mostrarSinSolucion(estado: EstadoJuego): void
-- mostrarResultado(estado: EstadoJuego): void
 - verRepeticion(nivel: int): void
-- avisar(texto: String): void
-- repitiendo(): boolean
-- crearAviso(): JLabel
+- pausar(): void
+- mostrarResultado(estado: EstadoJuego): void
+- mostrarCajaRota(estado: EstadoJuego): void
 - mostrarCartel(titulo: String, mensaje: String, opciones: Map<String, Runnable>): void
-- devolverFocoALaVentana(): void
+- avisar(texto: String): void
+- crearAviso(): JLabel
+- asignarTecla(tecla: int, accion: Runnable): void
 """)
 clase("PanelHUD", "sokoban.vista", "luca", miembros="""
 - nivel: JLabel
@@ -122,6 +120,7 @@ clase("PanelHUD", "sokoban.vista", "luca", miembros="""
 - plutonio: JLabel
 - delorean: JButton
 + PanelHUD(alDeshacer: Runnable, alReiniciar: Runnable, alViajar: Runnable, alPausar: Runnable)
+*+ actualizar(estado: EstadoJuego): void
 _- crearIndicador(ruta: String, valor: int): Icon
 _- crearBoton(ruta: String, descripcion: String, accion: Runnable): JButton
 _- atenuar(imagen: Image): Image
@@ -133,6 +132,7 @@ _- SOBRE_DESTINO: String
 - tablero: List<String>
 - epoca: Epoca
 - orientacion: Direccion
+*+ actualizar(estado: EstadoJuego): void
 + mirarHacia(direccion: Direccion): void
 # paintComponent(g: Graphics): void
 - dibujarCelda(g: Graphics, simbolo: char, x: int, y: int, tamano: int): void
@@ -148,8 +148,8 @@ _+ FONDO: Color
 _- crearEtiqueta(texto: String, fuente: Font, color: Color): JLabel
 _- crearBoton(texto: String, accion: Runnable): JButton
 """)
-clase("Imagenes", "sokoban.vista", "luca", estereotipo="Singleton", final=True,
-      doc="Patrón Singleton: una única caché de imágenes compartida.",
+clase("Imagenes", "sokoban.vista", "luca", final=True,
+      doc="Singleton: una única caché de imágenes compartida.",
       miembros="""
 _- CARPETA: String
 _- instancia: Imagenes
@@ -174,8 +174,15 @@ _+ delNivel(nivel: int): Epoca
 """)
 
 # ───────── sokoban.modelo: contrato entre vista y dominio (Luca) ─────────
+clase("SujetoJuego", "sokoban.modelo", "luca", tipo="interfaz",
+      doc="Sujeto del Observer: suscribe, desuscribe y avisa a los observadores.",
+      miembros="""
++ agregarObservador(observador: ObservadorJuego): void
++ quitarObservador(observador: ObservadorJuego): void
++ notificarObservadores(): void
+""")
 clase("Juego", "sokoban.modelo", "luca", tipo="interfaz",
-      doc="Facade del dominio para la vista y sujeto del Observer.",
+      doc="Facade del dominio para la vista (extiende SujetoJuego).",
       miembros="""
 + getCantidadNiveles(): int
 + iniciarNivel(numero: int): void
@@ -184,12 +191,9 @@ clase("Juego", "sokoban.modelo", "luca", tipo="interfaz",
 + reiniciar(): void
 + viajarEnElTiempo(): void
 + getEstado(): EstadoJuego
-+ agregarObservador(observador: ObservadorJuego): void
-+ quitarObservador(observador: ObservadorJuego): void
 """)
 clase("JuegoDecorado", "sokoban.modelo", "luca", abstracta=True,
-      doc="Decorator base (abstracta): implementa Juego, guarda el Juego envuelto y le delega todo. "
-          "Agregada por la auditoría.",
+      doc="Decorator base (abstracta): implementa Juego, guarda el Juego envuelto y le delega todo.",
       miembros="""
 # juego: Juego
 # JuegoDecorado(juego: Juego)
@@ -202,6 +206,7 @@ clase("JuegoDecorado", "sokoban.modelo", "luca", abstracta=True,
 + getEstado(): EstadoJuego
 + agregarObservador(observador: ObservadorJuego): void
 + quitarObservador(observador: ObservadorJuego): void
++ notificarObservadores(): void
 """)
 clase("ObservadorJuego", "sokoban.modelo", "luca", tipo="interfaz", miembros="""
 + actualizar(estado: EstadoJuego): void
@@ -212,15 +217,20 @@ clase("EstadoJuego", "sokoban.modelo", "luca", tipo="record",
 - nivel: int
 - movimientos: int
 - empujes: int
-- undosUsados: int
+- deshacerUsados: int
 - plutonio: int
 - viajes: int
 - puntosEnElTiempo: int
 - puntaje: int
 - completado: boolean
 - sinSolucion: boolean
+- evento: Evento
 - tablero: List<String>
 """)
+clase("Evento", "sokoban.modelo", "dominio", tipo="enum",
+      literales="NINGUNO INICIO_NIVEL REINICIO PASO CHOQUE EMPUJE CAJA_DANADA CAJA_ROTA CAJA_EN_DESTINO "
+                "CERROJO_ABIERTO PLUTONIO DESHACER VIAJE_EN_EL_TIEMPO VICTORIA",
+      doc="Lo que pasó en la última acción (el sonido lo traduce a un efecto).")
 clase("Direccion", "sokoban.modelo", "luca", tipo="enum", literales="ARRIBA ABAJO IZQUIERDA DERECHA",
       miembros="""
 - deltaFila: int
@@ -231,59 +241,43 @@ clase("Direccion", "sokoban.modelo", "luca", tipo="enum", literales="ARRIBA ABAJ
 
 # ───────── sokoban.modelo: dominio (Pedro y Lucía) ─────────
 clase("JuegoSokoban", "sokoban.modelo", "dominio",
-      doc="Controlador del dominio y Originador del Memento. Deshacer: guarda hasta 15 recuerdos, cada deshacer "
-          "vuelve 5 pasos, máximo 3 seguidos. DeLorean: vuelve al último punto en el tiempo y gasta 1 plutonio. "
-          "Puntaje: max(0, 1000 - 5 movimientos - 2 empujes - 50 deshacer - 100 viajes).",
+      doc="Fachada concreta y sujeto concreto del Observer. Coordina el nivel, el deshacer, el DeLorean y el puntaje.",
       miembros="""
-_- MAX_HISTORIAL: int = 15
-_- PASOS_POR_UNDO: int = 5
-_- MAX_UNDOS_CONSECUTIVOS: int = 3
 - cargador: CargadorNivel
 - cantidadNiveles: int
 - observadores: List<ObservadorJuego>
-- historial: Deque<RecuerdoNivel>
+- historial: HistorialDeshacer
 - maquinaDelTiempo: MaquinaDelTiempo
-- estado: EstadoNivel
-- motor: MediadorMovimiento
-- nivel: int
-- movimientos: int
-- empujes: int
-- undosUsados: int
-- undosConsecutivos: int
-- plutonio: int
-- viajes: int
+- puntaje: Puntaje
+- nivel: EstadoNivel
+- numeroNivel: int
+- evento: Evento
 + JuegoSokoban()
 + JuegoSokoban(cargador: CargadorNivel)
-- conectarMotor(): void
-- calcularPuntaje(): int
-- crearRecuerdo(): RecuerdoNivel
-- restaurar(recuerdo: RecuerdoNivel): void
-- olvidarPuntosDelFuturo(): void
-- notificar(): void
+*+ getCantidadNiveles(): int
+*+ iniciarNivel(numero: int): void
+*+ reiniciar(): void
+*+ mover(direccion: Direccion): void
+*+ deshacer(): void
+*+ viajarEnElTiempo(): void
+*+ getEstado(): EstadoJuego
+*+ agregarObservador(observador: ObservadorJuego): void
+*+ quitarObservador(observador: ObservadorJuego): void
+*+ notificarObservadores(): void
+- cargar(numero: int): void
+- enJuego(): boolean
 """)
-clase("RecuerdoNivel", "sokoban.modelo", "martin", final=True,
-      doc="Memento: copia del nivel y de los contadores. Solo JuegoSokoban (mismo paquete) puede crearlo y leerlo.",
+clase("Puntaje", "sokoban.modelo", "dominio",
+      doc="max(0, 1000 - 5 movimientos - 2 empujes - 50 deshacer - 100 viajes).",
       miembros="""
-- nivel: EstadoNivel
-- movimientos: int
-- empujes: int
-- plutonio: int
-~ RecuerdoNivel(nivel: EstadoNivel, movimientos: int, empujes: int, plutonio: int)
-~ nivel(): EstadoNivel
-~ movimientos(): int
-~ empujes(): int
-~ plutonio(): int
-""")
-clase("MaquinaDelTiempo", "sokoban.modelo.tiempo", "martin",
-      doc="Cuidador del Memento: guarda hasta 10 puntos en el tiempo sin poder leerlos (está en otro paquete).",
-      miembros="""
-_- MAXIMO_PUNTOS: int = 10
-- puntos: Deque<RecuerdoNivel>
-+ guardar(recuerdo: RecuerdoNivel): void
-+ ultimo(): RecuerdoNivel
-+ descartarUltimo(): void
-+ cantidad(): int
-+ olvidarTodo(): void
+- deshacerUsados: int
+- viajes: int
++ reiniciar(): void
++ registrarDeshacer(): void
++ registrarViaje(): void
++ getDeshacerUsados(): int
++ getViajes(): int
++ calcular(movimientos: int, empujes: int): int
 """)
 clase("CargadorNivel", "sokoban.modelo", "dominio",
       doc="Lee niveles/nivelN.txt (del .jar o de una carpeta) y cuenta cuántos niveles hay.",
@@ -302,62 +296,76 @@ _- nombreDe(numero: int): String
 _- limpiar(lineas: List<String>): List<String>
 """)
 clase("EstadoNivel", "sokoban.modelo", "dominio",
-      doc="Terreno y entidades del nivel. Valida el archivo, conecta a los colegas con el mediador y sabe copiarse.",
+      doc="Terreno, jugador, cajas y contadores. Originador del Memento: crea y lee los recuerdos.",
       miembros="""
+_- RESISTENCIA_FRAGIL: int = 3
 - terreno: char[][]
 - jugador: Jugador
 - cajas: List<Caja>
 - cantidadDestinos: int
+- movimientos: int
+- empujes: int
+- plutonio: int
+- mediador: MediadorMovimiento
 + EstadoNivel(lineas: List<String>)
-- EstadoNivel(terreno: char[][], jugador: Jugador, cajas: List<Caja>, cantidadDestinos: int)
++ conectarMediador(mediador: MediadorMovimiento): void
 + getJugador(): Jugador
-+ conectarColegas(mediador: MediadorMovimiento): void
-+ cajaEn(posicion: Posicion): Caja
-- dentro(p: Posicion): boolean
-+ estaLibre(p: Posicion): boolean
-+ esHielo(p: Posicion): boolean
-+ esCerrojo(p: Posicion): boolean
++ getCajas(): List<Caja>
++ moverJugador(direccion: Direccion): Evento
++ esTransitable(posicion: Posicion): boolean
++ esHielo(posicion: Posicion): boolean
++ esCerrojo(posicion: Posicion): boolean
 + abrirMuros(): void
 + quitarCaja(caja: Caja): void
-+ recogerPlutonio(p: Posicion): boolean
-+ conservarPlutonioRecogido(presente: EstadoNivel): void
++ contarMovimiento(fueEmpuje: boolean): void
++ recogerPlutonio(posicion: Posicion): boolean
++ gastarPlutonio(): void
 + cajasEnDestino(): int
-+ sinSolucion(): boolean
 + estaCompleto(): boolean
++ sinSolucion(): boolean
++ getMovimientos(): int
++ getEmpujes(): int
++ getPlutonio(): int
++ crearRecuerdo(): RecuerdoNivel
++ restaurar(recuerdo: RecuerdoNivel): void
++ viajarA(punto: RecuerdoNivel): void
 + tableroParaVista(): List<String>
-- copiarTerreno(): char[][]
-+ copiar(): EstadoNivel
+_- sobreDestino(simbolo: char): char
+- dentro(p: Posicion): boolean
+- casilla(p: Posicion): char
+_- copiar(original: char[][]): char[][]
+_- copiar(original: List<Caja>): List<Caja>
 """)
 clase("Posicion", "sokoban.modelo", "dominio", tipo="record", miembros="""
 - fila: int
 - columna: int
 + siguiente(direccion: Direccion): Posicion
 """)
-clase("Jugador", "sokoban.modelo.entidades", "dominio", doc="Colega del Mediator: pide moverse al mediador.",
+clase("ElementoMovil", "sokoban.modelo.entidades", "dominio", abstracta=True,
+      doc="Colega del Mediator: lo que se mueve en el tablero y conoce al mediador.",
       miembros="""
-- posicion: Posicion
-- mediador: MediadorMovimiento
-+ Jugador(posicion: Posicion)
+# posicion: Posicion
+# mediador: MediadorMovimiento
+# ElementoMovil(posicion: Posicion)
++ conectar(mediador: MediadorMovimiento): void
 + getPosicion(): Posicion
 + setPosicion(posicion: Posicion): void
-+ conectar(mediador: MediadorMovimiento): void
-+ mover(direccion: Direccion): boolean
+""")
+clase("Jugador", "sokoban.modelo.entidades", "dominio", doc="Colega concreto: pide moverse al mediador.",
+      miembros="""
++ Jugador(posicion: Posicion)
++ mover(direccion: Direccion): Evento
 """)
 clase("Caja", "sokoban.modelo.entidades", "dominio",
-      doc="Colega del Mediator y contexto del Strategy: después de un empuje le pasa el mediador a su estrategia.",
+      doc="Colega concreto y contexto del Strategy: después de un empuje le pasa el mediador a su comportamiento.",
       miembros="""
-- posicion: Posicion
-- estrategia: ComportamientoCaja
+- comportamiento: ComportamientoCaja
 - resistencia: int
-- mediador: MediadorMovimiento
-+ Caja(posicion: Posicion, estrategia: ComportamientoCaja, resistencia: int)
-+ getPosicion(): Posicion
-+ setPosicion(posicion: Posicion): void
-+ getResistencia(): int
-+ quitarResistencia(): void
-+ getSimbolo(): char
-+ conectar(mediador: MediadorMovimiento): void
++ Caja(posicion: Posicion, comportamiento: ComportamientoCaja, resistencia: int)
 + despuesDeEmpujar(): void
++ quitarResistencia(): void
++ getResistencia(): int
++ getSimbolo(): char
 + copiar(): Caja
 """)
 clase("ComportamientoCaja", "sokoban.modelo.estrategias", "dominio", tipo="interfaz",
@@ -366,50 +374,140 @@ clase("ComportamientoCaja", "sokoban.modelo.estrategias", "dominio", tipo="inter
 + despuesDeEmpujar(caja: Caja, mediador: MediadorMovimiento): void
 + simbolo(caja: Caja): char
 """)
-clase("CajaNormalStrategy", "sokoban.modelo.estrategias", "dominio", doc="No agrega nada. Símbolo $.")
-clase("CajaFragilStrategy", "sokoban.modelo.estrategias", "dominio",
-      doc="Resta resistencia; a los 3 empujes avisa al mediador que la caja se rompió (cajaRota). Símbolos F y f.")
-clase("CajaLlaveStrategy", "sokoban.modelo.estrategias", "dominio",
-      doc="Avisa al mediador que se empujó la llave (llaveEmpujada); sobre un cerrojo se abren los muros X. Símbolo L.")
+for _s, _doc in (("CajaNormalStrategy", "No agrega nada. Símbolo $."),
+                 ("CajaFragilStrategy", "Pierde resistencia: avisa cajaDanada y, a los 3 empujes, cajaRota. Símbolos F y f."),
+                 ("CajaLlaveStrategy", "Avisa llaveEmpujada: sobre un cerrojo se abren los muros X. Símbolo L.")):
+    clase(_s, "sokoban.modelo.estrategias", "dominio", doc=_doc, miembros="""
+*+ despuesDeEmpujar(caja: Caja, mediador: MediadorMovimiento): void
+*+ simbolo(caja: Caja): char
+""")
 clase("MediadorMovimiento", "sokoban.modelo.movimiento", "dominio", tipo="interfaz",
-      doc="Mediator: los colegas (Jugador y Caja) se comunican solo a través de él.",
+      doc="Mediator: los elementos móviles se comunican solo a través de él.",
       miembros="""
-+ intentarMover(direccion: Direccion): boolean
-+ fueEmpuje(): boolean
++ intentarMover(direccion: Direccion): Evento
++ cajaDanada(caja: Caja): void
 + cajaRota(caja: Caja): void
 + llaveEmpujada(caja: Caja): void
 """)
 clase("MotorMovimiento", "sokoban.modelo.movimiento", "dominio",
-      doc="Mediator concreto: colisiones, empujes, deslizamiento sobre hielo, cajas rotas y cerrojos. "
-          "Al crearse conecta a los colegas (estado.conectarColegas(this)).",
+      doc="Mediator concreto: colisiones, empujes, hielo, cajas dañadas o rotas y cerrojos.",
       miembros="""
-- estado: EstadoNivel
-- empuje: boolean
-+ MotorMovimiento(estado: EstadoNivel)
+- nivel: EstadoNivel
+- jugador: Jugador
+- cajas: List<Caja>
+- evento: Evento
++ MotorMovimiento(nivel: EstadoNivel)
+*+ intentarMover(direccion: Direccion): Evento
+- estaLibre(posicion: Posicion): boolean
+- cajaEn(posicion: Posicion): Caja
+- deslizar(destino: Posicion, direccion: Direccion): Posicion
+*+ cajaDanada(caja: Caja): void
+*+ cajaRota(caja: Caja): void
+*+ llaveEmpujada(caja: Caja): void
+""")
+
+# ───────── sokoban.modelo: DeLorean y deshacer (Martín) ─────────
+clase("RecuerdoNivel", "sokoban.modelo", "martin", final=True,
+      doc="Memento: copia del terreno, del jugador, de las cajas y de los contadores. Solo EstadoNivel lo crea y lo lee.",
+      miembros="""
+- terreno: char[][]
+- posicionJugador: Posicion
+- cajas: List<Caja>
+- movimientos: int
+- empujes: int
+- plutonio: int
+~ RecuerdoNivel(terreno: char[][], posicionJugador: Posicion, cajas: List<Caja>, movimientos: int, empujes: int, plutonio: int)
+~ terreno(): char[][]
+~ posicionJugador(): Posicion
+~ cajas(): List<Caja>
+~ movimientos(): int
+~ empujes(): int
+~ plutonio(): int
+""")
+clase("HistorialDeshacer", "sokoban.modelo.tiempo", "martin",
+      doc="Cuidador del deshacer: hasta 15 recuerdos, cada deshacer vuelve 5 pasos, máximo 3 seguidos.",
+      miembros="""
+_- MAXIMO: int = 15
+_- PASOS_POR_USO: int = 5
+_- USOS_SEGUIDOS: int = 3
+- recuerdos: Deque<RecuerdoNivel>
+- usosSeguidos: int
++ guardar(recuerdo: RecuerdoNivel): void
++ deshacer(): RecuerdoNivel
++ olvidarTodo(): void
+""")
+clase("MaquinaDelTiempo", "sokoban.modelo.tiempo", "martin",
+      doc="Cuidador del DeLorean: hasta 10 puntos en el tiempo.",
+      miembros="""
+_- MAXIMO_PUNTOS: int = 10
+- puntos: Deque<Punto>
++ guardar(movimiento: int, recuerdo: RecuerdoNivel): void
++ volverAntesDe(movimientoActual: int): RecuerdoNivel
++ olvidarDespuesDe(movimiento: int): void
++ cantidad(): int
++ olvidarTodo(): void
+""")
+clase("Punto", "sokoban.modelo.tiempo", "martin", tipo="record", visibilidad="private", dentro_de="MaquinaDelTiempo",
+      doc="Record privado dentro de MaquinaDelTiempo (MaquinaDelTiempo.Punto).",
+      miembros="""
+- movimiento: int
+- recuerdo: RecuerdoNivel
+""")
+
+# ───────── sokoban.comandos (Martín) ─────────
+clase("Comando", "sokoban.comandos", "martin", tipo="interfaz",
+      doc="Command: una acción del jugador guardada como objeto, para poder repetirla.",
+      miembros="""
++ ejecutar(): void
+""")
+clase("ComandoMover", "sokoban.comandos", "martin", miembros="""
+- juego: Juego
+- direccion: Direccion
++ ComandoMover(juego: Juego, direccion: Direccion)
+*+ ejecutar(): void
+""")
+clase("ComandoDeshacer", "sokoban.comandos", "martin", miembros="""
+- juego: Juego
++ ComandoDeshacer(juego: Juego)
+*+ ejecutar(): void
+""")
+clase("ComandoViajarEnElTiempo", "sokoban.comandos", "martin", miembros="""
+- juego: Juego
++ ComandoViajarEnElTiempo(juego: Juego)
+*+ ejecutar(): void
+""")
+clase("GrabadoraDePartida", "sokoban.comandos", "martin",
+      doc="Invocador: ejecuta cada comando y lo anota; después puede reproducir la partida (uno cada 160 ms).",
+      miembros="""
+_- PAUSA_MS: int = 160
+- comandos: List<Comando>
+- reloj: Timer
+- pendientes: Iterator<Comando>
+- alTerminar: Runnable
++ ejecutar(comando: Comando): void
++ borrar(): void
++ reproducir(alTerminar: Runnable): void
++ saltarAlFinal(): void
++ estaReproduciendo(): boolean
+- ejecutarSiguiente(): void
+- terminar(): void
 """)
 
 # ───────── sokoban.sonido (Mora) ─────────
 clase("JuegoConSonido", "sokoban.sonido", "sonido",
-      doc="Decorator concreto: extiende JuegoDecorado y solo redefine las acciones que suenan.",
+      doc="Decorator concreto: extiende JuegoDecorado y, después de cada acción, hace sonar el efecto del evento.",
       miembros="""
-_- CAJAS_EN_DESTINO: String
-_- CAJAS_FRAGILES: String
-_- MURO_CERRADO: char
 _- DEMORA_DERROTA_MS: int
 + JuegoConSonido(juego: Juego)
 + iniciarNivel(numero: int): void
 + mover(direccion: Direccion): void
 + deshacer(): void
-+ viajarEnElTiempo(): void
 + reiniciar(): void
-_~ queSonidoCorresponde(antes: EstadoJuego, despues: EstadoJuego): Sonido
-_- sonar(sonido: Sonido): void
++ viajarEnElTiempo(): void
+- sonarLoQuePaso(): void
 _- sonarMasTarde(sonido: Sonido): void
-_- contar(estado: EstadoJuego, simbolo: char): int
-_- contar(estado: EstadoJuego, simbolos: String): int
-_- posiciones(estado: EstadoJuego, simbolos: String): Set<Integer>
 """)
-clase("Sonidos", "sokoban.sonido", "sonido", estereotipo="Singleton", final=True,
+clase("Sonidos", "sokoban.sonido", "sonido", final=True,
       doc="Singleton + Facade de javax.sound y contexto del State.",
       miembros="""
 _- instancia: Sonidos
@@ -430,13 +528,17 @@ clase("EstadoSonido", "sokoban.sonido", "sonido", tipo="interfaz", visibilidad="
 + reproducir(clip: Clip): void
 + alternar(contexto: Sonidos): void
 """)
-clase("SonidoActivado", "sokoban.sonido", "sonido", visibilidad="package")
-clase("SonidoSilenciado", "sokoban.sonido", "sonido", visibilidad="package")
+for _s in ("SonidoActivado", "SonidoSilenciado"):
+    clase(_s, "sokoban.sonido", "sonido", visibilidad="package", miembros="""
+*+ reproducir(clip: Clip): void
+*+ alternar(contexto: Sonidos): void
+""")
 clase("Sonido", "sokoban.sonido", "sonido", tipo="enum",
       literales="ARRANQUE INICIO_NIVEL PASO EMPUJE CAJA_EN_DESTINO CAJA_DANADA CAJA_ROTA "
                 "CERROJO_ABIERTO DESHACER REINICIAR VICTORIA DERROTA CHOQUE CLIC PLUTONIO VIAJE_EN_EL_TIEMPO",
       miembros="""
 - archivo: String
+_+ de(evento: Evento): Sonido
 + getRuta(): String
 """)
 clase("SonidosDeInterfaz", "sokoban.sonido", "sonido", final=True,
@@ -448,47 +550,6 @@ _- alHacerClic(evento: MouseEvent): void
 _- alApretarTecla(evento: KeyEvent): boolean
 """)
 
-# ───────── sokoban.comandos (Martín) ─────────
-clase("Comando", "sokoban.comandos", "martin", tipo="interfaz",
-      doc="Command: una acción del jugador guardada como objeto, para poder repetirla.",
-      miembros="""
-+ ejecutar(): void
-""")
-clase("ComandoMover", "sokoban.comandos", "martin", miembros="""
-- juego: Juego
-- direccion: Direccion
-+ ComandoMover(juego: Juego, direccion: Direccion)
-""")
-clase("ComandoDeshacer", "sokoban.comandos", "martin", miembros="""
-- juego: Juego
-+ ComandoDeshacer(juego: Juego)
-""")
-clase("ComandoViajarEnElTiempo", "sokoban.comandos", "martin", miembros="""
-- juego: Juego
-+ ComandoViajarEnElTiempo(juego: Juego)
-""")
-clase("GrabadoraDePartida", "sokoban.comandos", "martin",
-      doc="Invocador: ejecuta cada comando y lo anota.",
-      miembros="""
-- grabados: List<Comando>
-+ ejecutar(comando: Comando): void
-+ borrar(): void
-+ getGrabados(): List<Comando>
-""")
-clase("Repeticion", "sokoban.comandos", "martin",
-      doc="Vuelve a ejecutar los comandos grabados, uno cada 160 ms, con un javax.swing.Timer.",
-      miembros="""
-_- PAUSA_MS: int = 160
-- pendientes: Iterator<Comando>
-- alTerminar: Runnable
-- reloj: Timer
-+ Repeticion(comandos: List<Comando>, alTerminar: Runnable)
-+ empezar(): void
-+ saltarAlFinal(): void
-+ estaReproduciendo(): boolean
-- siguiente(): void
-""")
-
 # ───────── biblioteca (solo para dibujar la herencia) ─────────
 clase("JFrame", "javax.swing", "swing", tipo="externa")
 clase("JPanel", "javax.swing", "swing", tipo="externa")
@@ -497,111 +558,128 @@ clase("JPanel", "javax.swing", "swing", tipo="externa")
 # 2. Relaciones
 # ════════════════════════════════════════════════════════════════════════════
 # tipos: hereda, implementa, asociacion, composicion, agregacion, dependencia.
-# rol y mult describen el extremo destino (el que "se conoce"). nombre: texto sobre la línea.
+# rol y mult describen el extremo destino; rol_o y mult_o, el de origen (solo en asociaciones de ida y vuelta,
+# ambos=True). nombre: texto sobre la línea.
 
 RELACIONES = {}
 
 
-def rel(clave, tipo, origen, destino, rol="", mult="", nombre=""):
+def rel(clave, tipo, origen, destino, rol="", mult="", nombre="", ambos=False, rol_o="", mult_o=""):
     assert clave not in RELACIONES, clave
-    RELACIONES[clave] = dict(clave=clave, tipo=tipo, origen=origen, destino=destino, rol=rol, mult=mult, nombre=nombre)
+    RELACIONES[clave] = dict(clave=clave, tipo=tipo, origen=origen, destino=destino, rol=rol, mult=mult,
+                             nombre=nombre, ambos=ambos, rol_o=rol_o, mult_o=mult_o)
 
 
-# herencia de Swing
+# herencia
 rel("VentanaPrincipal-JFrame", "hereda", "VentanaPrincipal", "JFrame")
 for _p in ("MenuPrincipal", "PantallaJuego", "PanelHUD", "PanelTablero", "Cartel", "PanelAyuda"):
     rel(f"{_p}-JPanel", "hereda", _p, "JPanel")
+rel("Juego-SujetoJuego", "hereda", "Juego", "SujetoJuego")
+rel("JuegoConSonido-JuegoDecorado", "hereda", "JuegoConSonido", "JuegoDecorado")
+rel("Jugador-ElementoMovil", "hereda", "Jugador", "ElementoMovil")
+rel("Caja-ElementoMovil", "hereda", "Caja", "ElementoMovil")
 # realizaciones
 rel("PanelHUD-ObservadorJuego", "implementa", "PanelHUD", "ObservadorJuego")
 rel("PanelTablero-ObservadorJuego", "implementa", "PanelTablero", "ObservadorJuego")
 rel("JuegoSokoban-Juego", "implementa", "JuegoSokoban", "Juego")
+rel("JuegoSokoban-SujetoJuego", "implementa", "JuegoSokoban", "SujetoJuego")
 rel("JuegoDecorado-Juego", "implementa", "JuegoDecorado", "Juego")
-rel("JuegoConSonido-JuegoDecorado", "hereda", "JuegoConSonido", "JuegoDecorado")
 rel("SonidoActivado-EstadoSonido", "implementa", "SonidoActivado", "EstadoSonido")
 rel("SonidoSilenciado-EstadoSonido", "implementa", "SonidoSilenciado", "EstadoSonido")
 rel("MotorMovimiento-MediadorMovimiento", "implementa", "MotorMovimiento", "MediadorMovimiento")
 for _s in ("CajaNormalStrategy", "CajaFragilStrategy", "CajaLlaveStrategy"):
     rel(f"{_s}-ComportamientoCaja", "implementa", _s, "ComportamientoCaja")
+for _c in ("ComandoMover", "ComandoDeshacer", "ComandoViajarEnElTiempo"):
+    rel(f"{_c}-Comando", "implementa", _c, "Comando")
 # Main
 rel("Main-VentanaPrincipal", "dependencia", "Main", "VentanaPrincipal", nombre="crea")
-rel("Main-JuegoConSonido", "dependencia", "Main", "JuegoConSonido", nombre="crea")
+rel("Main-JuegoConSonido", "dependencia", "Main", "JuegoConSonido", nombre="new JuegoConSonido(new JuegoSokoban(...))")
 rel("Main-JuegoSokoban", "dependencia", "Main", "JuegoSokoban", nombre="crea")
 rel("Main-CargadorNivel", "dependencia", "Main", "CargadorNivel", nombre="crea (carpeta de niveles)")
 rel("Main-SonidosDeInterfaz", "dependencia", "Main", "SonidosDeInterfaz", nombre="instalar()")
+rel("Main-Juego", "dependencia", "Main", "Juego", nombre="variable local juego")
 # vista
 rel("VentanaPrincipal-MenuPrincipal", "composicion", "VentanaPrincipal", "MenuPrincipal", mult="1")
 rel("VentanaPrincipal-PantallaJuego", "composicion", "VentanaPrincipal", "PantallaJuego", rol="pantallaJuego", mult="1")
 rel("MenuPrincipal-Cartel", "composicion", "MenuPrincipal", "Cartel", mult="1")
+rel("MenuPrincipal-PanelAyuda", "dependencia", "MenuPrincipal", "PanelAyuda", nombre="crea (Cómo jugar)")
 rel("PantallaJuego-Cartel", "dependencia", "PantallaJuego", "Cartel", nombre="crea")
 rel("PantallaJuego-PanelTablero", "composicion", "PantallaJuego", "PanelTablero", rol="tablero", mult="1")
 rel("PantallaJuego-PanelHUD", "composicion", "PantallaJuego", "PanelHUD", mult="1")
 rel("PanelTablero-Epoca", "asociacion", "PanelTablero", "Epoca", rol="epoca", mult="1")
 rel("PanelTablero-Direccion", "asociacion", "PanelTablero", "Direccion", rol="orientacion", mult="1")
-rel("PanelTablero-Imagenes", "dependencia", "PanelTablero", "Imagenes", nombre="usa")
-rel("PanelHUD-Imagenes", "dependencia", "PanelHUD", "Imagenes", nombre="usa")
-rel("MenuPrincipal-Imagenes", "dependencia", "MenuPrincipal", "Imagenes", nombre="usa")
-rel("MenuPrincipal-PanelAyuda", "dependencia", "MenuPrincipal", "PanelAyuda", nombre="crea (Cómo jugar)")
-rel("PanelAyuda-Imagenes", "dependencia", "PanelAyuda", "Imagenes", nombre="usa")
-rel("Imagenes-instancia", "asociacion", "Imagenes", "Imagenes", rol="instancia", mult="0..1")
+rel("PanelTablero-Imagenes", "dependencia", "PanelTablero", "Imagenes", nombre="obtenerInstancia()")
+rel("PanelHUD-Imagenes", "dependencia", "PanelHUD", "Imagenes", nombre="obtenerInstancia()")
+rel("MenuPrincipal-Imagenes", "dependencia", "MenuPrincipal", "Imagenes", nombre="obtenerInstancia()")
+rel("PanelAyuda-Imagenes", "dependencia", "PanelAyuda", "Imagenes", nombre="obtenerInstancia()")
+rel("Imagenes-instancia", "asociacion", "Imagenes", "Imagenes", rol="instancia", mult="1")
 rel("PantallaJuego-Juego", "asociacion", "PantallaJuego", "Juego", rol="juego", mult="1")
-rel("PantallaJuego-Direccion", "dependencia", "PantallaJuego", "Direccion", nombre="TECLAS")
+rel("PantallaJuego-GrabadoraDePartida", "asociacion", "PantallaJuego", "GrabadoraDePartida", rol="grabadora", mult="1")
+for _c in ("ComandoMover", "ComandoDeshacer", "ComandoViajarEnElTiempo"):
+    rel(f"PantallaJuego-{_c}", "dependencia", "PantallaJuego", _c, nombre="new")
 # contrato
-rel("Juego-ObservadorJuego", "dependencia", "Juego", "ObservadorJuego", nombre="avisa a")
+rel("SujetoJuego-ObservadorJuego", "dependencia", "SujetoJuego", "ObservadorJuego", nombre="avisa a")
 rel("Juego-EstadoJuego", "dependencia", "Juego", "EstadoJuego", nombre="devuelve")
 rel("ObservadorJuego-EstadoJuego", "dependencia", "ObservadorJuego", "EstadoJuego", nombre="recibe")
 rel("Juego-Direccion", "dependencia", "Juego", "Direccion", nombre="mover(direccion)")
+rel("EstadoJuego-Evento", "asociacion", "EstadoJuego", "Evento", rol="evento", mult="1")
+rel("JuegoDecorado-juego", "agregacion", "JuegoDecorado", "Juego", rol="juego", mult="1")
 # sonido
-rel("JuegoDecorado-juego", "asociacion", "JuegoDecorado", "Juego", rol="juego", mult="1")
-rel("JuegoConSonido-EstadoJuego", "dependencia", "JuegoConSonido", "EstadoJuego", nombre="compara")
-rel("JuegoConSonido-Sonidos", "dependencia", "JuegoConSonido", "Sonidos", nombre="usa")
-rel("JuegoConSonido-Sonido", "dependencia", "JuegoConSonido", "Sonido", nombre="elige el efecto")
-rel("Sonidos-instancia", "asociacion", "Sonidos", "Sonidos", rol="instancia", mult="0..1")
+rel("JuegoConSonido-Sonidos", "dependencia", "JuegoConSonido", "Sonidos", nombre="obtenerInstancia()")
+rel("JuegoConSonido-Sonido", "dependencia", "JuegoConSonido", "Sonido", nombre="Sonido.de(evento)")
+rel("Sonido-Evento", "dependencia", "Sonido", "Evento", nombre="de(evento)")
+rel("Sonidos-instancia", "asociacion", "Sonidos", "Sonidos", rol="instancia", mult="1")
 rel("Sonidos-EstadoSonido", "asociacion", "Sonidos", "EstadoSonido", rol="estado", mult="1")
 rel("Sonidos-Sonido", "dependencia", "Sonidos", "Sonido", nombre="un Clip por cada uno")
-rel("SonidoActivado-Sonidos", "dependencia", "SonidoActivado", "Sonidos", nombre="le cambia el estado")
-rel("SonidoSilenciado-Sonidos", "dependencia", "SonidoSilenciado", "Sonidos", nombre="le cambia el estado")
-rel("SonidoActivado-SonidoSilenciado", "dependencia", "SonidoActivado", "SonidoSilenciado", nombre="crea al silenciar")
-rel("SonidoSilenciado-SonidoActivado", "dependencia", "SonidoSilenciado", "SonidoActivado", nombre="crea al activar")
-rel("SonidosDeInterfaz-Sonidos", "dependencia", "SonidosDeInterfaz", "Sonidos", nombre="usa")
+rel("SonidoActivado-SonidoSilenciado", "dependencia", "SonidoActivado", "SonidoSilenciado",
+    nombre="alternar: new SonidoSilenciado()")
+rel("SonidoSilenciado-SonidoActivado", "dependencia", "SonidoSilenciado", "SonidoActivado",
+    nombre="alternar: new SonidoActivado()")
+rel("SonidoActivado-Sonidos", "dependencia", "SonidoActivado", "Sonidos", nombre="establecerEstado()")
+rel("SonidoSilenciado-Sonidos", "dependencia", "SonidoSilenciado", "Sonidos", nombre="establecerEstado()")
+rel("SonidosDeInterfaz-Sonidos", "dependencia", "SonidosDeInterfaz", "Sonidos", nombre="obtenerInstancia()")
+rel("SonidosDeInterfaz-Sonidos-estado", "dependencia", "SonidosDeInterfaz", "Sonidos",
+    nombre="alternarSonido(), reproducir(CLIC)")
 rel("SonidosDeInterfaz-Sonido", "dependencia", "SonidosDeInterfaz", "Sonido", nombre="ARRANQUE, CLIC")
 # dominio
-rel("JuegoSokoban-observadores", "agregacion", "JuegoSokoban", "ObservadorJuego", rol="observadores", mult="0..*")
+rel("JuegoSokoban-observadores", "asociacion", "JuegoSokoban", "ObservadorJuego", rol="observadores", mult="*")
 rel("JuegoSokoban-EstadoJuego", "dependencia", "JuegoSokoban", "EstadoJuego", nombre="crea")
-rel("JuegoSokoban-RecuerdoNivel", "composicion", "JuegoSokoban", "RecuerdoNivel", rol="historial", mult="0..15")
-rel("JuegoSokoban-MaquinaDelTiempo", "composicion", "JuegoSokoban", "MaquinaDelTiempo", rol="maquinaDelTiempo", mult="1")
-rel("MaquinaDelTiempo-RecuerdoNivel", "agregacion", "MaquinaDelTiempo", "RecuerdoNivel", rol="puntos", mult="0..10")
-rel("RecuerdoNivel-EstadoNivel", "asociacion", "RecuerdoNivel", "EstadoNivel", rol="nivel", mult="1")
 rel("JuegoSokoban-CargadorNivel", "asociacion", "JuegoSokoban", "CargadorNivel", rol="cargador", mult="1")
-rel("JuegoSokoban-EstadoNivel", "asociacion", "JuegoSokoban", "EstadoNivel", rol="estado", mult="0..1")
-rel("JuegoSokoban-MediadorMovimiento", "asociacion", "JuegoSokoban", "MediadorMovimiento", rol="motor", mult="0..1")
+rel("JuegoSokoban-EstadoNivel", "asociacion", "JuegoSokoban", "EstadoNivel", rol="nivel", mult="0..1")
 rel("JuegoSokoban-MotorMovimiento", "dependencia", "JuegoSokoban", "MotorMovimiento", nombre="crea")
+rel("JuegoSokoban-HistorialDeshacer", "asociacion", "JuegoSokoban", "HistorialDeshacer", rol="historial", mult="1")
+rel("JuegoSokoban-MaquinaDelTiempo", "asociacion", "JuegoSokoban", "MaquinaDelTiempo", rol="maquinaDelTiempo",
+    mult="1")
+rel("JuegoSokoban-Puntaje", "asociacion", "JuegoSokoban", "Puntaje", rol="puntaje", mult="1")
 rel("CargadorNivel-EstadoNivel", "dependencia", "CargadorNivel", "EstadoNivel", nombre="crea")
-rel("MotorMovimiento-EstadoNivel", "asociacion", "MotorMovimiento", "EstadoNivel", rol="estado", mult="1")
-rel("MotorMovimiento-Jugador", "dependencia", "MotorMovimiento", "Jugador", nombre="mueve")
-rel("MotorMovimiento-Caja", "dependencia", "MotorMovimiento", "Caja", nombre="empuja")
-rel("EstadoNivel-Jugador", "composicion", "EstadoNivel", "Jugador", rol="jugador", mult="1")
-rel("EstadoNivel-Caja", "composicion", "EstadoNivel", "Caja", rol="cajas", mult="0..*")
-rel("EstadoNivel-ComportamientoCaja", "dependencia", "EstadoNivel", "ComportamientoCaja", nombre="crea la estrategia")
-rel("Jugador-MediadorMovimiento", "asociacion", "Jugador", "MediadorMovimiento", rol="mediador", mult="0..1")
-rel("Jugador-Posicion", "asociacion", "Jugador", "Posicion", rol="posicion", mult="1")
-rel("Caja-Posicion", "asociacion", "Caja", "Posicion", rol="posicion", mult="1")
-rel("Caja-ComportamientoCaja", "asociacion", "Caja", "ComportamientoCaja", rol="estrategia", mult="1")
-rel("Caja-MediadorMovimiento", "asociacion", "Caja", "MediadorMovimiento", rol="mediador", mult="0..1")
-rel("EstadoNivel-MediadorMovimiento", "dependencia", "EstadoNivel", "MediadorMovimiento", nombre="conectarColegas()")
-rel("ComportamientoCaja-MediadorMovimiento", "dependencia", "ComportamientoCaja", "MediadorMovimiento", nombre="avisa")
-rel("CajaFragilStrategy-MediadorMovimiento", "dependencia", "CajaFragilStrategy", "MediadorMovimiento", nombre="cajaRota()")
-rel("CajaLlaveStrategy-MediadorMovimiento", "dependencia", "CajaLlaveStrategy", "MediadorMovimiento", nombre="llaveEmpujada()")
+rel("EstadoNivel-Jugador", "asociacion", "EstadoNivel", "Jugador", rol="jugador", mult="1")
+rel("EstadoNivel-Caja", "asociacion", "EstadoNivel", "Caja", rol="cajas", mult="*")
+for _s in ("CajaNormalStrategy", "CajaFragilStrategy", "CajaLlaveStrategy"):
+    rel(f"EstadoNivel-{_s}", "dependencia", "EstadoNivel", _s, nombre="new")
+rel("EstadoNivel-RecuerdoNivel", "dependencia", "EstadoNivel", "RecuerdoNivel", nombre="crea y lee")
+rel("EstadoNivel-MediadorMovimiento", "asociacion", "EstadoNivel", "MediadorMovimiento", rol="mediador", mult="0..1")
+rel("MotorMovimiento-EstadoNivel", "asociacion", "MotorMovimiento", "EstadoNivel", rol="nivel", mult="1")
+rel("MotorMovimiento-Jugador", "asociacion", "MotorMovimiento", "Jugador", rol="jugador", mult="1")
+rel("MotorMovimiento-Caja", "asociacion", "MotorMovimiento", "Caja", rol="cajas", mult="*")
+rel("MediadorMovimiento-ElementoMovil", "asociacion", "MediadorMovimiento", "ElementoMovil", nombre="se conocen",
+    mult="*", ambos=True, mult_o="1")
+rel("MediadorMovimiento-Evento", "dependencia", "MediadorMovimiento", "Evento", nombre="devuelve")
+rel("ElementoMovil-Posicion", "asociacion", "ElementoMovil", "Posicion", rol="posicion", mult="1")
+rel("Caja-ComportamientoCaja", "asociacion", "Caja", "ComportamientoCaja", rol="comportamiento", mult="1")
+rel("ComportamientoCaja-MediadorMovimiento", "dependencia", "ComportamientoCaja", "MediadorMovimiento",
+    nombre="avisa (cajaDanada, cajaRota, llaveEmpujada)")
 rel("Posicion-Direccion", "dependencia", "Posicion", "Direccion", nombre="siguiente(direccion)")
+rel("RecuerdoNivel-Posicion", "asociacion", "RecuerdoNivel", "Posicion", rol="posicionJugador", mult="1")
+rel("RecuerdoNivel-Caja", "asociacion", "RecuerdoNivel", "Caja", rol="cajas", mult="*")
+rel("HistorialDeshacer-RecuerdoNivel", "agregacion", "HistorialDeshacer", "RecuerdoNivel", rol="recuerdos",
+    mult="0..15")
+rel("MaquinaDelTiempo-Punto", "agregacion", "MaquinaDelTiempo", "Punto", rol="puntos", mult="0..10")
+rel("Punto-RecuerdoNivel", "asociacion", "Punto", "RecuerdoNivel", rol="recuerdo", mult="1")
 # comandos
+rel("GrabadoraDePartida-Comando", "agregacion", "GrabadoraDePartida", "Comando", rol="comandos", mult="*")
 for _c in ("ComandoMover", "ComandoDeshacer", "ComandoViajarEnElTiempo"):
-    rel(f"{_c}-Comando", "implementa", _c, "Comando")
     rel(f"{_c}-Juego", "asociacion", _c, "Juego", rol="juego", mult="1")
-    rel(f"PantallaJuego-{_c}", "dependencia", "PantallaJuego", _c, nombre="crea")
 rel("ComandoMover-Direccion", "asociacion", "ComandoMover", "Direccion", rol="direccion", mult="1")
-rel("GrabadoraDePartida-Comando", "agregacion", "GrabadoraDePartida", "Comando", rol="grabados", mult="0..*")
-rel("Repeticion-Comando", "asociacion", "Repeticion", "Comando", rol="pendientes", mult="0..*")
-rel("PantallaJuego-GrabadoraDePartida", "composicion", "PantallaJuego", "GrabadoraDePartida", rol="grabadora", mult="1")
-rel("PantallaJuego-Repeticion", "asociacion", "PantallaJuego", "Repeticion", rol="repeticion", mult="0..1")
 
 # ════════════════════════════════════════════════════════════════════════════
 # 3. Modelo UML en formato StarUML (Project -> UMLModel -> paquetes -> clasificadores)
@@ -648,6 +726,8 @@ def partir(texto, sep=","):
 
 
 def leer_miembro(linea):
+    redefine = linea.startswith("*")
+    linea = linea.lstrip("*")
     estatico = linea.startswith("_")
     linea = linea.lstrip("_")
     vis, resto = VISIBILIDAD[linea[0]], linea[1:].strip()
@@ -659,10 +739,12 @@ def leer_miembro(linea):
         for p in partir(params):
             pn, _, pt = p.partition(":")
             lista.append((pn.strip(), pt.strip()))
-        return dict(clase="op", nombre=nombre.strip(), vis=vis, estatico=estatico, params=lista, ret=ret or None)
+        return dict(clase="op", nombre=nombre.strip(), vis=vis, estatico=estatico, params=lista, ret=ret or None,
+                    redefine=redefine)
     nombre, _, tipo = resto.partition(":")
     tipo, _, valor = tipo.partition("=")
-    return dict(clase="attr", nombre=nombre.strip(), vis=vis, estatico=estatico, tipo=tipo.strip(), valor=valor.strip())
+    return dict(clase="attr", nombre=nombre.strip(), vis=vis, estatico=estatico, tipo=tipo.strip(), valor=valor.strip(),
+                redefine=redefine)
 
 
 def texto_miembro(m):
@@ -804,9 +886,14 @@ class Modelo:
             if r["nombre"]:
                 e["name"] = r["nombre"]
             e["end1"] = {"_type": "UMLAssociationEnd", "_id": nuevo_id("end1:" + r["clave"]), "_parent": ref(i),
-                         "reference": ref(o["_id"]), "visibility": "public", "navigable": "unspecified",
+                         "reference": ref(o["_id"]), "visibility": "public",
+                         "navigable": "navigable" if r["ambos"] else "unspecified",
                          "aggregation": agreg, "isReadOnly": False, "isOrdered": False, "isUnique": False,
                          "isDerived": False, "isID": False}
+            if r["rol_o"]:
+                e["end1"]["name"] = r["rol_o"]
+            if r["mult_o"]:
+                e["end1"]["multiplicity"] = r["mult_o"]
             e["end2"] = {"_type": "UMLAssociationEnd", "_id": nuevo_id("end2:" + r["clave"]), "_parent": ref(i),
                          "name": r["rol"], "reference": ref(d["_id"]), "visibility": "private",
                          "navigable": "navigable", "aggregation": "none", "multiplicity": r["mult"],
@@ -912,14 +999,19 @@ def _compartimento_nombre(clave, padre, modelo, x, y, w, nombre, estereo, h):
 
 
 def _compartimento_lista(tipo, tipo_item, clave, padre, modelo, x, y, w, items, visible=True):
-    """items: lista de (id del modelo, texto, subrayado)."""
+    """items: lista de (id del modelo, texto, subrayado, visible). Los renglones ocultos (visible=False) siguen en
+    el archivo, como los guarda StarUML, pero no se dibujan ni ocupan lugar: así cada diagrama elige qué miembros
+    muestra de la misma clase del modelo."""
     c = _base(tipo, clave, padre, modelo, visible=visible)
-    h = len(items) * LINEA + 2 * PAD if items else 10
+    n = sum(1 for it in items if it[3])
+    h = n * LINEA + 2 * PAD if n else 10
     _nodo(c, x, y, w, h)
     subs = []
-    for k, (mid, txt, sub) in enumerate(items):
-        subs.append(_etiqueta(f"{clave}:{k}", c["_id"], x + PAD, y + PAD + k * LINEA, w - 2 * PAD, txt,
-                              alineacion=0, subrayado=sub, tipo=tipo_item, modelo=mid))
+    k = 0
+    for j, (mid, txt, sub, ver) in enumerate(items):
+        subs.append(_etiqueta(f"{clave}:{j}", c["_id"], x + PAD, y + PAD + k * LINEA, w - 2 * PAD, txt,
+                              alineacion=0, subrayado=sub, tipo=tipo_item, modelo=mid, visible=ver))
+        k += 1 if ver else 0
     if subs:
         c["subViews"] = subs
     return c, (h if visible else 0)
@@ -928,33 +1020,35 @@ def _compartimento_lista(tipo, tipo_item, clave, padre, modelo, x, y, w, items, 
 class Caja:
     """Vista de un clasificador (clase, interfaz, enum o record) con sus compartimentos."""
 
-    def __init__(self, diagrama, nombre, x, y, w=None, solo=None, sin_miembros=False, sin_ops=False, color=None):
+    def __init__(self, diagrama, nombre, x, y, w=None, ver=None, sin_miembros=False, rol=None, color=None):
         c = CLASES[nombre]
         self.nombre, self.c = nombre, c
         self.modelo_id = diagrama.modelo.ids[nombre]
         clave = f"{diagrama.clave}/{nombre}"
         while nuevo_id_libre(clave) is False:
             clave += "+"
-        # Siempre van todas las vistas de los miembros (StarUML las crea igual al abrir el archivo).
-        # StarUML dibuja un compartimento entero o nada: `solo` elige qué compartimentos se ven
-        # (los que tienen alguno de esos nombres), `sin_ops` oculta las operaciones y
-        # `sin_miembros` deja solo el nombre.
+        # Siempre van las vistas de todos los miembros (StarUML las crea igual al abrir el archivo); cada
+        # diagrama decide cuáles se ven. Sin `ver`: todos menos los que solo redefinen un método heredado.
+        # Con `ver` (lista de nombres; el constructor se llama como la clase): solo esos, y los compartimentos
+        # vacíos se ocultan, como «hide empty members» de PlantUML. `sin_miembros` deja solo el nombre.
         miembros = c.get("_miembros", [])
-        attrs = [(m["_id"], texto_miembro(m), m["estatico"]) for m in miembros if m["clase"] == "attr"]
-        ops = [(m["_id"], texto_miembro(m), m["estatico"]) for m in miembros if m["clase"] == "op"]
-        lits = [(i, n, False) for n, i in c.get("_literales", [])]
-        elegidas = {m["clase"] for m in miembros if solo is not None and m["nombre"] in solo}
         if sin_miembros:
-            ver_attrs = ver_ops = ver_lits = False
+            visible = lambda m: False  # noqa: E731
+        elif ver is None:
+            visible = lambda m: not m["redefine"]  # noqa: E731
         else:
-            ver_lits = bool(lits)
-            ver_attrs = (bool(attrs) or c["tipo"] in ("clase", "record")) if solo is None else "attr" in elegidas
-            ver_ops = (bool(ops) or c["tipo"] == "clase") if solo is None and not sin_ops else \
-                ("op" in elegidas and not sin_ops)
+            visible = lambda m: m["nombre"] in ver  # noqa: E731
+        attrs = [(m["_id"], texto_miembro(m), m["estatico"], visible(m)) for m in miembros if m["clase"] == "attr"]
+        ops = [(m["_id"], texto_miembro(m), m["estatico"], visible(m)) for m in miembros if m["clase"] == "op"]
+        lits = [(i, n, False, not sin_miembros and ver is None) for n, i in c.get("_literales", [])]
+        completa = ver is None and not sin_miembros
+        ver_lits = any(l[3] for l in lits)
+        ver_attrs = any(a[3] for a in attrs) or (completa and c["tipo"] in ("clase", "record"))
+        ver_ops = any(o[3] for o in ops) or (completa and c["tipo"] == "clase")
         tipo = c["tipo"]
         estereo = {"interfaz": "interface", "enum": "enumeration"}.get(tipo) or c["estereotipo"] or \
             ("record" if tipo == "record" else None)
-        textos = [t for _, t, _ in (attrs if ver_attrs else []) + (ops if ver_ops else []) + (lits if ver_lits else [])]
+        textos = [t for _, t, _, vis in attrs + ops + lits if vis]
         minimo = max([ancho(t) for t in textos] + [ancho(nombre, True), ancho(f"«{estereo}»" if estereo else "")])
         self.w = w or math.ceil(minimo + MARGEN_ANCHO)
         self.x, self.y = x, y
@@ -1004,6 +1098,8 @@ class Caja:
             v.update({"suppressLiterals": not ver_lits, "enumerationLiteralCompartment": ref(lit_comp["_id"])})
         self.vista = v
         diagrama.agregar(v, self)
+        if rol:
+            diagrama.texto(rol, x, y - 19, max(self.w, ancho(rol) + 12), 17, tam=11, color="#7A5A12")
 
     def punto(self, lado, f=0.5):
         if lado == "top":
@@ -1069,6 +1165,15 @@ class Diagrama:
             l.update({"head": ref(c.id), "tail": ref(v["_id"]), "lineStyle": 1,
                       "points": f"{cx:g}:{y + h / 2:g};{cx:g}:{c.y + c.h / 2:g}"})
             self.lineas.append(l)
+        return v
+
+    def contencion(self, hijo, padre, pts):
+        """Línea de anidamiento (UMLContainmentView): el círculo con la cruz va del lado de `padre`."""
+        ch, cp = self.cajas[hijo], self.cajas[padre]
+        v = _base("UMLContainmentView", f"{self.clave}/contencion:{hijo}:{padre}", self.id, estilo_padre=False)
+        v.update({"head": ref(cp.id), "tail": ref(ch.id), "lineStyle": 0,
+                  "points": ";".join(f"{x:g}:{y:g}" for x, y in pts)})
+        self.lineas.append(v)
         return v
 
     def texto(self, texto, x, y, w, h=None, negrita=False, tam=None, color=TINTA):
@@ -1190,9 +1295,9 @@ def _vista_relacion(d, r, co, cd, pts):
         tx, ty = pts[0]
         rol = r["rol"]
         etiquetas = [
-            ("tailRoleNameLabel", e1, math.pi / 6, 30, 2, "", False, tx, ty),
+            ("tailRoleNameLabel", e1, math.pi / 5, 26 + ancho(r["rol_o"]) / 2, 2, r["rol_o"], bool(r["rol_o"]), tx, ty),
             ("tailPropertyLabel", e1, math.pi / 4, 40, 2, "", False, tx, ty),
-            ("tailMultiplicityLabel", e1, -math.pi / 6, 25, 2, "", False, tx, ty),
+            ("tailMultiplicityLabel", e1, -math.pi / 5, 20, 2, r["mult_o"], bool(r["mult_o"]), tx, ty),
             # rol un poco más lejos de la punta que la multiplicidad, cada uno de un lado de la línea
             ("headRoleNameLabel", e2, -math.pi / 5, 26 + ancho(rol) / 2, 0, rol, bool(rol), hx, hy),
             ("headPropertyLabel", e2, -math.pi / 4, 40, 0, "", False, hx, hy),
@@ -1296,10 +1401,10 @@ PAQ_SUB = ("#FFF4EC", "#C8683A")
 PAQ_MARTIN = ("#F6FBF5", "#82B366")
 
 AUTORES = [
-    ("luca", "Luca: interfaz gráfica Swing (sokoban.vista), el contrato vista/dominio (Juego, ObservadorJuego, EstadoJuego, Direccion) y la auditoría (JuegoDecorado, PanelAyuda)."),
-    ("dominio", "Pedro y Lucía: dominio y personaje (JuegoSokoban, niveles, entidades, Strategy, Mediator)."),
+    ("luca", "Luca: interfaz gráfica Swing (sokoban.vista) y el contrato vista/dominio (Juego, SujetoJuego, ObservadorJuego, EstadoJuego, Direccion, JuegoDecorado)."),
+    ("dominio", "Pedro y Lucía: dominio y personaje (JuegoSokoban, niveles, Puntaje, Evento, entidades, Strategy, Mediator)."),
     ("sonido", "Mora: sonido (sokoban.sonido: Decorator, Singleton + Facade, State)."),
-    ("martin", "Martín: arte (assets/) y las funcionalidades adicionales: DeLorean (Memento: RecuerdoNivel, MaquinaDelTiempo) y repetición de la partida (Command: sokoban.comandos)."),
+    ("martin", "Martín: arte (assets/) y las funcionalidades adicionales: deshacer y DeLorean (Memento: RecuerdoNivel, HistorialDeshacer, MaquinaDelTiempo) y repetición de la partida (Command: sokoban.comandos)."),
     ("integ", "Integración del arte de Martín con la interfaz de Luca (Epoca: fondo, piso y pared de cada nivel)."),
     ("swing", "Biblioteca de Java (javax.swing): solo para mostrar la herencia."),
 ]
@@ -1336,15 +1441,15 @@ def diagrama_completo(m):
                  doc="Todas las clases, interfaces, enums y records del proyecto, agrupados por paquete.")
     # ── paquetes ──
     d.paquete("javax.swing", 20, 190, 160, 640, PAQ_RAIZ)
-    d.paquete("sokoban", 200, 20, 3460, 1880, PAQ_RAIZ)
+    d.paquete("sokoban", 200, 20, 3500, 2030, PAQ_RAIZ)
     d.paquete("sokoban.vista", 215, 150, 1025, 1270, PAQ_VISTA)
-    d.paquete("sokoban.comandos", 215, 1450, 1025, 410, PAQ_MARTIN)
-    d.paquete("sokoban.sonido", 1305, 150, 2340, 600, PAQ_SONIDO)
-    d.paquete("sokoban.modelo", 1290, 765, 2355, 1115, PAQ_MODELO)
-    d.paquete("sokoban.modelo.entidades", 2420, 1205, 850, 280, PAQ_SUB)
-    d.paquete("sokoban.modelo.estrategias", 2440, 1535, 480, 265, PAQ_SUB)
-    d.paquete("sokoban.modelo.movimiento", 3320, 805, 300, 560, PAQ_SUB)
-    d.paquete("sokoban.modelo.tiempo", 1330, 1640, 400, 210, PAQ_MARTIN)
+    d.paquete("sokoban.comandos", 215, 1450, 1025, 420, PAQ_MARTIN)
+    d.paquete("sokoban.sonido", 1305, 150, 2380, 610, PAQ_SONIDO)
+    d.paquete("sokoban.modelo", 1290, 775, 2395, 1240, PAQ_MODELO)
+    d.paquete("sokoban.modelo.entidades", 2910, 1420, 760, 410, PAQ_SUB)
+    d.paquete("sokoban.modelo.estrategias", 2430, 1720, 460, 280, PAQ_SUB)
+    d.paquete("sokoban.modelo.movimiento", 3180, 805, 380, 560, PAQ_SUB)
+    d.paquete("sokoban.modelo.tiempo", 1310, 1505, 860, 210, PAQ_MARTIN)
     # ── clases ──
     d.caja("JFrame", 40, 230, w=110)
     d.caja("JPanel", 40, 760, w=110)
@@ -1360,39 +1465,42 @@ def diagrama_completo(m):
     d.caja("Epoca", 240, 1180)
     d.caja("Imagenes", 470, 1180)
     # comandos
-    d.caja("GrabadoraDePartida", 300, 1490)
+    d.caja("GrabadoraDePartida", 240, 1480)
     d.caja("Comando", 620, 1500)
-    d.caja("Repeticion", 860, 1490)
-    d.caja("ComandoMover", 240, 1710)
-    d.caja("ComandoDeshacer", 575, 1710)
-    d.caja("ComandoViajarEnElTiempo", 815, 1710)
+    fila(d, ["ComandoMover", "ComandoDeshacer", "ComandoViajarEnElTiempo"], 240, 1735, 38)
     # sonido
-    d.caja("JuegoConSonido", 1330, 190)
-    d.caja("Sonidos", 1850, 190)
-    d.caja("EstadoSonido", 2310, 200)
-    d.caja("SonidoActivado", 2230, 330)
-    d.caja("SonidoSilenciado", 2420, 330)
-    d.caja("Sonido", 1850, 420)
-    d.caja("SonidosDeInterfaz", 2350, 500)
+    d.caja("JuegoConSonido", 1600, 190)
+    d.caja("Sonidos", 1900, 190)
+    d.caja("EstadoSonido", 2360, 200)
+    d.caja("SonidoActivado", 2280, 330)
+    d.caja("SonidoSilenciado", 2470, 330)
+    d.caja("Sonido", 1900, 420)
+    d.caja("SonidosDeInterfaz", 2400, 500)
     # modelo: contrato
-    d.caja("Juego", 1310, 800)
-    d.caja("JuegoDecorado", 1700, 790)
-    d.caja("ObservadorJuego", 1310, 1060)
-    d.caja("EstadoJuego", 1720, 1060)
-    d.caja("Direccion", 1310, 1220)
+    d.caja("SujetoJuego", 1310, 800)
+    d.caja("Juego", 1310, 950)
+    d.caja("JuegoDecorado", 1600, 960)
+    d.caja("ObservadorJuego", 1310, 1230)
+    d.caja("EstadoJuego", 1700, 1190)
+    d.caja("Evento", 1880, 1190)
+    d.caja("Direccion", 1310, 1330)
     # modelo: dominio
-    d.caja("JuegoSokoban", 2150, 810)
-    d.caja("RecuerdoNivel", 1400, 1440)
-    d.caja("MaquinaDelTiempo", 1360, 1685)
-    d.caja("CargadorNivel", 2440, 810)
-    d.caja("EstadoNivel", 2770, 810)
-    d.caja("MotorMovimiento", 3350, 840)
-    d.caja("MediadorMovimiento", 3335, 1240)
-    d.caja("Caja", 2440, 1240)
-    d.caja("Jugador", 2920, 1240)
-    d.caja("Posicion", 3000, 1560)
-    d.caja("ComportamientoCaja", 2460, 1580)
-    fila(d, ["CajaNormalStrategy", "CajaFragilStrategy", "CajaLlaveStrategy"], 2470, 1730, 25)
+    d.caja("JuegoSokoban", 2190, 810)
+    d.caja("CargadorNivel", 2480, 810)
+    d.caja("Puntaje", 2480, 1090)
+    d.caja("EstadoNivel", 2810, 810)
+    d.caja("MotorMovimiento", 3200, 840)
+    d.caja("MediadorMovimiento", 3240, 1240)
+    d.caja("Posicion", 2470, 1440)
+    d.caja("ElementoMovil", 3260, 1460)
+    d.caja("Caja", 2930, 1650)
+    d.caja("Jugador", 3420, 1650)
+    d.caja("ComportamientoCaja", 2450, 1760)
+    fila(d, ["CajaNormalStrategy", "CajaFragilStrategy", "CajaLlaveStrategy"], 2445, 1890, 15)
+    d.caja("HistorialDeshacer", 1330, 1540)
+    d.caja("MaquinaDelTiempo", 1620, 1540)
+    d.caja("Punto", 1990, 1560)
+    d.caja("RecuerdoNivel", 1310, 1760)
     C = d.cajas
     R = d.rel
 
@@ -1405,10 +1513,10 @@ def diagrama_completo(m):
     R("PanelHUD-JPanel", "top", "right", 690, 0.5, via=[(690, 870), (165, 870), (165, jp)])
     # ── Main ──
     R("Main-VentanaPrincipal", "left", "top", 85, 655)
-    R("Main-JuegoConSonido", "right", "top", 70, 1520)
-    R("Main-SonidosDeInterfaz", "right", "top", 90, 2580)
-    R("Main-JuegoSokoban", "right", "top", 108, 2170, via=[(1800, 108), (1800, 757), (2170, 757)])
-    R("Main-CargadorNivel", "right", "top", 108, 2600, via=[(1800, 108), (1800, 757), (2600, 757)])
+    R("Main-JuegoConSonido", "right", "top", 70, 1700)
+    R("Main-SonidosDeInterfaz", "right", "top", 90, 2620)
+    R("Main-JuegoSokoban", "right", "top", 108, 2270, via=[(1860, 108), (1860, 757), (2270, 757)])
+    R("Main-CargadorNivel", "right", "top", 108, 2600, via=[(1860, 108), (1860, 757), (2600, 757)])
     # ── vista ──
     R("VentanaPrincipal-MenuPrincipal", "left", "top", 290, 450)
     R("VentanaPrincipal-PantallaJuego", "right", "top", 290, 975)
@@ -1424,88 +1532,99 @@ def diagrama_completo(m):
     R("Imagenes-instancia", "right", "right", im.y + 30, im.y + 70,
       via=[(im.x + im.w + 40, im.y + 30), (im.x + im.w + 40, im.y + 70)])
     # vista -> modelo
-    R("PantallaJuego-Juego", "right", "left", 420, 840, via=[(1250, 420), (1250, 840)])
-    R("PanelTablero-ObservadorJuego", "right", "left", 1090, 1090)
-    R("PanelHUD-ObservadorJuego", "bottom", "left", 1150, 1090, via=[(1150, 1090)])
-    R("PanelTablero-Direccion", "bottom", "left", 610, 1300, via=[(610, 1150), (1275, 1150), (1275, 1300)])
+    R("PantallaJuego-Juego", "right", "left", 420, 980, via=[(1250, 420), (1250, 980)])
+    R("PanelTablero-ObservadorJuego", "right", "left", 1090, 1260, via=[(1150, 1090), (1150, 1260)])
+    R("PanelHUD-ObservadorJuego", "bottom", "left", 1150, 1260, via=[(1150, 1260)])
+    R("PanelTablero-Direccion", "bottom", "left", 610, 1390, via=[(610, 1150), (1278, 1150), (1278, 1390)])
     # vista -> comandos
-    R("PantallaJuego-GrabadoraDePartida", "right", "top", 740, 400, via=[(1222, 740), (1222, 1470), (400, 1470)])
-    R("PantallaJuego-Repeticion", "right", "right", 760, 1570, via=[(1232, 760), (1232, 1570)])
+    R("PantallaJuego-GrabadoraDePartida", "right", "top", 700, 350, via=[(1222, 700), (1222, 1462), (350, 1462)])
     # ── comandos ──
-    R("GrabadoraDePartida-Comando", "right", "left", 1530, 1530)
-    R("Repeticion-Comando", "left", "right", 1530, 1530)
-    arbol(d, ["ComandoMover", "ComandoDeshacer", "ComandoViajarEnElTiempo"], "Comando", sep=C["ComandoMover"].y - 30
-          - C["Comando"].y - C["Comando"].h)
-    R("ComandoViajarEnElTiempo-Juego", "right", "left", 1745, 910, via=[(1260, 1745), (1260, 910)])
+    R("GrabadoraDePartida-Comando", "right", "left", 1528, 1528)
+    arbol(d, ["ComandoMover", "ComandoDeshacer", "ComandoViajarEnElTiempo"], "Comando",
+          sep=C["ComandoMover"].y - 24 - C["Comando"].y - C["Comando"].h)
+    vj = C["ComandoViajarEnElTiempo"]
+    R("ComandoViajarEnElTiempo-Juego", "right", "left", vj.y + 40, 1050, via=[(1262, vj.y + 40), (1262, 1050)])
     for s in ("ComandoMover", "ComandoDeshacer"):
         k = C[s]
-        R(f"{s}-Juego", "bottom", "left", k.x + k.w - 40, 910, via=[(k.x + k.w - 40, 1820), (1260, 1820), (1260, 910)])
-    R("ComandoMover-Direccion", "bottom", "left", 300, 1350, via=[(300, 1838), (1290, 1838), (1290, 1350)])
+        R(f"{s}-Juego", "bottom", "left", k.x + k.w - 40, 1050, via=[(k.x + k.w - 40, 1838), (1262, 1838), (1262, 1050)])
+    R("ComandoMover-Direccion", "bottom", "left", 300, 1440, via=[(300, 1852), (1293, 1852), (1293, 1440)])
     # ── contrato ──
-    R("Juego-ObservadorJuego", "bottom", "top", 1360, 1360)
-    R("Juego-EstadoJuego", "bottom", "left", 1590, 1080, via=[(1590, 1080)])
-    R("ObservadorJuego-EstadoJuego", "right", "left", 1105, 1105)
-    R("JuegoDecorado-Juego", "left", "right", 830, 830)
-    R("JuegoDecorado-juego", "left", "right", 890, 890)
+    R("Juego-SujetoJuego", "top", "bottom", 1400, 1400)
+    R("SujetoJuego-ObservadorJuego", "left", "top", 860, 1420, via=[(1296, 860), (1296, 1212), (1420, 1212)])
+    R("Juego-EstadoJuego", "bottom", "top", 1480, 1760, via=[(1480, 1180), (1760, 1180)])
+    R("ObservadorJuego-EstadoJuego", "right", "left", 1260, 1260)
+    R("EstadoJuego-Evento", "right", "left", 1220, 1220)
+    R("JuegoDecorado-Juego", "left", "right", 990, 990)
+    R("JuegoDecorado-juego", "left", "right", 1070, 1070)
     # ── sonido ──
-    R("JuegoConSonido-JuegoDecorado", "bottom", "top", 1740, 1740)
+    R("JuegoConSonido-JuegoDecorado", "bottom", "top", 1700, 1700)
     R("JuegoConSonido-Sonidos", "right", "left", 230, 230)
-    R("JuegoConSonido-Sonido", "right", "left", 445, 445)
+    R("JuegoConSonido-Sonido", "right", "left", 330, 450, via=[(1870, 330), (1870, 450)])
+    R("Sonido-Evento", "bottom", "top", 1960, 1960)
     R("Sonidos-EstadoSonido", "right", "left", 235, 235)
     so = C["Sonidos"]
     R("Sonidos-instancia", "top", "top", so.x + 40, so.x + 100,
       via=[(so.x + 40, so.y - 22), (so.x + 100, so.y - 22)])
-    R("Sonidos-Sonido", "bottom", "top", 1920, 1920)
+    R("Sonidos-Sonido", "bottom", "top", 1960, 1960)
     arbol(d, ["SonidoActivado", "SonidoSilenciado"], "EstadoSonido", sep=22)
-    R("SonidoActivado-Sonidos", "left", "right", 352, 352)
-    sil = C["SonidoSilenciado"]
-    R("SonidoSilenciado-Sonidos", "bottom", "right", sil.x + 40, 388, via=[(sil.x + 40, 388)])
-    R("SonidosDeInterfaz-Sonidos", "left", "bottom", 525, 2100, via=[(2100, 525)])
-    R("SonidosDeInterfaz-Sonido", "left", "right", 580, 580)
+    act, sil = C["SonidoActivado"], C["SonidoSilenciado"]
+    R("SonidoActivado-SonidoSilenciado", "right", "left", act.y + 15, act.y + 15)
+    R("SonidoSilenciado-SonidoActivado", "bottom", "bottom", sil.x + 50, act.x + 60,
+      via=[(sil.x + 50, act.y + act.h + 26), (act.x + 60, act.y + act.h + 26)])
+    R("SonidosDeInterfaz-Sonidos", "left", "bottom", 525, 2150, via=[(2150, 525)])
+    R("SonidosDeInterfaz-Sonido", "left", "right", 590, 590)
     # ── dominio ──
-    R("JuegoSokoban-Juego", "left", "right", 1020, 940, via=[(1680, 1020), (1680, 940)])
-    R("JuegoSokoban-EstadoJuego", "left", "right", 1150, 1150)
-    R("JuegoSokoban-observadores", "bottom", "bottom", 2170, 1480, via=[(2170, 1300), (1480, 1300)])
-    R("JuegoSokoban-RecuerdoNivel", "bottom", "right", 2230, 1480, via=[(2230, 1480)])
-    R("JuegoSokoban-MaquinaDelTiempo", "bottom", "right", 2290, 1760, via=[(2290, 1760)])
-    R("MaquinaDelTiempo-RecuerdoNivel", "top", "bottom", 1480, 1480)
-    R("RecuerdoNivel-EstadoNivel", "right", "bottom", 1560, 2780, via=[(2406, 1560), (2406, 1185), (2780, 1185)])
-    R("JuegoSokoban-CargadorNivel", "right", "left", 850, 850)
-    R("CargadorNivel-EstadoNivel", "right", "left", 850, 850)
-    R("JuegoSokoban-EstadoNivel", "right", "left", 1080, 1080)
-    R("JuegoSokoban-MediadorMovimiento", "top", "right", 2200, 1290, via=[(2200, 775), (3632, 775), (3632, 1290)])
-    R("JuegoSokoban-MotorMovimiento", "top", "top", 2240, 3420, via=[(2240, 790), (3420, 790)])
-    R("MotorMovimiento-EstadoNivel", "left", "right", 860, 860)
-    R("MotorMovimiento-Caja", "left", "top", 880, 2840, via=[(3275, 880), (3275, 1195), (2840, 1195)])
-    R("MotorMovimiento-Jugador", "left", "top", 900, 3150, via=[(3290, 900), (3290, 1215), (3150, 1215)])
-    R("MotorMovimiento-MediadorMovimiento", "bottom", "top", 3465, 3465)
-    R("EstadoNivel-Caja", "bottom", "top", 2820, 2820)
-    R("EstadoNivel-Jugador", "bottom", "top", 3050, 3050)
-    R("Jugador-MediadorMovimiento", "right", "left", 1290, 1290)
-    R("Caja-MediadorMovimiento", "right", "left", 1420, 1325, via=[(3305, 1420), (3305, 1325)])
-    R("Jugador-Posicion", "bottom", "top", 3100, 3100)
-    R("Caja-Posicion", "right", "top", 1440, 3030, via=[(3030, 1440)])
-    R("Caja-ComportamientoCaja", "bottom", "top", 2600, 2600)
-    arbol(d, ["CajaNormalStrategy", "CajaFragilStrategy", "CajaLlaveStrategy"], "ComportamientoCaja", sep=34)
+    R("JuegoSokoban-SujetoJuego", "top", "top", 2210, 1550, via=[(2210, 785), (1550, 785)])
+    R("JuegoSokoban-Juego", "left", "right", 925, 975, via=[(1560, 925), (1560, 975)])
+    R("JuegoSokoban-observadores", "left", "bottom", 1015, 1500, via=[(2150, 1015), (2150, 1470), (1500, 1470)])
+    R("JuegoSokoban-CargadorNivel", "right", "left", 840, 840)
+    R("CargadorNivel-EstadoNivel", "right", "left", 840, 840)
+    R("JuegoSokoban-EstadoNivel", "right", "left", 1025, 1025)
+    R("JuegoSokoban-Puntaje", "bottom", "left", 2400, 1150, via=[(2400, 1150)])
+    R("JuegoSokoban-MotorMovimiento", "top", "top", 2330, 3330, via=[(2330, 792), (3330, 792)])
+    R("JuegoSokoban-HistorialDeshacer", "bottom", "top", 2250, 1450, via=[(2250, 1482), (1450, 1482)])
+    R("JuegoSokoban-MaquinaDelTiempo", "bottom", "top", 2300, 1780, via=[(2300, 1497), (1780, 1497)])
+    R("HistorialDeshacer-RecuerdoNivel", "bottom", "top", 1440, 1440)
+    R("MaquinaDelTiempo-Punto", "right", "left", 1585, 1585)
+    d.contencion("Punto", "MaquinaDelTiempo", [(1990, 1615), (C["MaquinaDelTiempo"].x + C["MaquinaDelTiempo"].w, 1615)])
+    R("Punto-RecuerdoNivel", "bottom", "right", 2060, 1840, via=[(2060, 1840)])
+    R("EstadoNivel-RecuerdoNivel", "left", "right", 1300, 1800, via=[(2170, 1300), (2170, 1800)])
+    R("MotorMovimiento-EstadoNivel", "left", "right", 870, 870)
+    R("MotorMovimiento-MediadorMovimiento", "bottom", "top", 3360, 3360)
+    R("MotorMovimiento-Caja", "right", "bottom", 900, 3150, via=[(3665, 900), (3665, 1860), (3150, 1860)])
+    R("MotorMovimiento-Jugador", "right", "right", 940, 1690, via=[(3650, 940), (3650, 1690)])
+    R("EstadoNivel-Caja", "bottom", "top", 3000, 3000)
+    R("EstadoNivel-Jugador", "bottom", "top", 3100, 3560, via=[(3100, 1410), (3560, 1410)])
+    R("EstadoNivel-MediadorMovimiento", "right", "left", 1290, 1290)
+    R("MediadorMovimiento-ElementoMovil", "bottom", "top", 3380, 3380)
+    arbol(d, ["Caja", "Jugador"], "ElementoMovil", sep=36)
+    R("ElementoMovil-Posicion", "left", "right", 1480, 1480)
+    R("Caja-ComportamientoCaja", "left", "right", 1700, 1795, via=[(2895, 1700), (2895, 1795)])
+    arbol(d, ["CajaNormalStrategy", "CajaFragilStrategy", "CajaLlaveStrategy"], "ComportamientoCaja", sep=26)
 
     # ── notas ──
-    leyenda(d, 200, 1940, 640)
+    leyenda(d, 200, 2080, 640)
     d.nota("Cómo leer el diagrama\n"
            "Subrayado = static. + público, - privado, # protegido, ~ de paquete. Cursiva = abstracto.\n"
            "Se dibujan todos los getters y setters públicos. Se omiten las constantes de estilo (colores, fuentes, "
-           "tamaños) y los métodos que solo implementan una interfaz (se leen en la interfaz), salvo en el "
-           "Decorator, donde JuegoDecorado y JuegoConSonido muestran lo que redefinen.\n"
-           "Para no cruzar todo, estas relaciones están en el modelo pero no se dibujan acá (se ven en los "
-           "diagramas de cada patrón): MenuPrincipal y PanelAyuda usan Imagenes; PantallaJuego crea los tres "
-           "comandos (Command); JuegoConSonido compara EstadoJuego (Decorator); EstadoNivel crea las estrategias y "
-           "conecta a los colegas, y las estrategias avisan al mediador (Strategy, Mediator); Direccion la usan "
-           "Juego.mover, PantallaJuego (TECLAS), Posicion.siguiente y MediadorMovimiento.",
-           880, 1940, 900)
+           "tamaños) y los métodos que solo redefinen uno de una interfaz (se leen en la interfaz; los diagramas de "
+           "cada patrón los muestran cuando importan). JuegoDecorado y JuegoConSonido sí muestran lo que redefinen.\n"
+           "Para no cruzar todo, estas relaciones están en el modelo pero no se dibujan acá (se ven en los diagramas "
+           "de cada patrón): MenuPrincipal y PanelAyuda usan Imagenes; PantallaJuego crea los tres comandos "
+           "(Command); EstadoNivel crea las estrategias y ComportamientoCaja le avisa al mediador (Strategy); "
+           "Main usa Juego (Decorator); SonidosDeInterfaz alterna el estado (State); JuegoSokoban crea EstadoJuego; "
+           "SonidoActivado y SonidoSilenciado le cambian el estado a Sonidos; MediadorMovimiento devuelve Evento; "
+           "RecuerdoNivel guarda la posición del jugador y las cajas; Direccion la usan Juego.mover y "
+           "Posicion.siguiente.",
+           880, 2080, 900)
     return d
 
 
 # ════════════════════════════════════════════════════════════════════════════
-# 8. Diagramas por patrón (las mismas clases del modelo, con vistas nuevas)
+# 8. Diagramas por patrón: las mismas clases del modelo con vistas nuevas. Su contenido copia las fichas
+#    aprobadas (carpeta-temporal/patrones/*.puml): mismas clases, miembros, relaciones y multiplicidades. El
+#    rol de cada clase en el patrón va como rótulo arriba de la caja (en el modelo no es un estereotipo,
+#    porque una misma clase cumple roles distintos en patrones distintos).
 # ════════════════════════════════════════════════════════════════════════════
 NOTA_PATRON = ("#FFFDE7", "#B8892A")
 
@@ -1514,269 +1633,282 @@ def nota_patron(d, texto, x, y, w, h=None, unir=None):
     return d.nota(texto, x, y, w, color=NOTA_PATRON[0], borde=NOTA_PATRON[1], unir=unir)
 
 
-def patron_observer(m):
-    d = Diagrama(m, "observer", "Patrón Observer", doc="Luca. La vista se actualiza sola cuando cambia la partida.")
-    d.caja("Juego", 300, 40)
-    d.caja("JuegoSokoban", 40, 100, sin_miembros=True)
-    d.caja("ObservadorJuego", 350, 270)
-    d.caja("EstadoJuego", 720, 230)
-    fila(d, ["PanelHUD", "PanelTablero"], 280, 440, 60, sin_miembros=True)
-    C, R = d.cajas, d.rel
-    js = C["JuegoSokoban"]
-    R("JuegoSokoban-Juego", "right", "left", 112, 112)
-    R("JuegoSokoban-observadores", "bottom", "left", 90, 300, via=[(90, 300)])
-    R("Juego-ObservadorJuego", "bottom", "top", 460, 460)
-    R("Juego-EstadoJuego", "right", "top", 120, 786, via=[(786, 120)])
-    R("ObservadorJuego-EstadoJuego", "right", "left", 300, 300)
-    arbol(d, ["PanelHUD", "PanelTablero"], "ObservadorJuego")
-    nota_patron(d, "Observer (Luca)\nSujeto: Juego, implementado por JuegoSokoban, que guarda la lista de "
-                "observadores; se suscriben con agregarObservador y se desuscriben con quitarObservador. Observadores: "
-                "PanelHUD y PanelTablero implementan ObservadorJuego.\n"
-                "Después de cada cambio (mover, deshacer, viajar en el tiempo, reiniciar) JuegoSokoban.notificar() "
-                "llama a actualizar(EstadoJuego) en todos. La vista solo recibe el record EstadoJuego, nunca las "
-                "entidades del dominio.", 40, 520, 820, 90)
-    return d
+def abanico(d, origen, destinos, lado_x, separacion=14):
+    """Varias flechas que salen del costado derecho de `origen` hacia el costado izquierdo de cada destino,
+    sin cruzarse: cada una baja o sube por su propio carril vertical."""
+    o = d.cajas[origen]
+    salidas = [o.y + o.h * (k + 1) / (len(destinos) + 1) for k in range(len(destinos))]
+    pares = sorted(zip(destinos, salidas), key=lambda p: d.cajas[p[0][1]].y)
+    salidas = sorted(salidas)
+    arriba = [(dest, s) for (dest, _), s in zip(pares, salidas) if d.cajas[dest[1]].y + 20 < s]
+    abajo = [(dest, s) for (dest, _), s in zip(pares, salidas) if d.cajas[dest[1]].y + 20 >= s]
+    carriles = {}
+    for k, (dest, s) in enumerate(arriba):
+        carriles[dest[0]] = (lado_x + k * separacion, s)
+    for k, (dest, s) in enumerate(reversed(abajo)):
+        carriles[dest[0]] = (lado_x + k * separacion, s)
+    for (clave, destino) in destinos:
+        x, s = carriles[clave]
+        c = d.cajas[destino]
+        yt = c.y + min(c.h / 2, 30)
+        d.rel(clave, "right", "left", s, yt, via=[(x, s), (x, yt)])
 
 
 def patron_facade(m):
-    d = Diagrama(m, "facade", "Patrón Facade", doc="Juego es la fachada del dominio; Sonidos, la de javax.sound.")
-    d.caja("PantallaJuego", 40, 80, sin_miembros=True)
-    d.caja("Juego", 300, 40)
-    d.caja("JuegoSokoban", 400, 260, sin_miembros=True)
-    fila(d, ["CargadorNivel", "EstadoNivel", "MediadorMovimiento"], 260, 400, 50, sin_miembros=True)
-    d.caja("JuegoConSonido", 40, 540, sin_miembros=True)
-    d.caja("SonidosDeInterfaz", 40, 640, sin_miembros=True)
-    d.caja("Sonidos", 330, 520)
+    d = Diagrama(m, "facade", "Patrón Facade", doc="La vista solo conoce la interfaz Juego; JuegoSokoban coordina el subsistema.")
+    d.caja("PantallaJuego", 40, 200, ver=["juego"], rol="«Cliente»")
+    d.caja("Juego", 330, 150, rol="«Fachada»")
+    d.caja("JuegoSokoban", 640, 250, ver=["nivel", "historial", "maquinaDelTiempo", "puntaje", "cargador"],
+           rol="«Fachada concreta»")
+    y = 70
+    for nombre, ver in (("CargadorNivel", ["cargar"]),
+                        ("EstadoNivel", ["conectarMediador", "moverJugador", "crearRecuerdo", "restaurar"]),
+                        ("MotorMovimiento", ["intentarMover"]), ("HistorialDeshacer", ["guardar", "deshacer"]),
+                        ("MaquinaDelTiempo", ["guardar", "volverAntesDe"]), ("Puntaje", ["registrarDeshacer", "calcular"])):
+        c = d.caja(nombre, 1140, y, ver=ver, rol="«Subsistema»")
+        y += c.h + 40
     C, R = d.cajas, d.rel
-    js = C["JuegoSokoban"]
-    R("PantallaJuego-Juego", "right", "left", 92, 92)
-    R("JuegoSokoban-Juego", "top", "bottom", 460, 460)
-    for clave, destino, x in (("JuegoSokoban-CargadorNivel", "CargadorNivel", js.x + 15),
-                              ("JuegoSokoban-EstadoNivel", "EstadoNivel", js.x + js.w / 2),
-                              ("JuegoSokoban-MediadorMovimiento", "MediadorMovimiento", js.x + js.w - 15)):
-        k = C[destino]
-        R(clave, "bottom", "top", x, k.x + k.w / 2, via=[(x, 345), (k.x + k.w / 2, 345)])
-    R("JuegoConSonido-Sonidos", "right", "left", 552, 552)
-    R("SonidosDeInterfaz-Sonidos", "right", "left", 652, 652)
-    nota_patron(d, "Facade del dominio (Luca)\nLa vista solo conoce la interfaz Juego: no sabe que existen "
-                "CargadorNivel, EstadoNivel, el mediador de movimiento ni las cajas. Por eso el dominio, el sonido y "
-                "las funcionalidades nuevas entraron casi sin tocar la vista (inversión de dependencias).",
-                720, 40, 400, 110, unir=["Juego"])
-    nota_patron(d, "Facade del sonido (Mora)\nSonidos esconde javax.sound (AudioSystem, Clip, formatos y "
-                "excepciones) detrás de reproducir(Sonido.PASO). Si la PC no tiene audio, el juego sigue en "
-                "silencio.", 720, 560, 400, 100, unir=["Sonidos"])
+    R("PantallaJuego-Juego", "right", "left", 223, 223)
+    R("JuegoSokoban-Juego", "left", "right", 270, 270)
+    abanico(d, "JuegoSokoban", [("JuegoSokoban-CargadorNivel", "CargadorNivel"), ("JuegoSokoban-EstadoNivel", "EstadoNivel"),
+                                ("JuegoSokoban-MotorMovimiento", "MotorMovimiento"),
+                                ("JuegoSokoban-HistorialDeshacer", "HistorialDeshacer"),
+                                ("JuegoSokoban-MaquinaDelTiempo", "MaquinaDelTiempo"),
+                                ("JuegoSokoban-Puntaje", "Puntaje")], C["JuegoSokoban"].x + C["JuegoSokoban"].w + 40)
+    mo, es = C["MotorMovimiento"], C["EstadoNivel"]
+    xd = max(mo.x + mo.w, es.x + es.w) + 40
+    R("MotorMovimiento-EstadoNivel", "right", "right", mo.y + mo.h / 2, es.y + es.h / 2,
+      via=[(xd, mo.y + mo.h / 2), (xd, es.y + es.h / 2)])
+    nota_patron(d, "Facade (Luca)\nLa vista habla con UNA interfaz simple: Juego. JuegoSokoban, la fachada concreta, "
+                "coordina el subsistema: carga el nivel, le conecta el motor de movimiento, guarda recuerdos para "
+                "deshacer y para el DeLorean y calcula el puntaje. La vista no conoce a ninguna de esas clases.",
+                40, max(y, 520), 1000)
+    return d
+
+
+def patron_observer(m):
+    d = Diagrama(m, "observer", "Patrón Observer", doc="Luca. La vista se actualiza sola cuando cambia la partida.")
+    d.caja("SujetoJuego", 40, 80, rol="«Sujeto»")
+    d.caja("JuegoSokoban", 40, 290, ver=["observadores"], rol="«Sujeto concreto»")
+    d.caja("ObservadorJuego", 560, 290, rol="«Observador»")
+    d.caja("PanelHUD", 960, 200, ver=["actualizar"], rol="«Observador concreto»")
+    d.caja("PanelTablero", 960, 380, ver=["actualizar"], rol="«Observador concreto»")
+    C, R = d.cajas, d.rel
+    R("JuegoSokoban-SujetoJuego", "top", "bottom", 120, 120)
+    ob = C["ObservadorJuego"]
+    yo = ob.y + ob.h / 2
+    R("JuegoSokoban-observadores", "right", "left", yo, yo)
+    for s in ("PanelHUD", "PanelTablero"):
+        k = C[s]
+        R(f"{s}-ObservadorJuego", "left", "right", k.y + k.h / 2, yo, via=[(910, k.y + k.h / 2), (910, yo)])
+    nota_patron(d, "Observer (Luca)\nSujeto: SujetoJuego (agregarObservador, quitarObservador, notificarObservadores). "
+                "Juego la extiende y JuegoSokoban la implementa: guarda la lista de observadores y, después de cada "
+                "cambio, les manda el EstadoJuego. Observadores: PanelHUD y PanelTablero implementan ObservadorJuego.",
+                40, 520, 1000)
     return d
 
 
 def patron_singleton(m):
     d = Diagrama(m, "singleton", "Patrón Singleton", doc="Imagenes (Luca) y Sonidos (Mora): una única instancia.")
-    d.caja("Imagenes", 40, 200)
-    d.caja("Sonidos", 520, 200)
-    fila(d, ["MenuPrincipal", "PanelTablero", "PanelHUD"], 40, 60, 25, sin_miembros=True)
-    fila(d, ["JuegoConSonido", "SonidosDeInterfaz"], 520, 60, 25, sin_miembros=True)
+    fila(d, ["PanelTablero", "PanelHUD"], 40, 60, 40, sin_miembros=True, rol="«Cliente»")
+    d.caja("JuegoConSonido", 600, 60, sin_miembros=True, rol="«Cliente»")
+    d.caja("SonidosDeInterfaz", 800, 60, sin_miembros=True, rol="«final» «Cliente»")
+    d.caja("Imagenes", 40, 210, ver=["instancia", "cache", "Imagenes", "obtenerInstancia", "obtener"],
+           rol="«final» «Singleton»")
+    d.caja("Sonidos", 600, 210, ver=["instancia", "clips", "Sonidos", "obtenerInstancia", "reproducir"],
+           rol="«final» «Singleton»")
     C, R = d.cajas, d.rel
-    im, so = C["Imagenes"], C["Sonidos"]
-    for s in ("MenuPrincipal", "PanelTablero", "PanelHUD"):
-        k = C[s]
-        x = min(k.x + k.w / 2, im.x + im.w - 20)
-        R(f"{s}-Imagenes", "bottom", "top", x, x)
-    for s in ("JuegoConSonido", "SonidosDeInterfaz"):
-        k = C[s]
-        x = min(k.x + k.w / 2, so.x + so.w - 20)
-        R(f"{s}-Sonidos", "bottom", "top", x, x)
+    for s, dest, clave in (("PanelTablero", "Imagenes", "PanelTablero-Imagenes"), ("PanelHUD", "Imagenes", "PanelHUD-Imagenes"),
+                           ("JuegoConSonido", "Sonidos", "JuegoConSonido-Sonidos"),
+                           ("SonidosDeInterfaz", "Sonidos", "SonidosDeInterfaz-Sonidos")):
+        k, t = C[s], C[dest]
+        x = min(k.x + k.w / 2, t.x + t.w - 20)
+        R(clave, "bottom", "top", x, x)
     for nombre, clave in (("Imagenes", "Imagenes-instancia"), ("Sonidos", "Sonidos-instancia")):
         k = C[nombre]
         R(clave, "right", "right", k.y + 40, k.y + 80, via=[(k.x + k.w + 40, k.y + 40), (k.x + k.w + 40, k.y + 80)])
-    nota_patron(d, "Singleton\nConstructor privado, atributo static instancia y obtenerInstancia() static: "
-                "toda la aplicación comparte una sola caché de imágenes (Imagenes, Luca) y un solo reproductor de "
-                "sonidos (Sonidos, Mora). Cada imagen y cada .wav se lee del disco una sola vez.",
-                40, 440, 440, 100)
+    nota_patron(d, "Singleton\nConstructor privado, atributo static instancia y obtenerInstancia() static: toda la "
+                "aplicación comparte una sola caché de imágenes (Imagenes, Luca) y un solo reproductor de sonidos "
+                "(Sonidos, Mora). Cada imagen y cada .wav se lee del disco una sola vez.", 40, 430, 900)
     return d
 
 
 def patron_strategy(m):
     d = Diagrama(m, "strategy", "Patrón Strategy", doc="Pedro y Lucía. Cada tipo de caja decide qué pasa después de un empuje.")
-    d.caja("Caja", 40, 40)
-    d.caja("ComportamientoCaja", 560, 100)
-    fila(d, ["CajaNormalStrategy", "CajaFragilStrategy", "CajaLlaveStrategy"], 545, 290, 25)
-    d.caja("MediadorMovimiento", 1080, 290)
-    d.caja("EstadoNivel", 40, 340, sin_miembros=True)
-    d.caja("MotorMovimiento", 220, 460)
+    d.caja("EstadoNivel", 40, 60, ver=["cajas", "EstadoNivel"], rol="«Cliente: elige la estrategia»")
+    d.caja("MotorMovimiento", 40, 260, ver=["cajas", "intentarMover"], rol="«Cliente: dispara el empuje»")
+    d.caja("Caja", 460, 180, ver=["comportamiento", "resistencia", "Caja", "despuesDeEmpujar", "getSimbolo"],
+           rol="«Contexto»")
     C, R = d.cajas, d.rel
-    cc, me = C["ComportamientoCaja"], C["MediadorMovimiento"]
-    R("Caja-ComportamientoCaja", "right", "left", 130, 130)
-    arbol(d, ["CajaNormalStrategy", "CajaFragilStrategy", "CajaLlaveStrategy"], "ComportamientoCaja")
-    R("ComportamientoCaja-MediadorMovimiento", "right", "top", 136, me.x + 60, via=[(me.x + 60, 136)])
-    fr, ll = C["CajaFragilStrategy"], C["CajaLlaveStrategy"]
-    R("CajaFragilStrategy-MediadorMovimiento", "bottom", "left", fr.x + fr.w / 2, 375,
-      via=[(fr.x + fr.w / 2, 375)])
-    R("CajaLlaveStrategy-MediadorMovimiento", "right", "left", 312, 312)
-    R("EstadoNivel-Caja", "top", "bottom", 100, 100)
-    R("EstadoNivel-ComportamientoCaja", "right", "left", 352, 160, via=[(505, 352), (505, 160)])
-    R("MotorMovimiento-Caja", "top", "bottom", 330, 330)
-    R("MotorMovimiento-MediadorMovimiento", "right", "bottom", 500, me.x + 150, via=[(me.x + 150, 500)])
-    nota_patron(d, "Strategy (Pedro y Lucía)\nContexto: Caja. Estrategia: ComportamientoCaja.\n"
-                "Normal: no hace nada ($). Frágil: pierde resistencia y a los 3 empujes le avisa al mediador "
-                "que se rompió (cajaRota). Llave: le avisa al mediador (llaveEmpujada) y, si quedó sobre un "
-                "cerrojo, se abren los muros.\n"
-                "EstadoNivel elige la estrategia al leer el nivel. Después de un empuje, MotorMovimiento llama a "
-                "caja.despuesDeEmpujar() y la caja le pasa el mediador a su estrategia: las estrategias ya no "
-                "conocen a EstadoNivel.", 40, 580, 900)
+    ca = C["Caja"]
+    d.caja("ComportamientoCaja", ca.x + ca.w + 120, 190, rol="«Estrategia»")
+    cc = C["ComportamientoCaja"]
+    fila(d, ["CajaNormalStrategy", "CajaFragilStrategy", "CajaLlaveStrategy"], 460, 430, 30,
+         ver=["despuesDeEmpujar", "simbolo"], rol="«Estrategia concreta»")
+    es, mo = C["EstadoNivel"], C["MotorMovimiento"]
+    R("EstadoNivel-Caja", "right", "left", es.y + 30, ca.y + 25, via=[(420, es.y + 30), (420, ca.y + 25)])
+    R("MotorMovimiento-Caja", "right", "left", mo.y + 25, mo.y + 25)
+    R("Caja-ComportamientoCaja", "right", "left", cc.y + cc.h / 2, cc.y + cc.h / 2)
+    arbol(d, ["CajaNormalStrategy", "CajaFragilStrategy", "CajaLlaveStrategy"], "ComportamientoCaja", sep=60)
+    fondo = max(C[s].y + C[s].h for s in ("CajaNormalStrategy", "CajaFragilStrategy", "CajaLlaveStrategy"))
+    for k, s in enumerate(("CajaNormalStrategy", "CajaFragilStrategy", "CajaLlaveStrategy")):
+        st = C[s]
+        y = fondo + 30 + k * 14
+        R(f"EstadoNivel-{s}", "left", "bottom", es.y + es.h - 12, st.x + 40,
+          via=[(20, es.y + es.h - 12), (20, y), (st.x + 40, y)])
+    nota_patron(d, "Strategy (Pedro y Lucía)\nContexto: Caja, que guarda su comportamiento. Estrategia: "
+                "ComportamientoCaja. Normal no hace nada ($); Frágil pierde resistencia y avisa cajaDanada y, a los 3 "
+                "empujes, cajaRota (F, f); Llave avisa llaveEmpujada y, sobre un cerrojo, se abren los muros (L).\n"
+                "EstadoNivel elige la estrategia al leer el nivel (new); MotorMovimiento dispara el empuje y la caja "
+                "le pasa el mediador a su comportamiento.", 40, fondo + 90, 1100)
     return d
+
 
 def patron_mediator(m):
-    d = Diagrama(m, "mediator", "Patrón Mediator",
-                 doc="Pedro y Lucía, completado por la auditoría: Jugador y Caja son colegas del mediador.")
-    d.caja("Jugador", 40, 60)
-    d.caja("MediadorMovimiento", 420, 60)
-    d.caja("Caja", 800, 60)
-    d.caja("MotorMovimiento", 435, 300)
-    d.caja("EstadoNivel", 1300, 330, sin_miembros=True)
-    d.caja("JuegoSokoban", 60, 440, sin_miembros=True)
+    d = Diagrama(m, "mediator", "Patrón Mediator", doc="Pedro y Lucía. Los elementos móviles solo hablan con el mediador.")
+    d.caja("MediadorMovimiento", 470, 60, rol="«Mediador»")
+    d.caja("MotorMovimiento", 40, 300, ver=["nivel", "jugador", "cajas", "evento", "MotorMovimiento", "estaLibre",
+                                            "cajaEn", "deslizar"], rol="«Mediador concreto»")
     C, R = d.cajas, d.rel
-    me, mo, ca, ju, es = C["MediadorMovimiento"], C["MotorMovimiento"], C["Caja"], C["Jugador"], C["EstadoNivel"]
-    R("Jugador-MediadorMovimiento", "right", "left", 110, 110)
-    R("Caja-MediadorMovimiento", "left", "right", 110, 110)
-    R("MotorMovimiento-MediadorMovimiento", "top", "bottom", 550, 550)
-    R("MotorMovimiento-Jugador", "left", "bottom", 320, 180, via=[(180, 320)])
-    R("MotorMovimiento-Caja", "right", "bottom", 320, 1000, via=[(1000, 320)])
-    R("MotorMovimiento-EstadoNivel", "bottom", "bottom", 600, es.x + 40, via=[(600, 420), (es.x + 40, 420)])
-    R("EstadoNivel-Caja", "top", "right", es.x + 40, 200, via=[(es.x + 40, 200)])
-    R("EstadoNivel-MediadorMovimiento", "top", "top", es.x + 90, 600, via=[(es.x + 90, 30), (600, 30)])
-    js = C["JuegoSokoban"]
-    R("JuegoSokoban-MotorMovimiento", "right", "bottom", js.y + 12, 500, via=[(500, js.y + 12)])
-    R("JuegoSokoban-MediadorMovimiento", "left", "top", js.y + 12, 480,
-      via=[(20, js.y + 12), (20, 20), (480, 20)])
-    nota_patron(d, "Mediator (Pedro y Lucía, completado por la auditoría)\n"
-                "Colegas: Jugador y Caja. Ninguno conoce al otro ni a EstadoNivel: solo hablan con el "
-                "MediadorMovimiento. El jugador pide intentarMover(direccion); la estrategia de una caja avisa "
-                "cajaRota(caja) o llaveEmpujada(caja).\n"
-                "MotorMovimiento concentra las reglas: colisiones, empuje, hielo, quitar la caja rota y abrir los "
-                "muros si la llave quedó sobre el cerrojo. Al crearse llama a estado.conectarColegas(this).\n"
-                "JuegoSokoban crea el motor en cada nivel (y al deshacer o viajar) pero lo guarda como "
-                "MediadorMovimiento (depende de la interfaz).", 40, 520, 1000)
+    me, mo = C["MediadorMovimiento"], C["MotorMovimiento"]
+    d.caja("ElementoMovil", me.x + me.w + 200, 60, ver=["posicion", "mediador", "conectar", "setPosicion"],
+           rol="«abstract» «Colega»")
+    el = C["ElementoMovil"]
+    d.caja("Jugador", el.x - 120, 300, ver=["mover"], rol="«Colega concreto»")
+    d.caja("Caja", el.x + 150, 300, ver=["despuesDeEmpujar"], rol="«Colega concreto»")
+    xm = me.x + me.w / 2
+    R("MotorMovimiento-MediadorMovimiento", "top", "bottom", mo.x + mo.w / 2, xm,
+      via=[(mo.x + mo.w / 2, 250), (xm, 250)])
+    R("MediadorMovimiento-ElementoMovil", "right", "left", 110, 110)
+    arbol(d, ["Jugador", "Caja"], "ElementoMovil", sep=50)
+    nota_patron(d, "Mediator (Pedro y Lucía)\nColegas: Jugador y Caja, que extienden ElementoMovil. El mediador y los "
+                "colegas se conocen: cada colega guarda el mediador (conectar) y el motor guarda al jugador y a las "
+                "cajas. El jugador pide intentarMover(direccion); la estrategia de una caja avisa cajaDanada, "
+                "cajaRota o llaveEmpujada. MotorMovimiento concentra las reglas: colisiones, empuje y deslizamiento "
+                "sobre hielo.", 40, 560, 1000)
     return d
 
+
 def patron_decorator(m):
-    d = Diagrama(m, "decorator", "Patrón Decorator",
-                 doc="Mora, completado por la auditoría: JuegoDecorado es la base abstracta de los decoradores.")
-    d.caja("Juego", 360, 40)
-    d.caja("JuegoSokoban", 120, 330, sin_miembros=True)
-    d.caja("JuegoDecorado", 560, 300)
-    d.caja("JuegoConSonido", 520, 580, solo=["JuegoConSonido"])
-    d.caja("Main", 40, 640)
-    d.caja("EstadoJuego", 1040, 280)
+    d = Diagrama(m, "decorator", "Patrón Decorator", doc="Mora. JuegoConSonido le agrega sonido a cualquier Juego.")
+    d.caja("Main", 40, 60, ver=["main"], rol="«final» «Cliente»")
+    d.caja("Juego", 420, 60, ver=["iniciarNivel", "mover", "deshacer", "reiniciar", "viajarEnElTiempo", "getEstado"],
+           rol="«Componente»")
+    d.caja("JuegoSokoban", 220, 340, ver=["mover", "getEstado"], rol="«Componente concreto»")
+    d.caja("JuegoDecorado", 620, 340, ver=["juego", "JuegoDecorado", "mover", "getEstado"], rol="«abstract» «Decorador»")
     C, R = d.cajas, d.rel
-    ju, jd, jc, js = C["Juego"], C["JuegoDecorado"], C["JuegoConSonido"], C["JuegoSokoban"]
-    d.caja("Sonidos", jc.x + jc.w + 80, 600, sin_miembros=True)
-    d.caja("Sonido", jc.x + jc.w + 80, 700, sin_miembros=True)
-    arbol(d, ["JuegoSokoban", "JuegoDecorado"], "Juego")
-    R("JuegoDecorado-juego", "top", "right", jd.x + jd.w - 40, 120, via=[(jd.x + jd.w - 40, 120)])
-    R("JuegoConSonido-JuegoDecorado", "top", "bottom", 740, 740)
-    R("Main-JuegoSokoban", "top", "bottom", js.x + 40, js.x + 40)
-    R("Main-JuegoConSonido", "right", "left", 680, 680)
-    R("JuegoConSonido-Sonidos", "right", "left", 612, 612)
-    R("JuegoConSonido-Sonido", "right", "left", 712, 712)
-    ej = C["EstadoJuego"]
-    R("JuegoConSonido-EstadoJuego", "top", "bottom", jc.x + jc.w - 30, ej.x + 40,
-      via=[(jc.x + jc.w - 30, 540), (ej.x + 40, 540)])
-    nota_patron(d, "Decorator (Mora, completado por la auditoría)\n"
-                "Componente: Juego. Componente concreto: JuegoSokoban. Decorador base: JuegoDecorado (abstracta), "
-                "que implementa Juego, guarda el Juego envuelto (protegido) y le delega los 9 métodos.\n"
-                "Decorador concreto: JuegoConSonido, que solo redefine iniciarNivel, mover, deshacer, "
-                "viajarEnElTiempo y reiniciar: compara el EstadoJuego de antes y de después y hace sonar el efecto.\n"
-                "En Main: new JuegoConSonido(new JuegoSokoban(new CargadorNivel(carpeta))). "
-                "Un decorador nuevo solo extiende JuegoDecorado.", 40, 820, 1000)
+    jd = C["JuegoDecorado"]
+    d.caja("JuegoConSonido", 620, jd.y + jd.h + 90, ver=["JuegoConSonido", "mover", "sonarLoQuePaso"],
+           rol="«Decorador concreto»")
+    mn, ju, jc = C["Main"], C["Juego"], C["JuegoConSonido"]
+    R("Main-Juego", "right", "left", 90, 90)
+    R("Main-JuegoConSonido", "bottom", "left", 100, jc.y + 40, via=[(100, jc.y + 40)])
+    arbol(d, ["JuegoSokoban", "JuegoDecorado"], "Juego", sep=50)
+    xr = jd.x + jd.w + 60
+    R("JuegoDecorado-juego", "right", "right", jd.y + 30, ju.y + ju.h / 2, via=[(xr, jd.y + 30), (xr, ju.y + ju.h / 2)])
+    R("JuegoConSonido-JuegoDecorado", "top", "bottom", jd.x + 60, jd.x + 60)
+    nota_patron(d, "Decorator (Mora)\nComponente: Juego. Componente concreto: JuegoSokoban. Decorador: JuegoDecorado "
+                "(abstracta), que implementa Juego, guarda el Juego envuelto y le delega todo. Decorador concreto: "
+                "JuegoConSonido, que después de cada acción hace sonar el efecto del evento (Sonido.de(evento)).\n"
+                "En Main: new JuegoConSonido(new JuegoSokoban(new CargadorNivel(carpeta))).",
+                40, jc.y + jc.h + 50, 1000)
     return d
+
 
 def patron_state(m):
     d = Diagrama(m, "state", "Patrón State", doc="Mora. El sonido activado o silenciado; la tecla M alterna.")
-    d.caja("Sonidos", 40, 60)
-    d.caja("EstadoSonido", 480, 70)
-    d.caja("SonidoActivado", 420, 260)
-    d.caja("SonidoSilenciado", 640, 260)
-    d.caja("SonidosDeInterfaz", 40, 340)
+    d.caja("SonidosDeInterfaz", 40, 60, ver=["alApretarTecla"], rol="«final» «Cliente»")
+    d.caja("Sonidos", 40, 220, ver=["estado", "reproducir", "alternarSonido", "establecerEstado", "detenerTodo"],
+           rol="«final» «Contexto»")
     C, R = d.cajas, d.rel
-    so, a, si = C["Sonidos"], C["SonidoActivado"], C["SonidoSilenciado"]
-    R("Sonidos-EstadoSonido", "right", "left", 105, 105)
-    arbol(d, ["SonidoActivado", "SonidoSilenciado"], "EstadoSonido")
-    R("SonidoActivado-SonidoSilenciado", "right", "left", a.y + 14, a.y + 14)
-    R("SonidoSilenciado-SonidoActivado", "bottom", "bottom", si.x + 40, a.x + a.w - 30,
-      via=[(si.x + 40, a.y + a.h + 40), (a.x + a.w - 30, a.y + a.h + 40)])
-    R("SonidoActivado-Sonidos", "left", "right", a.y + 30, so.y + so.h - 20,
-      via=[(a.x - 40, a.y + 30), (a.x - 40, so.y + so.h - 20)])
-    R("SonidosDeInterfaz-Sonidos", "top", "bottom", 120, 120)
-    nota_patron(d, "State (Mora)\nContexto: Sonidos. Estado: EstadoSonido (interfaz de paquete).\n"
-                "SonidoActivado reproduce el Clip; SonidoSilenciado no hace nada.\n"
-                "La tecla M (SonidosDeInterfaz) llama a alternarSonido() y cada estado decide a cuál pasa: "
-                "las transiciones están dentro de los estados, no en un if del contexto.",
-                420, 400, 440, 110)
+    so = C["Sonidos"]
+    d.caja("EstadoSonido", so.x + so.w + 160, 230, rol="«Estado»")
+    es = C["EstadoSonido"]
+    d.caja("SonidoActivado", es.x - 160, 440, ver=["reproducir", "alternar"], rol="«Estado concreto»")
+    act = C["SonidoActivado"]
+    d.caja("SonidoSilenciado", act.x + act.w + 160, 440, ver=["reproducir", "alternar"], rol="«Estado concreto»")
+    sil = C["SonidoSilenciado"]
+    R("SonidosDeInterfaz-Sonidos-estado", "bottom", "top", 120, 120)
+    R("Sonidos-EstadoSonido", "right", "left", 260, 260)
+    arbol(d, ["SonidoActivado", "SonidoSilenciado"], "EstadoSonido", sep=60)
+    R("SonidoActivado-SonidoSilenciado", "right", "left", act.y + 18, act.y + 18)
+    R("SonidoSilenciado-SonidoActivado", "bottom", "bottom", sil.x + 60, act.x + act.w - 60,
+      via=[(sil.x + 60, act.y + act.h + 40), (act.x + act.w - 60, act.y + act.h + 40)])
+    nota_patron(d, "State (Mora)\nContexto: Sonidos, que guarda el estado actual. Estado: EstadoSonido (interfaz de "
+                "paquete). SonidoActivado reproduce el Clip; SonidoSilenciado no hace nada. La tecla M "
+                "(SonidosDeInterfaz) llama a alternarSonido() y cada estado decide a cuál pasa: alternar crea el "
+                "estado siguiente y se lo da al contexto.", 40, act.y + act.h + 80, 1000)
     return d
 
 
 def patron_memento(m):
-    d = Diagrama(m, "memento", "Patrón Memento", doc="Martín. DeLorean y deshacer guardan recuerdos del nivel.")
-    d.caja("JuegoSokoban", 40, 60)
-    d.caja("RecuerdoNivel", 400, 60)
-    d.caja("MaquinaDelTiempo", 480, 320)
+    d = Diagrama(m, "memento", "Patrón Memento", doc="Martín. Deshacer y DeLorean guardan recuerdos del nivel.")
+    d.caja("JuegoSokoban", 40, 60, ver=["mover", "deshacer", "viajarEnElTiempo"], rol="«Cliente»")
+    d.caja("EstadoNivel", 40, 300, ver=["terreno", "cajas", "movimientos", "crearRecuerdo", "restaurar", "viajarA"],
+           rol="«Originador»")
     C, R = d.cajas, d.rel
+    en = C["EstadoNivel"]
+    d.caja("RecuerdoNivel", en.x + en.w + 120, 300, rol="«final» «Memento»")
     rn = C["RecuerdoNivel"]
-    d.caja("EstadoNivel", rn.x + rn.w + 100, 80, sin_miembros=True)
-    R("JuegoSokoban-RecuerdoNivel", "right", "left", 100, 100)
-    R("JuegoSokoban-MaquinaDelTiempo", "right", "left", 380, 380)
-    R("MaquinaDelTiempo-RecuerdoNivel", "top", "bottom", 600, 600)
-    R("RecuerdoNivel-EstadoNivel", "right", "left", 92, 92)
-    es = C["EstadoNivel"]
-    R("JuegoSokoban-EstadoNivel", "top", "top", 200, es.x + es.w / 2, via=[(200, 30), (es.x + es.w / 2, 30)])
-    nota_patron(d, "Memento (Martín)\nOriginador: JuegoSokoban (crearRecuerdo y restaurar).\n"
-                "Memento: RecuerdoNivel, copia del nivel y de los contadores. Su constructor y sus lectores son "
-                "de paquete (~): solo sokoban.modelo puede crearlo y leerlo.\n"
-                "Cuidadores: el historial del deshacer (15 recuerdos, vuelve 5 pasos) y MaquinaDelTiempo "
-                "(sokoban.modelo.tiempo, 10 puntos), que los guarda sin poder abrirlos.\n"
-                "DeLorean (tecla T): cuesta 1 plutonio y vuelve al último punto en el tiempo.",
-                780, 300, 460, 150)
+    d.caja("HistorialDeshacer", rn.x, 60, ver=["recuerdos", "guardar", "deshacer"], rol="«Cuidador: deshacer»")
+    hd = C["HistorialDeshacer"]
+    d.caja("MaquinaDelTiempo", hd.x + hd.w + 80, 60, ver=["puntos", "guardar", "volverAntesDe"],
+           rol="«Cuidador: DeLorean»")
+    mq = C["MaquinaDelTiempo"]
+    d.caja("Punto", mq.x + mq.w + 120, 70)
+    pt, js = C["Punto"], C["JuegoSokoban"]
+    R("JuegoSokoban-EstadoNivel", "bottom", "top", 100, 100)
+    R("JuegoSokoban-HistorialDeshacer", "right", "left", js.y + 20, js.y + 20)
+    xm = mq.x + mq.w / 2
+    R("JuegoSokoban-MaquinaDelTiempo", "top", "top", js.x + js.w - 40, xm, via=[(js.x + js.w - 40, 30), (xm, 30)])
+    R("EstadoNivel-RecuerdoNivel", "right", "left", en.y + 30, en.y + 30)
+    R("HistorialDeshacer-RecuerdoNivel", "bottom", "top", hd.x + 60, hd.x + 60)
+    R("MaquinaDelTiempo-Punto", "right", "left", pt.y + 15, pt.y + 15)
+    d.contencion("Punto", "MaquinaDelTiempo", [(pt.x, pt.y + 48), (mq.x + mq.w, pt.y + 48)])
+    xp = pt.x + pt.w / 2
+    R("Punto-RecuerdoNivel", "bottom", "right", xp, rn.y + 40, via=[(xp, rn.y + 40)])
+    nota_patron(d, "Memento (Martín)\nOriginador: EstadoNivel crea el recuerdo (crearRecuerdo) y lo lee (restaurar, "
+                "viajarA). Memento: RecuerdoNivel, con constructor y lectores de paquete (~): nadie más puede "
+                "leerlo. Cuidadores: HistorialDeshacer (15 recuerdos, cada deshacer vuelve 5 pasos, máximo 3 "
+                "seguidos) y MaquinaDelTiempo (10 puntos en el tiempo, uno por cada caja que llega a destino). "
+                "JuegoSokoban usa a los tres.", 40, max(en.y + en.h, rn.y + rn.h) + 50, 1100)
     return d
 
 
 def patron_command(m):
     d = Diagrama(m, "command", "Patrón Command", doc="Martín. Cada acción del jugador es un objeto que se puede repetir.")
-    d.caja("PantallaJuego", 40, 40, solo=["grabadora"])
-    d.caja("GrabadoraDePartida", 420, 40)
-    d.caja("Repeticion", 420, 190)
-    d.caja("Comando", 900, 70)
-    fila(d, ["ComandoMover", "ComandoDeshacer", "ComandoViajarEnElTiempo"], 560, 420, 40)
+    d.caja("PantallaJuego", 40, 80, ver=["mover", "deshacer", "viajarEnElTiempo"], rol="«Cliente»")
+    d.caja("GrabadoraDePartida", 440, 80, ver=["comandos", "ejecutar", "reproducir", "saltarAlFinal"], rol="«Invocador»")
     C, R = d.cajas, d.rel
-    pj = C["PantallaJuego"]
-    R("PantallaJuego-GrabadoraDePartida", "right", "left", 70, 70)
-    R("PantallaJuego-Repeticion", "right", "left", 150, 230, via=[(380, 150), (380, 230)])
-    R("GrabadoraDePartida-Comando", "right", "left", 90, 90)
-    R("Repeticion-Comando", "right", "left", 220, 115, via=[(860, 220), (860, 115)])
-    arbol(d, ["ComandoMover", "ComandoDeshacer", "ComandoViajarEnElTiempo"], "Comando", sep=180)
-    ultimo = C["ComandoViajarEnElTiempo"]
-    d.caja("Juego", ultimo.x + ultimo.w - 326, 640)
-    ju = C["Juego"]
+    gr = C["GrabadoraDePartida"]
+    d.caja("Comando", gr.x + gr.w + 160, 110, rol="«Comando»")
+    co = C["Comando"]
+    fila(d, ["ComandoMover", "ComandoDeshacer", "ComandoViajarEnElTiempo"], 560, 330, 40, ver=["juego", "direccion", "ejecutar"],
+         rol="«Comando concreto»")
+    d.caja("Juego", 760, 560, ver=["mover", "deshacer", "viajarEnElTiempo"], rol="«Receptor»")
+    pj, ju = C["PantallaJuego"], C["Juego"]
+    R("PantallaJuego-GrabadoraDePartida", "right", "left", 110, 110)
+    R("GrabadoraDePartida-Comando", "right", "left", co.y + 25, co.y + 25)
+    arbol(d, ["ComandoMover", "ComandoDeshacer", "ComandoViajarEnElTiempo"], "Comando", sep=60)
     for s in ("ComandoMover", "ComandoDeshacer", "ComandoViajarEnElTiempo"):
         k = C[s]
-        x = k.x + k.w - 40
-        R(f"{s}-Juego", "bottom", "top", x, ju.x + ju.w * 0.5, via=[(x, 610), (ju.x + ju.w * 0.5, 610)])
+        R(f"{s}-Juego", "bottom", "top", k.x + k.w - 40, ju.x + ju.w / 2, via=[(k.x + k.w - 40, 520), (ju.x + ju.w / 2, 520)])
     for k_, s in enumerate(("ComandoMover", "ComandoDeshacer", "ComandoViajarEnElTiempo")):
         k = C[s]
         xo = pj.x + 50 + 40 * k_
-        y = 560 + 15 * k_
         if s == "ComandoMover":
-            R(f"PantallaJuego-{s}", "bottom", "left", xo, k.y + k.h / 2, via=[(xo, k.y + k.h / 2)])
+            R(f"PantallaJuego-{s}", "bottom", "left", xo, k.y + 30, via=[(xo, k.y + 30)])
         else:
+            y = 470 + 14 * k_
             R(f"PantallaJuego-{s}", "bottom", "bottom", xo, k.x + 30, via=[(xo, y), (k.x + 30, y)])
-    nota_patron(d, "Command (Martín)\nCliente: PantallaJuego crea un comando por cada tecla o botón.\n"
-                "Invocador: GrabadoraDePartida lo ejecuta y lo anota.\n"
-                "Comandos concretos: ComandoMover, ComandoDeshacer y ComandoViajarEnElTiempo. Receptor: Juego.\n"
-                "Repeticion vuelve a ejecutar la partida grabada (un comando cada 160 ms) y termina exactamente "
-                "en el mismo estado. Reiniciar no se graba: borra la grabación.",
-                40, 640, 480, 130)
+    nota_patron(d, "Command (Martín)\nCliente: PantallaJuego crea un comando por cada tecla o botón (new). Invocador: "
+                "GrabadoraDePartida lo ejecuta, lo guarda en comandos y después puede reproducir la partida (uno "
+                "cada 160 ms) o saltar al final. Comandos concretos: ComandoMover, ComandoDeshacer y "
+                "ComandoViajarEnElTiempo. Receptor: Juego.", 40, ju.y + ju.h + 50, 1000)
     return d
 
 
-DIAGRAMAS = [diagrama_completo, patron_observer, patron_facade, patron_singleton, patron_strategy,
+DIAGRAMAS = [diagrama_completo, patron_facade, patron_observer, patron_singleton, patron_strategy,
              patron_mediator, patron_decorator, patron_state, patron_memento, patron_command]
 
 def exportar_png(mdj, carpeta, staruml="staruml"):

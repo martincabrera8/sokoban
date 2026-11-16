@@ -25,11 +25,14 @@ package "sokoban.comandos" {
   class ComandoMover INTEG
   class ComandoDeshacer INTEG
   class ComandoViajarEnElTiempo INTEG
-  class GrabadoraDePartida INTEG
-  class Repeticion INTEG
+  class GrabadoraDePartida <<Invocador>> INTEG
 }
 package "sokoban.modelo (contrato y decorador base)" {
-  abstract class JuegoDecorado <<Decorator>> INTEG
+  interface SujetoJuego <<Observer: sujeto>> LUCA {
+    +agregarObservador(o)
+    +quitarObservador(o)
+    +notificarObservadores()
+  }
   interface Juego <<Facade>> LUCA {
     +getCantidadNiveles(): int
     +iniciarNivel(numero: int)
@@ -38,26 +41,21 @@ package "sokoban.modelo (contrato y decorador base)" {
     +reiniciar()
     +viajarEnElTiempo()
     +getEstado(): EstadoJuego
-    +agregarObservador(o: ObservadorJuego)
-    +quitarObservador(o: ObservadorJuego)
   }
   interface ObservadorJuego LUCA {
     +actualizar(estado: EstadoJuego)
   }
   class EstadoJuego <<record>> LUCA {
-    nivel, movimientos, empujes, undosUsados
+    nivel, movimientos, empujes, deshacerUsados
     plutonio, viajes, puntosEnElTiempo, puntaje
-    completado, sinSolucion, tablero
+    completado, sinSolucion, evento, tablero
   }
-  enum Direccion LUCA {
-    ARRIBA
-    ABAJO
-    IZQUIERDA
-    DERECHA
-  }
+  enum Evento INTEG
+  enum Direccion LUCA
+  abstract class JuegoDecorado <<Decorator>> INTEG
 }
 package "sokoban.sonido" {
-  class JuegoConSonido <<Decorator>> SONIDO
+  class JuegoConSonido <<Decorator concreto>> SONIDO
   class Sonidos <<Singleton>> SONIDO
   enum Sonido SONIDO
   interface EstadoSonido SONIDO {
@@ -69,11 +67,13 @@ package "sokoban.sonido" {
   class SonidosDeInterfaz SONIDO
 }
 package "sokoban.modelo (dominio)" {
-  class JuegoSokoban DOMINIO
+  class JuegoSokoban <<Fachada concreta>> DOMINIO
   class CargadorNivel DOMINIO
-  class EstadoNivel DOMINIO
-  class Posicion <<record>> DOMINIO
+  class Puntaje DOMINIO
+  class EstadoNivel <<Originador>> DOMINIO
   class RecuerdoNivel <<Memento>> INTEG
+  class Posicion <<record>> DOMINIO
+  abstract class ElementoMovil <<Colega>> DOMINIO
   class Jugador DOMINIO
   class Caja DOMINIO
   interface ComportamientoCaja DOMINIO {
@@ -84,32 +84,34 @@ package "sokoban.modelo (dominio)" {
   class CajaFragilStrategy DOMINIO
   class CajaLlaveStrategy DOMINIO
   interface MediadorMovimiento DOMINIO {
-    +intentarMover(direccion): boolean
-    +fueEmpuje(): boolean
+    +intentarMover(direccion): Evento
+    +cajaDanada(caja)
     +cajaRota(caja)
     +llaveEmpujada(caja)
   }
   class MotorMovimiento DOMINIO
 }
 package "sokoban.modelo.tiempo" {
-  class MaquinaDelTiempo INTEG
+  class HistorialDeshacer <<Cuidador>> INTEG
+  class MaquinaDelTiempo <<Cuidador>> INTEG
 }
 
 Main ..> VentanaPrincipal : crea
 Main ..> JuegoConSonido : crea
 Main ..> JuegoSokoban : crea
+Main ..> CargadorNivel : crea
 Main ..> SonidosDeInterfaz : instalar()
 
 VentanaPrincipal *--> MenuPrincipal
 VentanaPrincipal *--> PantallaJuego
 VentanaPrincipal ..> Juego
 MenuPrincipal ..> Cartel
+MenuPrincipal ..> PanelAyuda
 PantallaJuego --> Juego
 PantallaJuego *--> PanelHUD
 PantallaJuego *--> PanelTablero
 PantallaJuego ..> Cartel
 PantallaJuego *--> GrabadoraDePartida
-PantallaJuego --> Repeticion
 PantallaJuego ..> ComandoMover : crea
 PantallaJuego ..> ComandoDeshacer : crea
 PantallaJuego ..> ComandoViajarEnElTiempo : crea
@@ -119,6 +121,7 @@ PanelTablero --> Epoca
 MenuPrincipal ..> Imagenes
 PanelHUD ..> Imagenes
 PanelTablero ..> Imagenes
+PanelAyuda ..> Imagenes
 
 ComandoMover ..|> Comando
 ComandoDeshacer ..|> Comando
@@ -126,58 +129,48 @@ ComandoViajarEnElTiempo ..|> Comando
 ComandoMover --> Juego
 ComandoDeshacer --> Juego
 ComandoViajarEnElTiempo --> Juego
-GrabadoraDePartida o--> "0..*" Comando
-Repeticion o--> "0..*" Comando
+GrabadoraDePartida o--> "*" Comando : comandos
 
+Juego --|> SujetoJuego
 Juego ..> EstadoJuego
-Juego ..> ObservadorJuego
+SujetoJuego ..> ObservadorJuego
 ObservadorJuego ..> EstadoJuego
+EstadoJuego --> Evento
 
-JuegoConSonido --|> JuegoDecorado
 JuegoDecorado ..|> Juego
 JuegoDecorado o--> "1" Juego : juego
+JuegoConSonido --|> JuegoDecorado
 JuegoConSonido ..> Sonidos
+JuegoConSonido ..> Sonido : Sonido.de(evento)
 SonidosDeInterfaz ..> Sonidos
 Sonidos --> EstadoSonido : estado
-Sonidos ..> Sonido
 SonidoActivado ..|> EstadoSonido
 SonidoSilenciado ..|> EstadoSonido
 
 JuegoSokoban ..|> Juego
-JuegoSokoban o--> "0..*" ObservadorJuego : observadores
-JuegoSokoban o--> CargadorNivel : cargador
-Main ..> CargadorNivel : crea
-JuegoSokoban --> EstadoNivel : estado
-JuegoSokoban --> MediadorMovimiento : motor
+JuegoSokoban o--> "*" ObservadorJuego : observadores
+JuegoSokoban --> CargadorNivel : cargador
+JuegoSokoban --> "0..1" EstadoNivel : nivel
+JuegoSokoban *--> HistorialDeshacer : historial
+JuegoSokoban *--> MaquinaDelTiempo : maquinaDelTiempo
+JuegoSokoban *--> Puntaje : puntaje
 JuegoSokoban ..> MotorMovimiento : crea
-JuegoSokoban o--> "0..15" RecuerdoNivel : historial
-JuegoSokoban *--> MaquinaDelTiempo
-MaquinaDelTiempo o--> "0..10" RecuerdoNivel : puntos
-RecuerdoNivel --> EstadoNivel
 CargadorNivel ..> EstadoNivel : crea
-EstadoNivel *--> Jugador
-EstadoNivel *--> "0..*" Caja
-Jugador --> MediadorMovimiento : mediador
-Jugador --> Posicion
-Caja --> Posicion
-Caja --> ComportamientoCaja : estrategia
+EstadoNivel *--> Jugador : jugador
+EstadoNivel *--> "*" Caja : cajas
+EstadoNivel --> MediadorMovimiento : mediador
+EstadoNivel ..> RecuerdoNivel : crea y restaura
+HistorialDeshacer o--> "0..15" RecuerdoNivel
+MaquinaDelTiempo o--> "0..10" RecuerdoNivel
+ElementoMovil <|-- Jugador
+ElementoMovil <|-- Caja
+ElementoMovil "*" <--> "1" MediadorMovimiento : mediador
+ElementoMovil --> Posicion
+Caja --> ComportamientoCaja : comportamiento
 CajaNormalStrategy ..|> ComportamientoCaja
 CajaFragilStrategy ..|> ComportamientoCaja
 CajaLlaveStrategy ..|> ComportamientoCaja
-MotorMovimiento ..|> MediadorMovimiento
-MotorMovimiento --> EstadoNivel
-MotorMovimiento ..> Caja
-Caja --> MediadorMovimiento : mediador
 ComportamientoCaja ..> MediadorMovimiento
-EstadoNivel ..> MediadorMovimiento : conectarColegas
-MenuPrincipal ..> PanelAyuda
-PanelAyuda ..> Imagenes
-show Juego methods
-show ObservadorJuego methods
-show EstadoJuego fields
-show Direccion fields
-show Comando methods
-show ComportamientoCaja methods
-show MediadorMovimiento methods
-show EstadoSonido methods
+MotorMovimiento ..|> MediadorMovimiento
+MotorMovimiento --> EstadoNivel : nivel
 @enduml

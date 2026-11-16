@@ -53,15 +53,15 @@
 <line x1="430" y1="352" x2="620" y2="352" stroke="#6C8EBF" stroke-width="1"/>
 </g>
 <g class="caja" id="a3">
-<rect x="40" y="424" width="190" height="46" rx="6" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.4"/>
-<text x="135.0" y="442" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">JuegoSokoban</text>
-<line x1="40" y1="450" x2="230" y2="450" stroke="#C8683A" stroke-width="1"/>
-<line x1="40" y1="460" x2="230" y2="460" stroke="#C8683A" stroke-width="1"/>
+<rect x="40" y="424" width="190" height="46" rx="6" fill="#D5E8D4" stroke="#82B366" stroke-width="1.4"/>
+<text x="135.0" y="442" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">GrabadoraDePartida</text>
+<line x1="40" y1="450" x2="230" y2="450" stroke="#82B366" stroke-width="1"/>
+<line x1="40" y1="460" x2="230" y2="460" stroke="#82B366" stroke-width="1"/>
 </g>
 <g class="caja" id="b3">
-<rect x="430" y="424" width="190" height="40" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<rect x="430" y="424" width="190" height="40" rx="6" fill="#D5E8D4" stroke="#82B366" stroke-width="1.4"/>
 <text x="525.0" y="441" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«interface»</text>
-<text x="525.0" y="456" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17" font-style="italic">ObservadorJuego</text>
+<text x="525.0" y="456" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17" font-style="italic">Comando</text>
 </g>
 <g class="caja" id="a4">
 <rect x="40" y="532" width="190" height="46" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
@@ -95,9 +95,9 @@
 <text x="670" y="330" font-size="13" font-weight="700" fill="#6E1A2C" text-anchor="start">LO CREA Y LO CONTIENE  ·  composición (◆ lleno)</text>
 <text x="670" y="350" font-size="12.5" font-weight="400" fill="#1E1A17" text-anchor="start">PantallaJuego crea su HUD; el HUD no existe sin la pantalla.</text>
 <text x="670" y="372" font-size="11.5" fill="#4A403A" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace">PanelHUD hud = new PanelHUD(this::deshacer, this::reiniciar, this::viajarEnElTiempo, this::pausar);</text>
-<text x="670" y="438" font-size="13" font-weight="700" fill="#6E1A2C" text-anchor="start">TIENE UNA LISTA, SIN CREARLOS  ·  agregación (◇ vacío)</text>
-<text x="670" y="458" font-size="12.5" font-weight="400" fill="#1E1A17" text-anchor="start">Se los pasan desde afuera con agregarObservador(...).</text>
-<text x="670" y="480" font-size="11.5" fill="#4A403A" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace">private final List&lt;ObservadorJuego&gt; observadores = new ArrayList&lt;&gt;();</text>
+<text x="670" y="438" font-size="13" font-weight="700" fill="#6E1A2C" text-anchor="start">TIENE UNA LISTA DE PARTES  ·  agregación (◇ vacío)</text>
+<text x="670" y="458" font-size="12.5" font-weight="400" fill="#1E1A17" text-anchor="start">Los comandos se los pasan desde afuera con ejecutar(comando).</text>
+<text x="670" y="480" font-size="11.5" fill="#4A403A" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace">private final List&lt;Comando&gt; comandos = new ArrayList&lt;&gt;();</text>
 <text x="670" y="546" font-size="13" font-weight="700" fill="#6E1A2C" text-anchor="start">LO GUARDA EN UN ATRIBUTO  ·  asociación</text>
 <text x="670" y="566" font-size="12.5" font-weight="400" fill="#1E1A17" text-anchor="start">Lo recibe en el constructor y lo usa toda la partida.</text>
 <text x="670" y="588" font-size="11.5" fill="#4A403A" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace">private final Juego juego;</text>
@@ -106,7 +106,7 @@
 <text x="670" y="696" font-size="11.5" fill="#4A403A" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace">dialogo.add(new Cartel(titulo, mensaje, alElegir));</text>
 <path d="M 40 760 L 1448 760 L 1460 772 L 1460 840 L 40 840 Z" fill="#FFFDF5" stroke="#B8892A" stroke-width="1.2"/>
 <text x="50" y="778" font-size="12" font-weight="700" fill="#6E1A2C">Además</text>
-<text x="50" y="796" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">Multiplicidad</tspan> (número en la punta): 1 = exactamente uno · 0..1 = cero o uno · 0..* = cualquier cantidad.</text>
+<text x="50" y="796" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">Multiplicidad</tspan> (número en la punta): 1 = exactamente uno · 0..1 = cero o uno · * = cualquier cantidad (también 0..*).</text>
 <text x="50" y="812" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">Visibilidad</tspan>: + público · - privado · # protegido.  <tspan font-weight="700">Subrayado</tspan> = static (es de la clase, no de cada objeto).  <tspan font-weight="700">Cursiva</tspan> = abstracto (método de interfaz, sin código).</text>
 <text x="50" y="828" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">«interface», «enumeration», «record»</tspan>: el tipo de la clase. Violeta = jerarquía · negro = tener · gris punteado = usar.</text>
 </svg>

@@ -1,144 +1,123 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1640 1010" width="1640" height="1010" font-family="Inter, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1640 1060" width="1640" height="1060" font-family="Inter, Arial, sans-serif">
 <style>text{white-space:pre}</style>
-<rect width="1640" height="1010" fill="#FFFFFF"/>
+<rect width="1640" height="1060" fill="#FFFFFF"/>
 <text x="30" y="40" font-size="22" font-weight="700" fill="#6E1A2C">Patrón Command (comportamiento): la repetición de la partida</text>
-<text x="30" y="62" font-size="12.5" fill="#6B6B6B">Cada acción del jugador es un objeto. La grabadora los ejecuta y los anota; al terminar el nivel se pueden volver a ejecutar uno por uno.</text>
-<path d="M 266.0 190.0 L 560.0 190.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
-<polyline points="549.0,184.0 560.0,190.0 549.0,196.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
-<polygon points="266.0,190.0 276.0,196.0 286.0,190.0 276.0,184.0" fill="#1E1A17" stroke="#1E1A17" stroke-width="1.4"/>
-<rect x="381.3671875" y="181.0" width="63.265625" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="413.0" y="193.5" font-size="10.5" text-anchor="middle" fill="#3A332E">grabadora</text><circle cx="372.3671875" cy="190.0" r="8.5" fill="#B8892A"/><text x="372.3671875" y="193.5" font-size="10" font-weight="700" text-anchor="middle" fill="#FFFFFF">1</text>
-<text x="544" y="184.0" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
-<path d="M 200.0 301.0 L 200.0 400.0 L 560.0 400.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
-<polyline points="549.0,394.0 560.0,400.0 549.0,406.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
-<rect x="349.2578125" y="391" width="61.484375" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="380" y="403.5" font-size="10.5" text-anchor="middle" fill="#3A332E">repeticion</text><circle cx="340.2578125" cy="400" r="8.5" fill="#B8892A"/><text x="340.2578125" y="403.5" font-size="10" font-weight="700" text-anchor="middle" fill="#FFFFFF">4</text>
-<text x="544" y="394.0" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">0..1</text>
-<path d="M 791.0 200.0 L 1100.0 200.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
-<polyline points="1089.0,194.0 1100.0,200.0 1089.0,206.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
-<polygon points="791.0,200.0 801.0,206.0 811.0,200.0 801.0,194.0" fill="#FFFFFF" stroke="#1E1A17" stroke-width="1.4"/>
-<rect x="916.015625" y="191.0" width="58.96875" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="945.5" y="203.5" font-size="10.5" text-anchor="middle" fill="#3A332E">grabados</text><circle cx="907.015625" cy="200.0" r="8.5" fill="#B8892A"/><text x="907.015625" y="203.5" font-size="10" font-weight="700" text-anchor="middle" fill="#FFFFFF">2</text>
-<text x="1084" y="194.0" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">0..*</text>
-<path d="M 815.0 330.0 L 1130.0 330.0 L 1130.0 227.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
-<polyline points="1124.0,238.0 1130.0,227.0 1136.0,238.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
-<rect x="946.4765625" y="321" width="67.046875" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="980" y="333.5" font-size="10.5" text-anchor="middle" fill="#3A332E">pendientes</text>
-<text x="1142.0" y="237" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">0..*</text>
-<path d="M 762.0 600.0 L 762.0 560.0 L 1158.0 560.0 L 1158.0 227.0" fill="none" stroke="#7B3FA0" stroke-width="1.6" stroke-dasharray="7 5"/>
-<polygon points="1158.0,227.0 1150.0,242.0 1166.0,242.0" fill="#FFFFFF" stroke="#7B3FA0" stroke-width="1.6"/>
-<path d="M 1071.5 600.0 L 1071.5 560.0 L 1158.0 560.0 L 1158.0 227.0" fill="none" stroke="#7B3FA0" stroke-width="1.6" stroke-dasharray="7 5"/>
-<polygon points="1158.0,227.0 1150.0,242.0 1166.0,242.0" fill="#FFFFFF" stroke="#7B3FA0" stroke-width="1.6"/>
-<path d="M 1353.5 600.0 L 1353.5 560.0 L 1158.0 560.0 L 1158.0 227.0" fill="none" stroke="#7B3FA0" stroke-width="1.6" stroke-dasharray="7 5"/>
-<polygon points="1158.0,227.0 1150.0,242.0 1166.0,242.0" fill="#FFFFFF" stroke="#7B3FA0" stroke-width="1.6"/>
-<path d="M 697.2 697.0 L 697.2 750.0 L 159.5 750.0 L 159.5 701.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
-<polyline points="153.5,712.0 159.5,701.0 165.5,712.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
-<path d="M 1026.9 680.0 L 1026.9 750.0 L 159.5 750.0 L 159.5 701.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
-<polyline points="153.5,712.0 159.5,701.0 165.5,712.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
-<path d="M 1300.1 680.0 L 1300.1 750.0 L 159.5 750.0 L 159.5 701.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
-<polyline points="153.5,712.0 159.5,701.0 165.5,712.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
-<rect x="430.1953125" y="741" width="39.609375" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="450" y="753.5" font-size="10.5" text-anchor="middle" fill="#3A332E">juego</text><circle cx="421.1953125" cy="750" r="8.5" fill="#B8892A"/><text x="421.1953125" y="753.5" font-size="10" font-weight="700" text-anchor="middle" fill="#FFFFFF">3</text>
-<text x="171.5" y="711" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
+<text x="30" y="62" font-size="12.5" fill="#6B6B6B">Cada acción del jugador es un objeto. La grabadora los ejecuta y los anota; al terminar el nivel puede volver a ejecutarlos uno por uno.</text>
+<path d="M 266.0 200.0 L 560.0 200.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="549.0,194.0 560.0,200.0 549.0,206.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<rect x="381.3671875" y="191.0" width="63.265625" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="413.0" y="203.5" font-size="10.5" text-anchor="middle" fill="#3A332E">grabadora</text><circle cx="372.3671875" cy="200.0" r="8.5" fill="#B8892A"/><text x="372.3671875" y="203.5" font-size="10" font-weight="700" text-anchor="middle" fill="#FFFFFF">1</text>
+<text x="544" y="194.0" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
+<path d="M 809.0 200.0 L 1150.0 200.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="1139.0,194.0 1150.0,200.0 1139.0,206.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polygon points="809.0,200.0 819.0,206.0 829.0,200.0 819.0,194.0" fill="#FFFFFF" stroke="#1E1A17" stroke-width="1.4"/>
+<rect x="947.5703125" y="191.0" width="63.859375" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="979.5" y="203.5" font-size="10.5" text-anchor="middle" fill="#3A332E">comandos</text><circle cx="938.5703125" cy="200.0" r="8.5" fill="#B8892A"/><text x="938.5703125" y="203.5" font-size="10" font-weight="700" text-anchor="middle" fill="#FFFFFF">2</text>
+<text x="1134" y="194.0" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">*</text>
+<path d="M 505.2 500.0 L 505.2 461.0 A 6 6 0 0 0 505.2 449.0 L 505.2 420.0 L 1208.0 420.0 L 1208.0 237.0" fill="none" stroke="#7B3FA0" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polygon points="1208.0,237.0 1200.0,252.0 1216.0,252.0" fill="#FFFFFF" stroke="#7B3FA0" stroke-width="1.6"/>
+<path d="M 856.0 500.0 L 856.0 461.0 A 6 6 0 0 0 856.0 449.0 L 856.0 420.0 L 1208.0 420.0 L 1208.0 237.0" fill="none" stroke="#7B3FA0" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polygon points="1208.0,237.0 1200.0,252.0 1216.0,252.0" fill="#FFFFFF" stroke="#7B3FA0" stroke-width="1.6"/>
+<path d="M 1208.4 500.0 L 1208.4 420.0 L 1208.0 420.0 L 1208.0 237.0" fill="none" stroke="#7B3FA0" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polygon points="1208.0,237.0 1200.0,252.0 1216.0,252.0" fill="#FFFFFF" stroke="#7B3FA0" stroke-width="1.6"/>
+<path d="M 158.0 257.0 L 158.0 455.0 L 455.5 455.0 L 455.5 500.0" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="461.5,489.0 455.5,500.0 449.5,489.0" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<path d="M 158.0 257.0 L 158.0 455.0 L 800.0 455.0 L 800.0 500.0" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="806.0,489.0 800.0,500.0 794.0,489.0" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<path d="M 158.0 257.0 L 158.0 455.0 L 1133.5 455.0 L 1133.5 500.0" fill="none" stroke="#5F5650" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="1139.5,489.0 1133.5,500.0 1127.5,489.0" fill="none" stroke="#5F5650" stroke-width="1.6"/>
+<rect x="283.6328125" y="446" width="32.734375" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="300" y="458.5" font-size="10.5" text-anchor="middle" fill="#3A332E">new</text>
+<path d="M 491.0 597.0 L 491.0 750.5 L 269.0 750.5" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="280.0,756.5 269.0,750.5 280.0,744.5" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<path d="M 840.0 580.0 L 840.0 750.5 L 269.0 750.5" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="280.0,756.5 269.0,750.5 280.0,744.5" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<path d="M 1187.0 580.0 L 1187.0 750.5 L 269.0 750.5" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="280.0,756.5 269.0,750.5 280.0,744.5" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<rect x="980.1953125" y="741.5" width="39.609375" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="1000" y="754.0" font-size="10.5" text-anchor="middle" fill="#3A332E">juego</text><circle cx="971.1953125" cy="750.5" r="8.5" fill="#B8892A"/><text x="971.1953125" y="754.0" font-size="10" font-weight="700" text-anchor="middle" fill="#FFFFFF">3</text>
+<text x="285" y="744.5" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
 <g class="caja" id="PantallaJuego">
-<rect x="50" y="121" width="150.59375" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="58" y="133" font-size="10.5" font-weight="600" fill="#7A5A12">Cliente: crea los comandos</text>
-<rect x="50" y="140" width="216" height="161" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
-<text x="158.0" y="158" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">PantallaJuego</text>
-<text x="158.0" y="172" text-anchor="middle" font-size="10.5" fill="#7B3FA0">extiende JPanel</text>
-<line x1="50" y1="179" x2="266" y2="179" stroke="#6C8EBF" stroke-width="1"/>
-<text x="59.0" y="196.5" font-size="12" fill="#1E1A17">- grabadora: GrabadoraDePartida</text>
-<text x="59.0" y="213.5" font-size="12" fill="#1E1A17">- repeticion: Repeticion</text>
-<line x1="50" y1="223" x2="266" y2="223" stroke="#6C8EBF" stroke-width="1"/>
-<text x="59.0" y="240.5" font-size="12" fill="#1E1A17">- mover(direccion: Direccion): void</text>
-<text x="59.0" y="257.5" font-size="12" fill="#1E1A17">- deshacer(): void</text>
-<text x="59.0" y="274.5" font-size="12" fill="#1E1A17">- viajarEnElTiempo(): void</text>
-<text x="59.0" y="291.5" font-size="12" fill="#1E1A17">- verRepeticion(nivel: int): void</text>
+<rect x="50" y="141" width="150.59375" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="58" y="153" font-size="10.5" font-weight="600" fill="#7A5A12">Cliente: crea los comandos</text>
+<rect x="50" y="160" width="216" height="97" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="158.0" y="178" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">PantallaJuego</text>
+<line x1="50" y1="186" x2="266" y2="186" stroke="#6C8EBF" stroke-width="1"/>
+<line x1="50" y1="196" x2="266" y2="196" stroke="#6C8EBF" stroke-width="1"/>
+<text x="59.0" y="213.5" font-size="12" fill="#1E1A17">- mover(direccion: Direccion): void</text>
+<text x="59.0" y="230.5" font-size="12" fill="#1E1A17">- deshacer(): void</text>
+<text x="59.0" y="247.5" font-size="12" fill="#1E1A17">- viajarEnElTiempo(): void</text>
 </g>
 <g class="caja" id="GrabadoraDePartida">
 <rect x="560" y="121" width="112.609375" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="568" y="133" font-size="10.5" font-weight="600" fill="#7A5A12">Invocador (Invoker)</text>
-<rect x="560" y="140" width="231" height="114" rx="6" fill="#D5E8D4" stroke="#82B366" stroke-width="1.4"/>
-<text x="675.5" y="158" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">GrabadoraDePartida</text>
-<line x1="560" y1="166" x2="791" y2="166" stroke="#82B366" stroke-width="1"/>
-<text x="569.0" y="183.5" font-size="12" fill="#1E1A17">- grabados: List&lt;Comando&gt;</text>
-<line x1="560" y1="193" x2="791" y2="193" stroke="#82B366" stroke-width="1"/>
+<rect x="560" y="140" width="249" height="114" rx="6" fill="#D5E8D4" stroke="#82B366" stroke-width="1.4"/>
+<text x="684.5" y="158" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">GrabadoraDePartida</text>
+<line x1="560" y1="166" x2="809" y2="166" stroke="#82B366" stroke-width="1"/>
+<text x="569.0" y="183.5" font-size="12" fill="#1E1A17">- comandos: List&lt;Comando&gt;</text>
+<line x1="560" y1="193" x2="809" y2="193" stroke="#82B366" stroke-width="1"/>
 <text x="569.0" y="210.5" font-size="12" fill="#1E1A17">+ ejecutar(comando: Comando): void</text>
-<text x="569.0" y="227.5" font-size="12" fill="#1E1A17">+ borrar(): void</text>
-<text x="569.0" y="244.5" font-size="12" fill="#1E1A17">+ getGrabados(): List&lt;Comando&gt;</text>
-</g>
-<g class="caja" id="Repeticion">
-<rect x="560" y="281" width="151.3125" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="568" y="293" font-size="10.5" font-weight="600" fill="#7A5A12">Vuelve a ejecutar la partida</text>
-<rect x="560" y="300" width="255" height="216" rx="6" fill="#D5E8D4" stroke="#82B366" stroke-width="1.4"/>
-<text x="687.5" y="318" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">Repeticion</text>
-<line x1="560" y1="326" x2="815" y2="326" stroke="#82B366" stroke-width="1"/>
-<text x="569.0" y="343.5" font-size="12" fill="#1E1A17" text-decoration="underline">- PAUSA_MS: int = 160</text>
-<text x="569.0" y="360.5" font-size="12" fill="#1E1A17">- pendientes: Iterator&lt;Comando&gt;</text>
-<text x="569.0" y="377.5" font-size="12" fill="#1E1A17">- alTerminar: Runnable</text>
-<text x="569.0" y="394.5" font-size="12" fill="#1E1A17">- reloj: Timer</text>
-<line x1="560" y1="404" x2="815" y2="404" stroke="#82B366" stroke-width="1"/>
-<text x="569.0" y="421.5" font-size="12" fill="#1E1A17">+ Repeticion(comandos: List&lt;Comando&gt;,</text>
-<text x="589.4" y="438.5" font-size="12" fill="#1E1A17">alTerminar: Runnable)</text>
-<text x="569.0" y="455.5" font-size="12" fill="#1E1A17">+ empezar(): void</text>
-<text x="569.0" y="472.5" font-size="12" fill="#1E1A17">+ saltarAlFinal(): void</text>
-<text x="569.0" y="489.5" font-size="12" fill="#1E1A17">+ estaReproduciendo(): boolean</text>
-<text x="569.0" y="506.5" font-size="12" fill="#1E1A17">- siguiente(): void</text>
+<text x="569.0" y="227.5" font-size="12" fill="#1E1A17">+ reproducir(alTerminar: Runnable): void</text>
+<text x="569.0" y="244.5" font-size="12" fill="#1E1A17">+ saltarAlFinal(): void</text>
 </g>
 <g class="caja" id="Comando">
-<rect x="1100" y="141" width="125.484375" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="1108" y="153" font-size="10.5" font-weight="600" fill="#7A5A12">Comando (Command)</text>
-<rect x="1100" y="160" width="116" height="67" rx="6" fill="#D5E8D4" stroke="#82B366" stroke-width="1.4"/>
-<text x="1158.0" y="177" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«interface»</text>
-<text x="1158.0" y="192" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17" font-style="italic">Comando</text>
-<line x1="1100" y1="200" x2="1216" y2="200" stroke="#82B366" stroke-width="1"/>
-<text x="1109.0" y="217.5" font-size="12" fill="#1E1A17" font-style="italic">+ ejecutar(): void</text>
+<rect x="1150" y="151" width="125.484375" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="1158" y="163" font-size="10.5" font-weight="600" fill="#7A5A12">Comando (Command)</text>
+<rect x="1150" y="170" width="116" height="67" rx="6" fill="#D5E8D4" stroke="#82B366" stroke-width="1.4"/>
+<text x="1208.0" y="187" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«interface»</text>
+<text x="1208.0" y="202" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17" font-style="italic">Comando</text>
+<line x1="1150" y1="210" x2="1266" y2="210" stroke="#82B366" stroke-width="1"/>
+<text x="1159.0" y="227.5" font-size="12" fill="#1E1A17" font-style="italic">+ ejecutar(): void</text>
 </g>
 <g class="caja" id="ComandoMover">
-<rect x="600" y="581" width="110.96875" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="608" y="593" font-size="10.5" font-weight="600" fill="#7A5A12">Comando concreto</text>
-<rect x="600" y="600" width="324" height="97" rx="6" fill="#D5E8D4" stroke="#82B366" stroke-width="1.4"/>
-<text x="762.0" y="618" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">ComandoMover</text>
-<line x1="600" y1="626" x2="924" y2="626" stroke="#82B366" stroke-width="1"/>
-<text x="609.0" y="643.5" font-size="12" fill="#1E1A17">- juego: Juego</text>
-<text x="609.0" y="660.5" font-size="12" fill="#1E1A17">- direccion: Direccion</text>
-<line x1="600" y1="670" x2="924" y2="670" stroke="#82B366" stroke-width="1"/>
-<text x="609.0" y="687.5" font-size="12" fill="#1E1A17">+ ComandoMover(juego: Juego, direccion: Direccion)</text>
+<rect x="420" y="481" width="110.96875" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="428" y="493" font-size="10.5" font-weight="600" fill="#7A5A12">Comando concreto</text>
+<rect x="420" y="500" width="142" height="97" rx="6" fill="#D5E8D4" stroke="#82B366" stroke-width="1.4"/>
+<text x="491.0" y="518" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">ComandoMover</text>
+<line x1="420" y1="526" x2="562" y2="526" stroke="#82B366" stroke-width="1"/>
+<text x="429.0" y="543.5" font-size="12" fill="#1E1A17">- juego: Juego</text>
+<text x="429.0" y="560.5" font-size="12" fill="#1E1A17">- direccion: Direccion</text>
+<line x1="420" y1="570" x2="562" y2="570" stroke="#82B366" stroke-width="1"/>
+<text x="429.0" y="587.5" font-size="12" fill="#1E1A17">+ ejecutar(): void</text>
 </g>
 <g class="caja" id="ComandoDeshacer">
-<rect x="960" y="581" width="110.96875" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="968" y="593" font-size="10.5" font-weight="600" fill="#7A5A12">Comando concreto</text>
-<rect x="960" y="600" width="223" height="80" rx="6" fill="#D5E8D4" stroke="#82B366" stroke-width="1.4"/>
-<text x="1071.5" y="618" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">ComandoDeshacer</text>
-<line x1="960" y1="626" x2="1183" y2="626" stroke="#82B366" stroke-width="1"/>
-<text x="969.0" y="643.5" font-size="12" fill="#1E1A17">- juego: Juego</text>
-<line x1="960" y1="653" x2="1183" y2="653" stroke="#82B366" stroke-width="1"/>
-<text x="969.0" y="670.5" font-size="12" fill="#1E1A17">+ ComandoDeshacer(juego: Juego)</text>
+<rect x="760" y="481" width="110.96875" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="768" y="493" font-size="10.5" font-weight="600" fill="#7A5A12">Comando concreto</text>
+<rect x="760" y="500" width="160" height="80" rx="6" fill="#D5E8D4" stroke="#82B366" stroke-width="1.4"/>
+<text x="840.0" y="518" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">ComandoDeshacer</text>
+<line x1="760" y1="526" x2="920" y2="526" stroke="#82B366" stroke-width="1"/>
+<text x="769.0" y="543.5" font-size="12" fill="#1E1A17">- juego: Juego</text>
+<line x1="760" y1="553" x2="920" y2="553" stroke="#82B366" stroke-width="1"/>
+<text x="769.0" y="570.5" font-size="12" fill="#1E1A17">+ ejecutar(): void</text>
 </g>
 <g class="caja" id="ComandoViajarEnElTiempo">
-<rect x="1220" y="581" width="110.96875" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="1228" y="593" font-size="10.5" font-weight="600" fill="#7A5A12">Comando concreto</text>
-<rect x="1220" y="600" width="267" height="80" rx="6" fill="#D5E8D4" stroke="#82B366" stroke-width="1.4"/>
-<text x="1353.5" y="618" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">ComandoViajarEnElTiempo</text>
-<line x1="1220" y1="626" x2="1487" y2="626" stroke="#82B366" stroke-width="1"/>
-<text x="1229.0" y="643.5" font-size="12" fill="#1E1A17">- juego: Juego</text>
-<line x1="1220" y1="653" x2="1487" y2="653" stroke="#82B366" stroke-width="1"/>
-<text x="1229.0" y="670.5" font-size="12" fill="#1E1A17">+ ComandoViajarEnElTiempo(juego: Juego)</text>
+<rect x="1080" y="481" width="110.96875" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="1088" y="493" font-size="10.5" font-weight="600" fill="#7A5A12">Comando concreto</text>
+<rect x="1080" y="500" width="214" height="80" rx="6" fill="#D5E8D4" stroke="#82B366" stroke-width="1.4"/>
+<text x="1187.0" y="518" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">ComandoViajarEnElTiempo</text>
+<line x1="1080" y1="526" x2="1294" y2="526" stroke="#82B366" stroke-width="1"/>
+<text x="1089.0" y="543.5" font-size="12" fill="#1E1A17">- juego: Juego</text>
+<line x1="1080" y1="553" x2="1294" y2="553" stroke="#82B366" stroke-width="1"/>
+<text x="1089.0" y="570.5" font-size="12" fill="#1E1A17">+ ejecutar(): void</text>
 </g>
 <g class="caja" id="Juego">
-<rect x="50" y="581" width="114.625" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="58" y="593" font-size="10.5" font-weight="600" fill="#7A5A12">Receptor (Receiver)</text>
-<rect x="50" y="600" width="219" height="101" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
-<text x="159.5" y="617" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«interface»</text>
-<text x="159.5" y="632" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17" font-style="italic">Juego</text>
-<line x1="50" y1="640" x2="269" y2="640" stroke="#6C8EBF" stroke-width="1"/>
-<text x="59.0" y="657.5" font-size="12" fill="#1E1A17" font-style="italic">+ mover(direccion: Direccion): void</text>
-<text x="59.0" y="674.5" font-size="12" fill="#1E1A17" font-style="italic">+ deshacer(): void</text>
-<text x="59.0" y="691.5" font-size="12" fill="#1E1A17" font-style="italic">+ viajarEnElTiempo(): void</text>
+<rect x="50" y="681" width="114.625" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="58" y="693" font-size="10.5" font-weight="600" fill="#7A5A12">Receptor (Receiver)</text>
+<rect x="50" y="700" width="219" height="101" rx="6" fill="#DAE8FC" stroke="#6C8EBF" stroke-width="1.4"/>
+<text x="159.5" y="717" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«interface»</text>
+<text x="159.5" y="732" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17" font-style="italic">Juego</text>
+<line x1="50" y1="740" x2="269" y2="740" stroke="#6C8EBF" stroke-width="1"/>
+<text x="59.0" y="757.5" font-size="12" fill="#1E1A17" font-style="italic">+ mover(direccion: Direccion): void</text>
+<text x="59.0" y="774.5" font-size="12" fill="#1E1A17" font-style="italic">+ deshacer(): void</text>
+<text x="59.0" y="791.5" font-size="12" fill="#1E1A17" font-style="italic">+ viajarEnElTiempo(): void</text>
 </g>
-<text x="1168.0" y="554" font-size="11" font-weight="400" fill="#7B3FA0" text-anchor="start">implementan</text>
-<path d="M 50 800 L 798 800 L 810 812 L 810 944 L 50 944 Z" fill="#FFFDF5" stroke="#B8892A" stroke-width="1.2"/>
-<text x="60" y="818" font-size="12" font-weight="700" fill="#6E1A2C">Cómo se lee (seguí los números)</text>
-<text x="60" y="836" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">1</tspan> PantallaJuego (cliente) traduce cada tecla o botón en un comando:</text>
-<text x="60" y="852" font-size="11.5" fill="#1E1A17">     new ComandoMover(juego, direccion), new ComandoDeshacer(juego)...</text>
-<text x="60" y="868" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">2</tspan> La GrabadoraDePartida (invocador) lo ejecuta y lo anota en grabados.</text>
-<text x="60" y="884" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">3</tspan> Cada comando sabe a quién pedirle el trabajo: al Juego (receptor).</text>
-<text x="60" y="900" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">4</tspan> «Ver repetición» reinicia el nivel y Repeticion vuelve a ejecutar los comandos</text>
-<text x="60" y="916" font-size="11.5" fill="#1E1A17">     grabados, uno cada 160 ms. Termina exactamente en el mismo estado.</text>
-<text x="60" y="932" font-size="11.5" fill="#1E1A17">Reiniciar no se graba: borra la grabación.</text>
-<path d="M 860 800 L 1588 800 L 1600 812 L 1600 928 L 860 928 Z" fill="#FFFDF5" stroke="#B8892A" stroke-width="1.2"/>
-<text x="870" y="818" font-size="12" font-weight="700" fill="#6E1A2C">El código clave (Martín)</text>
-<text x="870" y="836" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace" font-size="11" fill="#1E1A17">private void mover(Direccion direccion) {          // PantallaJuego</text>
-<text x="870" y="852" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace" font-size="11" fill="#1E1A17">    tablero.mirarHacia(direccion);</text>
-<text x="870" y="868" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace" font-size="11" fill="#1E1A17">    grabadora.ejecutar(new ComandoMover(juego, direccion));</text>
-<text x="870" y="884" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace" font-size="11" fill="#1E1A17">    ...  // si se guardó un punto en el tiempo, avisa abajo</text>
-<text x="870" y="900" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace" font-size="11" fill="#1E1A17">}</text>
-<text x="870" y="916" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace" font-size="11" fill="#1E1A17">public void ejecutar(Comando c) { c.ejecutar(); grabados.add(c); }  // Grabadora</text>
+<text x="1218.0" y="380" font-size="11" font-weight="400" fill="#7B3FA0" text-anchor="start">implementan</text>
+<path d="M 50 851 L 798 851 L 810 863 L 810 995 L 50 995 Z" fill="#FFFDF5" stroke="#B8892A" stroke-width="1.2"/>
+<text x="60" y="869" font-size="12" font-weight="700" fill="#6E1A2C">Cómo se lee (seguí los números)</text>
+<text x="60" y="887" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">1</tspan> PantallaJuego (cliente) traduce cada tecla o botón en un comando:</text>
+<text x="60" y="903" font-size="11.5" fill="#1E1A17">     new ComandoMover(juego, direccion), new ComandoDeshacer(juego)...</text>
+<text x="60" y="919" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">2</tspan> La GrabadoraDePartida (invocador) lo ejecuta y lo anota en comandos.</text>
+<text x="60" y="935" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">3</tspan> Cada comando sabe a quién pedirle el trabajo: al Juego (receptor).</text>
+<text x="60" y="951" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">Ver repetición:</tspan> el nivel vuelve a empezar y la grabadora reproduce los comandos</text>
+<text x="60" y="967" font-size="11.5" fill="#1E1A17">     grabados, uno cada 160 ms (Esc: saltarAlFinal). Termina en el mismo estado.</text>
+<text x="60" y="983" font-size="11.5" fill="#1E1A17">Reiniciar no se graba: borra la grabación.</text>
+<path d="M 860 851 L 1588 851 L 1600 863 L 1600 1011 L 860 1011 Z" fill="#FFFDF5" stroke="#B8892A" stroke-width="1.2"/>
+<text x="870" y="869" font-size="12" font-weight="700" fill="#6E1A2C">El código clave (Martín)</text>
+<text x="870" y="887" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace" font-size="11" fill="#1E1A17">private void mover(Direccion direccion) {          // PantallaJuego</text>
+<text x="870" y="903" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace" font-size="11" fill="#1E1A17">    tablero.mirarHacia(direccion);</text>
+<text x="870" y="919" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace" font-size="11" fill="#1E1A17">    grabadora.ejecutar(new ComandoMover(juego, direccion));</text>
+<text x="870" y="935" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace" font-size="11" fill="#1E1A17">    ...  // avisa si se guardó un punto en el tiempo</text>
+<text x="870" y="951" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace" font-size="11" fill="#1E1A17">}</text>
+<text x="870" y="967" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace" font-size="11" fill="#1E1A17">public void ejecutar(Comando comando) {            // GrabadoraDePartida</text>
+<text x="870" y="983" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace" font-size="11" fill="#1E1A17">    if (estaReproduciendo()) return;</text>
+<text x="870" y="999" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace" font-size="11" fill="#1E1A17">    comando.ejecutar(); comandos.add(comando); }</text>
 </svg>
