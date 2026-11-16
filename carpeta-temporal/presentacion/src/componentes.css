@@ -213,3 +213,14 @@ html, body { background: var(--fondo); }
 .mosaico i { display: block; background: var(--superficie-2); border: 1px solid var(--linea-suave); border-radius: 6px; transform: scale(0); }
 .portal-anillo { position: absolute; left: 50%; top: 55%; width: 760px; height: 760px; margin: -380px 0 0 -380px; border-radius: 50%; pointer-events: none; z-index: 20;
   border: 6px solid var(--acento); box-shadow: 0 0 60px 10px var(--brillo), inset 0 0 60px 10px var(--brillo); opacity: 0; }
+
+/* ── Ayuda de teclas: oculta; solo aparece con "?" ── */
+.ayuda { position: absolute; inset: calc(var(--ey, 0px) * -1) calc(var(--ex, 0px) * -1); z-index: 40; display: grid; place-items: center; pointer-events: none;
+  background: color-mix(in srgb, var(--fondo-hondo) 82%, transparent); opacity: 0; visibility: hidden; transition: opacity var(--dur-ui), visibility var(--dur-ui); }
+.ayuda--visible { opacity: 1; visibility: visible; }
+.ayuda__caja { width: 980px; padding: 40px 48px; border-radius: var(--radio); background: linear-gradient(180deg, var(--superficie-2), var(--superficie));
+  border: 1px solid var(--linea-media); box-shadow: var(--sombra-caja); }
+.ayuda__titulo { margin: 0 0 22px; font-family: var(--f-display); font-size: 44px; color: var(--titulo); }
+.ayuda__lista { display: grid; grid-template-columns: 300px 1fr; gap: 12px 28px; margin: 0; }
+.ayuda__lista dt { font-family: var(--f-mono); font-size: 24px; color: var(--acento); }
+.ayuda__lista dd { margin: 0; font-size: 24px; color: var(--tinta-2); }

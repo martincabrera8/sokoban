@@ -175,6 +175,20 @@ function avanzar() {
   irA(actual + 1, 1);
 }
 
+/** ← : vuelve un paso dentro de la diapositiva; en el primer paso, a la diapositiva anterior ya armada. */
+function retroceder() {
+  if (!est || !est.slide.classList.contains("activa")) return;
+  if (est.paso > 0) {
+    est.paso -= 1;
+    const destino = est.pasos[est.paso];
+    if (est.reproductor) est.reproductor.kill();
+    if (reducido()) { est.tl.seek(destino, false); return; }
+    est.reproductor = est.tl.tweenTo(destino, { duration: Math.min(0.7, Math.max(0.2, Math.abs(est.tl.time() - destino) * 0.4)), ease: "power2.inOut" });
+    return;
+  }
+  irA(actual - 1, -1, true);
+}
+
 function irA(i, dir, construido = false) {
   const ahora = performance.now();
   if (ocupado || ahora - ultimo < FRENO) return;
@@ -227,18 +241,83 @@ function enviarNotas() {
   } catch (err) { notas = null; }
 }
 
+/* Teclas del expositor: existen, pero no se ven en la proyección. "?" muestra esta lista. */
+const TECLAS = [
+  ["→ · AvPág · Espacio", "Paso siguiente; en el último, diapositiva siguiente"],
+  ["← · RePág", "Paso anterior; en el primero, diapositiva anterior"],
+  ["Inicio · Fin", "Primera o última diapositiva"],
+  ["1 a 9 · dos cifras", "Ir a esa diapositiva"],
+  ["R", "Repetir la diapositiva desde el principio"],
+  ["Z", "Pausar o reanudar"],
+  ["F", "Pantalla completa"],
+  ["H", "Ocultar todo"],
+  ["N", "Notas del expositor, en otra ventana"],
+  ["?", "Esta ayuda"],
+  ["Esc", "Cerrar la ayuda y las notas"],
+];
+let ayuda = null, cifras = "", esperaCifras = null;
+
+function crearAyuda() {
+  ayuda = document.createElement("div");
+  ayuda.className = "ayuda";
+  ayuda.setAttribute("role", "dialog");
+  ayuda.setAttribute("aria-label", "Teclas de la presentación");
+  const caja = document.createElement("div");
+  caja.className = "ayuda__caja";
+  const titulo = document.createElement("p");
+  titulo.className = "ayuda__titulo";
+  titulo.textContent = "Teclas";
+  caja.appendChild(titulo);
+  const lista = document.createElement("dl");
+  lista.className = "ayuda__lista";
+  TECLAS.forEach(([tecla, que]) => {
+    const dt = document.createElement("dt"); dt.textContent = tecla;
+    const dd = document.createElement("dd"); dd.textContent = que;
+    lista.append(dt, dd);
+  });
+  caja.appendChild(lista);
+  ayuda.appendChild(caja);
+  escenario.appendChild(ayuda);
+}
+const verAyuda = (si) => ayuda.classList.toggle("ayuda--visible", si);
+
+function pantallaCompleta() {
+  try {
+    if (document.fullscreenElement) document.exitFullscreen();
+    else document.documentElement.requestFullscreen();
+  } catch (err) { /* visor sin pantalla completa */ }
+}
+
+/** Una o dos cifras seguidas llevan a esa diapositiva (por ejemplo 1 y 2 → la 12). */
+function cifra(d) {
+  cifras += d;
+  clearTimeout(esperaCifras);
+  const ir = () => {
+    const n = parseInt(cifras, 10);
+    cifras = "";
+    if (n >= 1 && n <= slides.length && n - 1 !== actual) irA(n - 1, n - 1 > actual ? 1 : -1);
+  };
+  if (cifras.length >= 2 || parseInt(cifras + "0", 10) > slides.length) ir();
+  else esperaCifras = setTimeout(ir, 600);
+}
+
 function teclado(ev) {
   if (ev.repeat) { ev.preventDefault(); return; }
+  if (ev.ctrlKey || ev.metaKey || ev.altKey) return;
   const k = ev.key;
+  if (ayuda.classList.contains("ayuda--visible") && k !== "?") { ev.preventDefault(); verAyuda(false); return; } // con la ayuda abierta, cualquier tecla solo la cierra
   if (["ArrowRight", "PageDown", " ", "Enter"].includes(k)) { ev.preventDefault(); avanzar(); }
-  else if (["ArrowLeft", "PageUp", "Backspace"].includes(k)) { ev.preventDefault(); irA(actual - 1, -1, true); }
+  else if (["ArrowLeft", "PageUp", "Backspace"].includes(k)) { ev.preventDefault(); retroceder(); }
   else if (k === "Home") irA(0, -1);
   else if (k === "End") irA(slides.length - 1, 1, true);
+  else if (/^[0-9]$/.test(k)) cifra(k);
   else if (k === "z" || k === "Z") gsap.globalTimeline.paused(!gsap.globalTimeline.paused());
   else if (k === "r" || k === "R") repetir();
+  else if (k === "f" || k === "F") pantallaCompleta();
   else if (k === "h" || k === "H") escenario.classList.toggle("oculto-todo");
   else if (k === "n" || k === "N") abrirNotas();
-  else if (k === "Escape") { try { if (notas) notas.close(); } catch (err) { /* nada */ } escenario.classList.remove("oculto-todo"); }
+  else if (k === "?") verAyuda(!ayuda.classList.contains("ayuda--visible"));
+  else if (k === "Escape") { try { if (notas) notas.close(); } catch (err) { /* nada */ } escenario.classList.remove("oculto-todo"); verAyuda(false); }
 }
 
 export function iniciar() {
@@ -248,6 +327,7 @@ export function iniciar() {
   slides = [...escenario.querySelectorAll(".slide")];
   slides.forEach((s) => s.setAttribute("aria-hidden", "true"));
   crearMosaico();
+  crearAyuda();
   const anillo = document.createElement("div");
   anillo.className = "portal-anillo";
   anillo.setAttribute("aria-hidden", "true");
@@ -258,6 +338,6 @@ export function iniciar() {
   let inicio = 0;
   try { inicio = Math.max(0, Math.min(slides.length - 1, parseInt(location.hash.slice(1), 10) - 1 || 0)); } catch (err) { inicio = 0; }
   document.fonts.ready.then(() => mostrar(inicio, 1, false));
-  window.__presentacion = { irA: (i, c) => { ultimo = 0; ocupado = false; mostrar(i, 1, c); }, avanzar, estado: () => ({ actual, paso: est && est.paso, pasos: est && est.pasos.length, duracion: est && est.tl.duration(), marcas: est && est.pasos.map((x) => +x.toFixed(2)), ocupado, ...medidas }),
+  window.__presentacion = { irA: (i, c) => { ultimo = 0; ocupado = false; mostrar(i, 1, c); }, avanzar, retroceder, estado: () => ({ actual, paso: est && est.paso, pasos: est && est.pasos.length, duracion: est && est.tl.duration(), marcas: est && est.pasos.map((x) => +x.toFixed(2)), tiempo: est && +est.tl.time().toFixed(2), ocupado, ...medidas }),
     seek: (tt) => { if (est.reproductor) est.reproductor.kill(); est.tl.seek(tt, false); } };
 }

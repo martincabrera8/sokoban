@@ -1,6 +1,6 @@
 import { gsap } from "gsap";
-import { el, pixel, img } from "../util.js";
-import { jugar } from "../sokoban-sim.js";
+import { el } from "../util.js";
+import { crearTablero, dibujar } from "../tablero-sim.js";
 import { NIVELES, PRUEBAS } from "../datos-corta.js";
 
 /*
@@ -9,65 +9,7 @@ import { NIVELES, PRUEBAS } from "../datos-corta.js";
  * Paso 1: las 23 pruebas JUnit.
  */
 const B = 44;
-const PISO = { 1955: "tiles/floor_1955", 1985: "tiles/floor_1985", 2015: "tiles/floor_2015" };
-const PARED = { 1955: "tiles/wall_brick", 1985: "tiles/wall_mall", 2015: "tiles/wall_future" };
-const CAJA = { normal: "boxes/box_wood", fragil: "boxes/caja_fragil_intacta", llave: "boxes/caja_llave" };
-const MIRA = { arriba: "characters/player_up", abajo: "characters/player_down", izquierda: "characters/player_left", derecha: "characters/player_right" };
 const PASO = 0.17;      // segundos por movimiento
-
-function tablero(lienzo, nivel, x, y) {
-  const { fijo, cuadros } = jugar(nivel.mapa, nivel.solucion);
-  const raiz = el("div", "niv__tablero pos", lienzo, { vars: { x, y, cols: String(fijo[0].length), b: B } });
-  const grilla = el("div", "niv__grilla pixel", raiz);
-  const capas = { cerrojo: [], muro: [] };
-  fijo.forEach((fila) => fila.forEach((ch) => {
-    const celda = el("div", "niv__celda", grilla);
-    const base = ch === "#" ? PARED[nivel.epoca] : ch === "~" ? "tiles/terreno_resbaladizo" : PISO[nivel.epoca];
-    pixel(base, celda, "");
-    if (ch === ".") pixel("goals/goal", celda, "");
-    if (ch === "C") capas.cerrojo.push([pixel("tiles/cerrojo_cerrado", celda, ""), pixel("tiles/cerrojo_abierto", celda, "niv__abierto")]);
-    if (ch === "X") capas.muro.push([pixel("tiles/muro_cerrado", celda, ""), pixel("tiles/muro_abierto", celda, "niv__abierto")]);
-    if (ch === "P") capas.plutonio = pixel("items/plutonio", celda, "niv__plutonio");
-  }));
-  const fichas = cuadros[0].cajas.map((k) => {
-    const f = el("div", "niv__ficha", raiz);
-    f.dataset.tipo = k.tipo;
-    pixel(CAJA[k.tipo], f, "");
-    return f;
-  });
-  const jugador = el("div", "niv__ficha niv__ficha--jugador", raiz);
-  pixel(MIRA.abajo, jugador, "");
-  return { nivel, raiz, cuadros, fichas, jugador, capas, fijo, mira: "abajo", estado: { k: 0 } };
-}
-
-const suave = (u) => u * u * (3 - 2 * u);
-
-/** Dibuja el tablero en el movimiento k (con fracción: entre dos cuadros). */
-function dibujar(t, k) {
-  const n = t.cuadros.length - 1;
-  const i = Math.min(n, Math.floor(k));
-  const u = i >= n ? 0 : suave(k - i);
-  const a = t.cuadros[i], b = t.cuadros[Math.min(n, i + 1)];
-  const pos = (p, q) => ({ x: (p.x + (q.x - p.x) * u) * B, y: (p.y + (q.y - p.y) * u) * B });
-  const pj = pos(a.jug, b.jug);
-  t.jugador.style.transform = `translate(${pj.x}px, ${pj.y}px)`;
-  const mira = (u > 0 ? b : a).jug.mira;
-  if (mira !== t.mira) { t.mira = mira; t.jugador.firstChild.src = img(MIRA[mira]); }
-  a.cajas.forEach((ca, j) => {
-    const cb = b.cajas[j];
-    const f = t.fichas[j];
-    const p = pos(ca, cb);
-    f.style.transform = `translate(${p.x}px, ${p.y}px)`;
-    f.style.opacity = ca.viva ? 1 : 0;
-    const sobre = t.fijo[ca.y][ca.x] === "." && u === 0;
-    f.classList.toggle("ficha--en-destino", sobre);
-    if (ca.tipo === "fragil") f.firstChild.src = img(ca.res === 1 ? "boxes/caja_fragil_danada" : "boxes/caja_fragil_intacta");
-  });
-  const abiertos = a.abiertos;
-  [...t.capas.cerrojo, ...t.capas.muro].forEach(([cerrado, abierto]) => { cerrado.style.opacity = abiertos ? 0 : 1; abierto.style.opacity = abiertos ? 1 : 0; });
-  if (t.capas.plutonio) t.capas.plutonio.style.opacity = a.plutonio ? 0 : 1;
-  t.raiz.classList.toggle("niv__tablero--completo", a.completo);
-}
 
 export default {
   montar(lienzo) {
@@ -78,14 +20,13 @@ export default {
     let x = 120;
     c.tableros = NIVELES.map((n, i) => {
       const alto = n.mapa.length * B;
-      const t = tablero(lienzo, n, x, 372 + (altoMax - alto));
+      const t = crearTablero(lienzo, n, n.solucion, { x, y: 372 + (altoMax - alto), b: B });
       const pie = el("div", "niv__pie pos dim", lienzo, { vars: { x, y: 372 + altoMax + 22, w: anchos[i] + hueco - 30 } });
       el("div", "niv__nombre", pie, { html: `Nivel ${n.numero} · <span class="niv__epoca niv__epoca--${n.epoca}">${n.epoca}</span>` });
       el("div", "niv__titulo", pie, { texto: n.nombre });
       el("div", "niv__cifras", pie, { html: `<b>${n.movimientos}</b> movimientos · <b>${n.empujes}</b> empujes` });
       el("div", "niv__prueba", pie, { texto: n.prueba });
       t.pie = pie;
-      dibujar(t, 0);
       x += anchos[i] + hueco;
       return t;
     });

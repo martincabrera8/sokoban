@@ -1,12 +1,14 @@
 /* Portada corta: la bajada no pisa el almacén 3D */
 .cab--portada-corta .bajada { max-width: 640px; }
-/* Cabecera angosta para dejar lugar al fragmento del video (DeLorean y repetición) */
-.cab.cab--corta-clip { width: 1010px; }
-.cab--corta-clip .bajada { max-width: 1010px; }
-.clip { margin: 0; border-radius: var(--radio); overflow: hidden; background: var(--fondo-hondo); border: 2px solid var(--linea-media);
-  box-shadow: 0 0 0 6px color-mix(in srgb, var(--fondo-hondo) 70%, transparent), var(--sombra-lejos); }
-.clip__video { display: block; width: 100%; height: 100%; object-fit: cover; }
-.clip__pie { margin: 0; font-size: 22px; line-height: 1.35; color: var(--tinta-3); }
+/* Cabecera angosta para dejar lugar al tablero de muestra (DeLorean y repetición) */
+.cab.cab--con-tablero { width: 1010px; }
+.cab--con-tablero .bajada { max-width: 1010px; }
+/* Tablero de muestra en un marco (DeLorean y repetición) */
+.mini { border-radius: var(--radio); background: linear-gradient(180deg, var(--superficie-2), var(--superficie)); border: 1px solid var(--linea-media); box-shadow: var(--sombra-caja); overflow: hidden; }
+.mini::after { content: ""; position: absolute; inset: 0; border: 3px solid var(--acento); border-radius: var(--radio); opacity: var(--marco, 0); pointer-events: none; z-index: 4; }
+.mini__destello { position: absolute; inset: 0; pointer-events: none; z-index: 3;
+  background: radial-gradient(60% 60% at 50% 50%, color-mix(in srgb, var(--exito) 70%, transparent), color-mix(in srgb, var(--exito) 10%, transparent)); }
+.mini__pie { margin: 0; font-size: 22px; line-height: 1.35; color: var(--tinta-3); }
 
 /* Memento: los tres roles */
 .mem__rol { padding: 20px 24px; border-radius: var(--radio); background: linear-gradient(180deg, var(--superficie-2), var(--superficie)); border: 1px solid var(--linea-media); box-shadow: var(--sombra-caja); }

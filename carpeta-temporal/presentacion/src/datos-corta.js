@@ -1,10 +1,11 @@
 /* Datos reales de la presentación corta, con su fuente. Nada de datos dentro del dibujo. */
 
-/** Momentos del video de gameplay (docs/video/gameplay-sokoban.mp4), en segundos, con el subtítulo que se ve.
- *  Fuente: los tiempos con que se grabaron los subtítulos del video. */
-export const VIDEO_MOMENTOS = {
-  delorean: { desde: 45.2, hasta: 57.6, texto: "Del video: la frágil se rompe y el DeLorean vuelve al último punto" },
-  repeticion: { desde: 63.6, hasta: 73.4, texto: "Del video: «Ver repetición» ejecuta otra vez los comandos" },
+/** Partidas cortas sobre los niveles reales, verificadas con las reglas de MotorMovimiento (src/sokoban-sim.js).
+ *  DeLorean, nivel 2: junta el plutonio, la llave abre los muros, la frágil llega a su destino (se guarda un punto)
+ *  y un empuje de más la rompe. Repetición, nivel 1: seis comandos que después se vuelven a ejecutar. */
+export const DEMOS = {
+  delorean: { nivel: 2, teclas: "←↑↑↑→↓↓↓←↓→↓→→→→" },
+  repeticion: { nivel: 1, teclas: "↓←←↑→→" },
 };
 
 /** Niveles reales (niveles/nivelN.txt) con la solución más corta que encontró VerificadorDeNiveles

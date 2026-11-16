@@ -2,40 +2,52 @@ import { gsap } from "gsap";
 import { el, s } from "../util.js";
 
 /*
- * El diagrama de clases real (docs/uml/2-diagrama-completo.svg, lo embebe build.py) recorrido por zonas.
- * Cada zona nombra sus clases: se buscan en el SVG por id o por texto, así el plano puede crecer o
- * reordenarse sin tocar este archivo. La cámara (el viewBox) encuadra la zona; el resto queda en penumbra.
+ * El diagrama de clases real (docs/uml/2-diagrama-completo.svg, lo embebe build.py) como SVG vectorial en la página:
+ * la cámara es el viewBox, así el texto queda nítido a cualquier zoom. Se recorre patrón por patrón: cada paso
+ * enciende las clases del patrón y sus flechas, apaga el resto y encuadra una o dos tomas legibles.
+ * Las clases se buscan por id (g.caja#Nombre) o por su texto, así el plano puede cambiar sin tocar este archivo.
  */
-const ZONAS = [
-  { nombre: "Vista y contrato", patrones: "MVC · Facade · Observer · Singleton",
-    clases: ["VentanaPrincipal", "MenuPrincipal", "PantallaJuego", "PanelHUD", "PanelTablero", "Imagenes", "Juego", "ObservadorJuego", "EstadoJuego", "Direccion"] },
-  { nombre: "Dominio", patrones: "Strategy · Mediator",
-    clases: ["JuegoSokoban", "EstadoNivel", "Jugador", "Caja", "ComportamientoCaja", "CajaNormalStrategy", "CajaFragilStrategy", "CajaLlaveStrategy", "MediadorMovimiento", "MotorMovimiento"] },
-  { nombre: "DeLorean", patrones: "Memento",
-    clases: ["JuegoSokoban", "RecuerdoNivel", "MaquinaDelTiempo"] },
-  { nombre: "Repetición", patrones: "Command",
-    clases: ["Comando", "ComandoMover", "ComandoDeshacer", "ComandoViajarEnElTiempo", "GrabadoraDePartida", "Repeticion"] },
-  { nombre: "Sonido", patrones: "Decorator · State · Singleton",
-    clases: ["JuegoDecorado", "JuegoConSonido", "Sonidos", "EstadoSonido", "SonidoActivado", "SonidoSilenciado", "Sonido"] },
+const PATRONES = [
+  { nombre: "MVC y Facade", clases: ["VentanaPrincipal", "PantallaJuego", "PanelHUD", "PanelTablero", "Juego", "EstadoJuego", "ObservadorJuego", "Direccion", "JuegoSokoban"],
+    tomas: [["PantallaJuego", "Juego"], ["Juego", "EstadoJuego", "ObservadorJuego", "Direccion"]],
+    porque: "La vista solo conoce la fachada Juego y recibe un EstadoJuego inmutable: el dominio y el sonido entraron sin tocar la vista." },
+  { nombre: "Observer", clases: ["Juego", "ObservadorJuego", "EstadoJuego", "PanelHUD", "PanelTablero"],
+    tomas: [["Juego", "ObservadorJuego", "EstadoJuego"], ["ObservadorJuego", "PanelHUD", "PanelTablero"]],
+    porque: "Después de cada cambio, el juego le manda la foto a cada observador: el HUD y el tablero se redibujan solos." },
+  { nombre: "Singleton", clases: ["Imagenes", "Assets", "Sonidos", "Sonido"],
+    tomas: [["Imagenes", "Assets"], ["Sonidos", "Sonido"]],
+    porque: "Cada imagen y cada sonido se cargan una sola vez: todo el juego usa la misma instancia, con obtenerInstancia()." },
+  { nombre: "Strategy", clases: ["Caja", "ComportamientoCaja", "CajaNormalStrategy", "CajaFragilStrategy", "CajaLlaveStrategy"],
+    tomas: [["Caja", "ComportamientoCaja", "CajaNormalStrategy", "CajaFragilStrategy", "CajaLlaveStrategy"]],
+    porque: "Lo único que cambia entre cajas es qué pasa al empujarlas: un tipo nuevo de caja es una estrategia nueva." },
+  { nombre: "Mediator", clases: ["MediadorMovimiento", "MotorMovimiento", "Jugador", "Caja", "EstadoNivel"],
+    tomas: [["MotorMovimiento", "MediadorMovimiento", "Jugador", "Caja"]],
+    porque: "El jugador y las cajas no se conocen: el motor resuelve choques, empujes, hielo y efectos en un solo lugar." },
+  { nombre: "Decorator", clases: ["Juego", "JuegoDecorado", "JuegoConSonido"],
+    tomas: [["Juego", "JuegoDecorado"], ["JuegoDecorado", "JuegoConSonido"]],
+    porque: "El sonido se suma envolviendo al juego sin cambiarlo; un observador no se enteraría de un choque contra la pared." },
+  { nombre: "State", clases: ["Sonidos", "EstadoSonido", "SonidoActivado", "SonidoSilenciado"],
+    tomas: [["Sonidos", "EstadoSonido", "SonidoActivado", "SonidoSilenciado"]],
+    porque: "Con la tecla M cada estado decide a cuál pasa: reproducir no necesita preguntar si hay silencio." },
+  { nombre: "Memento", clases: ["JuegoSokoban", "RecuerdoNivel", "MaquinaDelTiempo"],
+    tomas: [["JuegoSokoban", "RecuerdoNivel"], ["RecuerdoNivel", "MaquinaDelTiempo"]],
+    porque: "Un recuerdo del nivel entero devuelve todo (caja rota, muros, plutonio) sin lógica inversa: deshacer y DeLorean." },
+  { nombre: "Command", clases: ["Comando", "ComandoMover", "ComandoDeshacer", "ComandoViajarEnElTiempo", "GrabadoraDePartida", "Repeticion", "PantallaJuego"],
+    tomas: [["GrabadoraDePartida", "Comando", "Repeticion", "ComandoMover", "ComandoDeshacer", "ComandoViajarEnElTiempo"]],
+    porque: "Cada acción es un objeto: se ejecuta, se anota y se vuelve a ejecutar para ver la repetición." },
 ];
-const ZONA = { x: 680, y: 64, w: 1120, h: 952 };    // dónde puede ir el plano, en px del escenario
+const MARCO = { x: 620, y: 40, w: 1260, h: 1000 };   // el plano, en px del escenario
+const ZOOM_MAX = 2.2;                                  // px de pantalla por unidad del SVG, como mucho
+const APAGADO = 0.13;
 
-/** El marco toma la proporción del plano (sea cual sea su tamaño), alineado a la derecha y centrado en vertical. */
-function marcoPara(asp) {
-  let w = ZONA.w, h = w / asp;
-  if (h > ZONA.h) { h = ZONA.h; w = h * asp; }
-  return { x: ZONA.x + ZONA.w - w, y: Math.max(ZONA.y, 540 - h / 2), w, h };
-}
-
-/** La caja de una clase en el SVG: por id (g.caja#Nombre) o, si no, por el texto con su nombre. */
+/** La caja de una clase en el SVG: por id o, si no, por el texto con su nombre. */
 function buscar(svg, nombre) {
   const porId = svg.querySelector(`[id="${nombre}"]`);
   if (porId) return porId;
-  const textos = [...svg.querySelectorAll("text")].filter((t) => t.textContent.replace(/«[^»]*»/g, "").trim() === nombre);
-  if (!textos.length) return null;
-  const t = textos[0];
-  const g = t.closest("g");
-  return g && g !== svg ? g : t;
+  const texto = [...svg.querySelectorAll("text")].find((t) => t.textContent.replace(/«[^»]*»/g, "").trim() === nombre);
+  if (!texto) return null;
+  const g = texto.closest("g");
+  return g && g !== svg ? g : texto;
 }
 
 /** Rectángulo de un elemento en las coordenadas del viewBox (respeta transformaciones). */
@@ -48,93 +60,119 @@ function rect(svg, e) {
   const xs = pts.map((p) => p.x), ys = pts.map((p) => p.y);
   return { x: Math.min(...xs), y: Math.min(...ys), w: Math.max(...xs) - Math.min(...xs), h: Math.max(...ys) - Math.min(...ys) };
 }
+const dentro = (p, r, m = 8) => p.x >= r.x - m && p.x <= r.x + r.w + m && p.y >= r.y - m && p.y <= r.y + r.h + m;
 
-/** Encuadre de una zona con margen y la proporción del marco. */
-function encuadre(rs, vb, asp) {
+/** Encuadre de varias cajas con aire, en la proporción del marco y sin pasar el zoom máximo. */
+function encuadre(rs, vb) {
   if (!rs.length) return { ...vb };
-  let x0 = Math.min(...rs.map((r) => r.x)), y0 = Math.min(...rs.map((r) => r.y));
-  let x1 = Math.max(...rs.map((r) => r.x + r.w)), y1 = Math.max(...rs.map((r) => r.y + r.h));
-  const pad = Math.max(x1 - x0, y1 - y0) * 0.08 + 20;
-  x0 -= pad; y0 -= pad; x1 += pad; y1 += pad;
-  let w = x1 - x0, h = y1 - y0;
+  let x0 = Math.min(...rs.map((r) => r.x)) - 40, y0 = Math.min(...rs.map((r) => r.y)) - 40;
+  let w = Math.max(...rs.map((r) => r.x + r.w)) + 40 - x0, h = Math.max(...rs.map((r) => r.y + r.h)) + 40 - y0;
+  const asp = MARCO.w / MARCO.h;
+  const minW = MARCO.w / ZOOM_MAX;
+  if (w < minW) { x0 -= (minW - w) / 2; w = minW; }
   if (w / h > asp) { const nh = w / asp; y0 -= (nh - h) / 2; h = nh; } else { const nw = h * asp; x0 -= (nw - w) / 2; w = nw; }
   return { x: x0, y: y0, w, h };
+}
+
+/** Extremos de un path ("M x y … x y"). */
+function extremos(d) {
+  const n = (d.match(/-?[\d.]+/g) || []).map(Number);
+  return n.length >= 4 ? [{ x: n[0], y: n[1] }, { x: n[n.length - 2], y: n[n.length - 1] }] : null;
 }
 
 export default {
   montar(lienzo) {
     const c = {};
+    c.marco = el("div", "plano plano__marco pos dim", lienzo, { vars: { x: MARCO.x, y: MARCO.y, w: MARCO.w, h: MARCO.h } });
     const doc = new DOMParser().parseFromString(window.UML || "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'/>", "image/svg+xml");
     const svg = document.importNode(doc.documentElement, true);
-    const vb = (svg.getAttribute("viewBox") || `0 0 ${parseFloat(svg.getAttribute("width")) || 10} ${parseFloat(svg.getAttribute("height")) || 10}`).split(/[\s,]+/).map(Number);
+    const vb = (svg.getAttribute("viewBox") || "0 0 10 10").split(/[\s,]+/).map(Number);
     c.vb = { x: vb[0], y: vb[1], w: vb[2], h: vb[3] };
-    const asp = c.vb.w / c.vb.h;
-    const M = marcoPara(asp);
-    c.marco = el("div", "plano plano__marco pos dim", lienzo, { vars: { x: M.x, y: M.y, w: M.w, h: M.h } });
-    svg.removeAttribute("width");
-    svg.removeAttribute("height");
+    ["width", "height"].forEach((k) => svg.removeAttribute(k));
     svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
     svg.setAttribute("role", "img");
     svg.setAttribute("aria-label", "Diagrama de clases completo del Sokoban");
     svg.classList.add("plano__svg");
     c.marco.appendChild(svg);
     c.svg = svg;
-    c.cam = { ...c.vb };
-    c.todo = { ...c.cam };
+    c.todo = encuadre([{ x: c.vb.x + 40, y: c.vb.y + 40, w: c.vb.w - 80, h: c.vb.h - 80 }], c.vb);
+    c.cam = { ...c.todo };
     c.aplicar = () => svg.setAttribute("viewBox", `${c.cam.x} ${c.cam.y} ${c.cam.w} ${c.cam.h}`);
     c.aplicar();
 
-    // Zonas: las cajas que existen, su encuadre y un marco de luz por clase
+    // Todo lo dibujado (menos el fondo) se puede apagar; cada patrón enciende sus clases, sus flechas y sus puntas
+    const fondo = svg.querySelector(":scope > rect");
+    c.piezas = [...svg.children].filter((e) => e !== fondo && !["style", "defs"].includes(e.tagName));
+    const medidas = new Map(c.piezas.map((e) => [e, rect(svg, e)]));
     const capa = s("g", { class: "plano__luces" }, svg);
-    const todas = new Set();
-    c.zonas = ZONAS.map((z) => {
-      const cajas = z.clases.map((n) => buscar(svg, n)).filter(Boolean);
-      cajas.forEach((k) => todas.add(k));
+    c.patrones = PATRONES.map((p) => {
+      const cajas = p.clases.map((n) => buscar(svg, n)).filter(Boolean);
       const rs = cajas.map((k) => rect(svg, k));
-      const luces = rs.map((r) => s("rect", { x: r.x - 6, y: r.y - 6, width: r.w + 12, height: r.h + 12, rx: 10, class: "plano__luz" }, capa));
-      return { ...z, cajas, luces, cuadro: encuadre(rs, c.vb, asp) };
+      const toca = (pt) => rs.some((r) => dentro(pt, r));
+      const flechas = c.piezas.filter((e) => e.tagName === "path" && e.getAttribute("fill") === "none").filter((e) => {
+        const x = extremos(e.getAttribute("d") || "");
+        return x && toca(x[0]) && toca(x[1]);
+      });
+      const puntas = flechas.flatMap((f) => extremos(f.getAttribute("d")));
+      const marcas = c.piezas.filter((e) => {
+        const r = medidas.get(e);
+        if (!["polygon", "polyline", "line"].includes(e.tagName) || r.w > 30 || r.h > 30) return false;
+        const centro = { x: r.x + r.w / 2, y: r.y + r.h / 2 };
+        return puntas.some((q) => Math.hypot(q.x - centro.x, q.y - centro.y) < 18);
+      });
+      const encendidas = new Set([...cajas, ...flechas, ...marcas]);
+      const luces = rs.map((r) => s("rect", { x: r.x - 7, y: r.y - 7, width: r.w + 14, height: r.h + 14, rx: 10, class: "plano__luz" }, capa));
+      const tomas = p.tomas.map((t) => encuadre(t.map((n) => buscar(svg, n)).filter(Boolean).map((k) => rect(svg, k)), c.vb));
+      return { ...p, cajas, encendidas, luces, tomas };
     });
-    c.cajas = [...svg.querySelectorAll("g.caja")];
-    c.todas = [...todas];
 
-    // La lista de zonas a la izquierda
-    c.lista = el("div", "plano__lista pos dim", lienzo, { vars: { x: 120, y: 330, w: 520 } });
-    c.items = c.zonas.map((z) => {
-      const it = el("div", "plano__zona", c.lista);
-      el("div", "plano__zona-nombre", it, { texto: z.nombre });
-      el("div", "plano__zona-patrones", it, { texto: z.patrones });
-      return it;
+    // Lista de patrones y la ficha del que está en foco
+    c.lista = el("ol", "plano__lista pos dim", lienzo, { vars: { x: 120, y: 318, w: 440 } });
+    c.items = PATRONES.map((p) => el("li", "plano__item", c.lista, { texto: p.nombre }));
+    const fichas = el("div", "plano__fichas pos dim", lienzo, { vars: { x: 120, y: 636, w: 460 } });
+    c.fichas = c.patrones.map((p) => {
+      const f = el("div", "plano__ficha", fichas);
+      el("p", "plano__ficha-nombre", f, { texto: p.nombre });
+      el("p", "plano__ficha-clases", f, { texto: p.clases.filter((n) => buscar(svg, n)).join(", ") });
+      el("p", "plano__ficha-porque", f, { texto: p.porque });
+      return f;
     });
-    if (!window.UML) el("p", "plano__falta pos", lienzo, { vars: { x: M.x + 60, y: 500 }, texto: "Falta el diagrama: build.py lo toma de docs/uml/2-diagrama-completo.svg" });
+    if (!window.UML) el("p", "plano__falta pos", lienzo, { vars: { x: MARCO.x + 60, y: 500 }, texto: "Falta el diagrama: build.py lo toma de docs/uml/2-diagrama-completo.svg" });
     return c;
   },
 
   construir(tl, c) {
-    const cam = (destino, en, d = 1.3) => tl.to(c.cam, { ...destino, duration: d, ease: "power2.inOut", onUpdate: c.aplicar }, en);
-    tl.fromTo(c.marco, { autoAlpha: 0, y: 40, rotationX: 12 }, { autoAlpha: 1, y: 0, rotationX: 0, duration: 1, ease: "power3.out" }, 0.2)
-      .fromTo(c.items, { autoAlpha: 0, x: -20 }, { autoAlpha: 1, x: 0, duration: 0.5, stagger: 0.08, ease: "power3.out" }, 0.6)
-      .set(c.zonas.flatMap((z) => z.luces), { autoAlpha: 0 }, 0)
-      .set(c.cajas, { opacity: 1 }, 0)
-      .set(c.cam, { ...c.todo, onUpdate: c.aplicar }, 0);
+    const cam = (destino, en, d) => tl.to(c.cam, { ...destino, duration: d, ease: "power2.inOut", onUpdate: c.aplicar }, en);
+    tl.fromTo(c.marco, { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: 0.9, ease: "power3.out" }, 0.2)
+      .fromTo(c.items, { autoAlpha: 0, x: -16 }, { autoAlpha: 1, x: 0, duration: 0.4, stagger: 0.05, ease: "power3.out" }, 0.5)
+      .set(c.patrones.flatMap((p) => p.luces), { autoAlpha: 0 }, 0)
+      .set(c.piezas, { opacity: 1 }, 0)
+      .set(c.fichas, { autoAlpha: 0 }, 0)
+      .set(c.cam, { ...c.todo, onUpdate: c.aplicar, onComplete: c.aplicar }, 0);
 
-    c.zonas.forEach((z, i) => {
-      const p = "p" + (i + 1);
-      tl.addLabel(p, i === 0 ? 1.8 : `p${i}+=1.6`);
-      const fuera = c.cajas.filter((k) => !z.cajas.includes(k));
-      tl.to(c.items, { "--marco": 0, opacity: 0.45, duration: 0.3 }, p)
-        .to(c.items[i], { "--marco": 1, opacity: 1, duration: 0.3 }, p)
-        .to(c.zonas.flatMap((o) => o.luces), { autoAlpha: 0, duration: 0.3 }, p)
-        .to(fuera, { opacity: 0.16, duration: 0.5 }, p)
-        .to(z.cajas.filter((k) => c.cajas.includes(k)), { opacity: 1, duration: 0.5 }, p)
-        .to(z.luces, { autoAlpha: 1, duration: 0.4, stagger: 0.05 }, `${p}+=0.9`);
-      cam(z.cuadro, p);
+    // Un paso por patrón: se enciende lo suyo, se apaga el resto y la cámara pasa por sus tomas
+    c.patrones.forEach((p, i) => {
+      const etiqueta = "p" + (i + 1);
+      tl.addLabel(etiqueta, i === 0 ? 1.6 : `p${i}+=${1.2 + c.patrones[i - 1].tomas.length * 1.4}`);
+      const en = tl.labels[etiqueta];
+      tl.to(c.fichas, { autoAlpha: 0, x: -12, duration: 0.2 }, en)
+        .to(c.items, { "--marco": 0, opacity: 0.5, duration: 0.3 }, en)
+        .to(c.items[i], { "--marco": 1, opacity: 1, duration: 0.3 }, en)
+        .to(c.patrones.flatMap((o) => o.luces), { autoAlpha: 0, duration: 0.25 }, en)
+        .to(c.piezas, { opacity: (j, e) => (p.encendidas.has(e) ? 1 : APAGADO), duration: 0.5 }, en)
+        .to(c.fichas[i], { autoAlpha: 1, x: 0, duration: 0.4, ease: "power2.out" }, en + 0.25)
+        .to(p.luces, { autoAlpha: 1, duration: 0.4, stagger: 0.04 }, en + 0.9);
+      p.tomas.forEach((toma, j) => cam(toma, en + j * 1.6, 1.2));
     });
 
-    // Final: el plano entero, con todo encendido
-    tl.addLabel("p6", `p${c.zonas.length}+=1.8`);
-    tl.to(c.items, { "--marco": 0, opacity: 1, duration: 0.3 }, "p6")
-      .to(c.zonas.flatMap((o) => o.luces), { autoAlpha: 0, duration: 0.3 }, "p6")
-      .to(c.cajas, { opacity: 1, duration: 0.5 }, "p6");
-    cam(c.todo, "p6");
+    // Final: el plano entero, todo encendido
+    const n = c.patrones.length;
+    tl.addLabel("p" + (n + 1), `p${n}+=${1.2 + c.patrones[n - 1].tomas.length * 1.4}`);
+    const fin = tl.labels["p" + (n + 1)];
+    tl.to(c.items, { "--marco": 0, opacity: 1, duration: 0.3 }, fin)
+      .to(c.fichas, { autoAlpha: 0, duration: 0.3 }, fin)
+      .to(c.patrones.flatMap((o) => o.luces), { autoAlpha: 0, duration: 0.3 }, fin)
+      .to(c.piezas, { opacity: 1, duration: 0.5 }, fin);
+    cam(c.todo, fin, 1.4);
   },
 };

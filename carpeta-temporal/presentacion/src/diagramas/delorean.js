@@ -1,30 +1,36 @@
 import { gsap } from "gsap";
 import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
-import { el, s, pixel, esperarEn, juntas, respirar } from "../util.js";
-import { crearVideo, fragmento } from "../videoteca.js";
-import { VIDEO_MOMENTOS } from "../datos-corta.js";
+import { el, s, pixel, respirar } from "../util.js";
+import { crearTablero, dibujar } from "../tablero-sim.js";
+import { NIVELES, DEMOS } from "../datos-corta.js";
 
 /*
- * DeLorean y Memento. Arriba a la derecha, el momento real del video. En el medio, los tres roles:
+ * DeLorean y Memento. Arriba a la derecha, el nivel 2 real jugado con las reglas del motor: la frágil llega a su destino,
+ * un empuje de más la rompe y el DeLorean vuelve al punto guardado. En el medio, los tres roles:
  * JuegoSokoban crea el recuerdo, RecuerdoNivel lo guarda cerrado, MaquinaDelTiempo lo cuida sin mirarlo.
  * Abajo, la línea de tiempo del nivel: se guardan puntos, se junta plutonio, la frágil se rompe y el
  * DeLorean vuelve al último punto. Pasos: 1 guardar, 2 viajar, 3 la diferencia con deshacer.
  */
 const Y = 905;                       // altura de la línea de tiempo
 const X0 = 170, X1 = 1750;           // extremos
-const PUNTO2 = 760, PLUTONIO = 450, ROTURA = 1210;
+const PUNTO2 = 760, ROTURA = 1210;
+const PASO = 0.2;                    // segundos por movimiento en el tablero
 
 export default {
-  montar(lienzo, { slide }) {
+  montar(lienzo) {
     gsap.registerPlugin(DrawSVGPlugin);
     const c = {};
-    // El momento real del video
-    const marco = el("figure", "clip pos dim", lienzo, { vars: { x: 1240, y: 84, w: 560, h: 350 } });
-    const v = crearVideo(marco, "clip__video", "Fragmento del video: la caja frágil se rompe y el DeLorean vuelve al último punto en el tiempo", { mudo: true, desde: VIDEO_MOMENTOS.delorean.desde });
-    esperarEn(slide, v.listo);
-    c.video = v.video;
-    c.marco = marco;
-    c.pie = el("figcaption", "clip__pie pos dim", lienzo, { vars: { x: 1240, y: 448, w: 560 }, texto: VIDEO_MOMENTOS.delorean.texto });
+    // El nivel 2 real, jugado con las reglas del motor
+    const nivel = NIVELES.find((n) => n.numero === DEMOS.delorean.nivel);
+    c.marco = el("div", "mini pos dim", lienzo, { vars: { x: 1300, y: 76, w: 500, h: 372 } });
+    c.tablero = crearTablero(c.marco, nivel, DEMOS.delorean.teclas, { x: 19, y: 18, b: 42 });
+    c.tablero.raiz.setAttribute("aria-label", "Nivel 2: la caja frágil llega a su destino, un empuje de más la rompe y el DeLorean vuelve al punto guardado");
+    const cs = c.tablero.cuadros;
+    c.kPunto = cs.findIndex((q, i) => i > 0 && q.enDestino > cs[i - 1].enDestino);
+    c.kPlutonio = cs.findIndex((q) => q.plutonio);
+    c.kRota = cs.length - 1;
+    c.destello = el("div", "mini__destello", c.marco);
+    c.pie = el("p", "mini__pie pos dim", lienzo, { vars: { x: 1300, y: 462, w: 500 }, texto: `Nivel ${nivel.numero} real, con las reglas del motor` });
 
     // Los tres roles del Memento
     const rol = (x, w, rotulo, nombre, lineas, clase) => {
@@ -57,7 +63,7 @@ export default {
     c.m1 = marca(X0, "inicio del nivel", "mem__marca--punto");
     c.m2 = marca(PUNTO2, "una caja llegó a su destino", "mem__marca--punto");
     c.mRota = marca(ROTURA, "se rompe la frágil", "mem__marca--rota");
-    c.plu = el("div", "mem__plutonio pos", lienzo, { vars: { x: PLUTONIO, y: Y - 60 } });
+    c.plu = el("div", "mem__plutonio pos", lienzo, { vars: { x: X0 + ((PUNTO2 - X0) * c.kPlutonio) / c.kPunto, y: Y - 60 } });
     pixel("items/plutonio", c.plu, "Plutonio");
     c.jugador = el("div", "mem__jugador pos", lienzo, { vars: { x: X0, y: Y - 64 } });
     pixel("characters/player_right", c.jugador, "Jugador");
@@ -88,7 +94,11 @@ export default {
         .to(c.capsula, { autoAlpha: 0, scale: 0.6, duration: 0.25 }, en + 1);
     };
     const O = { x: 335, y: 610 }, R = { x: 900, y: 610 }, K = { x: 1525, y: 610 };
-    tl.fromTo(c.marco, { autoAlpha: 0, scale: 0.92 }, { autoAlpha: 1, scale: 1, duration: 0.8, ease: "power3.out" }, 0.2)
+    const tab = c.tablero, ver = () => dibujar(tab, tab.estado.k);
+    const D1 = c.kPunto * PASO;    // la partida hasta que la frágil llega a su destino
+    tl.set(tab.estado, { k: 0, onUpdate: ver, onComplete: ver }, 0)
+      .set(c.destello, { autoAlpha: 0 }, 0)
+      .fromTo(c.marco, { autoAlpha: 0, scale: 0.92 }, { autoAlpha: 1, scale: 1, duration: 0.8, ease: "power3.out" }, 0.2)
       .fromTo(c.pie, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5 }, 0.7)
       .fromTo([c.orig, c.rec, c.cuid], { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.14, ease: "power3.out" }, 0.5)
       .fromTo(c.via, { drawSVG: "0%" }, { drawSVG: "100%", duration: 1, ease: "power2.inOut" }, 0.8)
@@ -103,20 +113,23 @@ export default {
     // Paso 1: se juega; se junta plutonio y, cuando una caja llega a destino, se guarda otro punto
     tl.addLabel("p1", 2.2);
     const p1 = tl.labels.p1;
-    tl.to(c.hecho, { drawSVG: `0% ${((PUNTO2 - X0) / (ROTURA - X0)) * 100}%`, duration: 1.6, ease: "none" }, p1)
-      .to(c.jugador, { "--x": PUNTO2 + "px", duration: 1.6, ease: "none" }, p1)
-      .to(c.plu, { y: -40, autoAlpha: 0, duration: 0.35, ease: "power2.in" }, p1 + 0.55)
-      .fromTo(c.cargaN, { textContent: "0" }, { textContent: "1", duration: 0.01, immediateRender: false }, p1 + 0.7)
-      .fromTo(c.carga, { scale: 1 }, { scale: 1.15, duration: 0.15, yoyo: true, repeat: 1, immediateRender: false }, p1 + 0.7)
-      .fromTo(c.m2, { autoAlpha: 0, scale: 0.4 }, { autoAlpha: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, p1 + 1.6);
-    capsula(O, R, p1 + 1.8, "crearRecuerdo()");
-    capsula(R, K, p1 + 2.8, "guardar(recuerdo)");
-    tl.fromTo(c.fichas[1], { autoAlpha: 0, y: -20 }, { autoAlpha: 1, y: 0, duration: 0.35, immediateRender: false }, p1 + 3.7);
+    const enPlu = p1 + c.kPlutonio * PASO;
+    tl.to(tab.estado, { k: c.kPunto, duration: D1, ease: "none", onUpdate: ver }, p1)
+      .to(c.hecho, { drawSVG: `0% ${((PUNTO2 - X0) / (ROTURA - X0)) * 100}%`, duration: D1, ease: "none" }, p1)
+      .to(c.jugador, { "--x": PUNTO2 + "px", duration: D1, ease: "none" }, p1)
+      .to(c.plu, { y: -40, autoAlpha: 0, duration: 0.35, ease: "power2.in" }, enPlu - 0.1)
+      .fromTo(c.cargaN, { textContent: "0" }, { textContent: "1", duration: 0.01, immediateRender: false }, enPlu)
+      .fromTo(c.carga, { scale: 1 }, { scale: 1.15, duration: 0.15, yoyo: true, repeat: 1, immediateRender: false }, enPlu)
+      .fromTo(c.m2, { autoAlpha: 0, scale: 0.4 }, { autoAlpha: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, p1 + D1);
+    capsula(O, R, p1 + D1 + 0.2, "crearRecuerdo()");
+    capsula(R, K, p1 + D1 + 1.2, "guardar(recuerdo)");
+    tl.fromTo(c.fichas[1], { autoAlpha: 0, y: -20 }, { autoAlpha: 1, y: 0, duration: 0.35, immediateRender: false }, p1 + D1 + 2.1);
 
     // Paso 2: un error rompe la frágil; el DeLorean vuelve al último punto
-    tl.addLabel("p2", "p1+=4.3");
+    tl.addLabel("p2", p1 + D1 + 2.7);
     const p2 = tl.labels.p2;
-    tl.to(c.hecho, { drawSVG: "0% 100%", duration: 1, ease: "none" }, p2)
+    tl.to(tab.estado, { k: c.kRota, duration: 0.5, ease: "none", onUpdate: ver }, p2 + 0.5)
+      .to(c.hecho, { drawSVG: "0% 100%", duration: 1, ease: "none" }, p2)
       .to(c.jugador, { "--x": ROTURA + "px", duration: 1, ease: "none" }, p2)
       .fromTo(c.mRota, { autoAlpha: 0, scale: 1.6 }, { autoAlpha: 1, scale: 1, duration: 0.3, ease: "power3.out" }, p2 + 1)
       .set(c.delorean, { autoAlpha: 1, x: ROTURA, y: Y - 40, xPercent: -50, yPercent: -50 }, p2 + 1.6)
@@ -126,6 +139,8 @@ export default {
       .set(c.jugador, { "--x": PUNTO2 + "px" }, p2 + 2.6)
       .to(c.jugador, { autoAlpha: 1, duration: 0.3 }, p2 + 2.6)
       .to(c.delorean, { autoAlpha: 0, scale: 1.6, duration: 0.4 }, p2 + 2.6)
+      .fromTo(c.destello, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.25, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, p2 + 2.4)
+      .to(tab.estado, { k: c.kPunto, duration: 0.01, onUpdate: ver }, p2 + 2.6)
       .fromTo(c.cargaN, { textContent: "1" }, { textContent: "0", duration: 0.01, immediateRender: false }, p2 + 2.6)
       .to(c.hecho, { drawSVG: `0% ${((PUNTO2 - X0) / (ROTURA - X0)) * 100}%`, duration: 0.5 }, p2 + 2.6)
       .to(c.futuro, { autoAlpha: 1, duration: 0.4 }, p2 + 2.6)
@@ -140,12 +155,6 @@ export default {
   },
 
   vida(c) {
-    return juntas(fragmento(c.video, { desde: VIDEO_MOMENTOS.delorean.desde, hasta: VIDEO_MOMENTOS.delorean.hasta }), respirar([c.rec]));
-  },
-
-  desmontar(c) {
-    c.video.pause();
-    c.video.removeAttribute("src");
-    c.video.load();
+    return respirar([c.rec]);
   },
 };

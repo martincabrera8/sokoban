@@ -1,20 +1,23 @@
 import { gsap } from "gsap";
-import { el, pixel, esperarEn, juntas, respirar } from "../util.js";
-import { crearVideo, fragmento } from "../videoteca.js";
-import { VIDEO_MOMENTOS } from "../datos-corta.js";
+import { el, pixel, respirar } from "../util.js";
+import { crearTablero, dibujar } from "../tablero-sim.js";
+import { NIVELES, DEMOS } from "../datos-corta.js";
 
 /*
- * Repetición y Command. Cada tecla se vuelve un objeto: el cliente (PantallaJuego) lo crea, el invocador
+ * Repetición y Command. Arriba a la derecha, el nivel 1 real: los comandos lo mueven al grabarse y otra vez al repetirse.
+ * Cada tecla se vuelve un objeto: el cliente (PantallaJuego) lo crea, el invocador
  * (GrabadoraDePartida) lo ejecuta contra el receptor (Juego) y lo anota en la cinta. Paso 1: se juega y se graba.
  * Paso 2: Repeticion vuelve a ejecutar la cinta. Paso 3: lo que no se graba y la diferencia con Memento.
  */
-const COMANDOS = [
-  { tecla: "ui/arrow_right", texto: "Mover →", llamada: "mover(DERECHA)" },
-  { tecla: "ui/arrow_right", texto: "Mover →", llamada: "mover(DERECHA)" },
-  { tecla: "ui/arrow_up", texto: "Mover ↑", llamada: "mover(ARRIBA)" },
-  { tecla: "ui/boton_undo", texto: "Deshacer", llamada: "deshacer()" },
-  { tecla: "ui/boton_delorean", texto: "Viajar", llamada: "viajarEnElTiempo()" },
-];
+/** Cada flecha de la partida de muestra, con su imagen de la interfaz y la llamada que recibe el Juego. */
+const FLECHA = {
+  "↑": { tecla: "ui/arrow_up", llamada: "mover(ARRIBA)" },
+  "↓": { tecla: "ui/arrow_down", llamada: "mover(ABAJO)" },
+  "←": { tecla: "ui/arrow_left", llamada: "mover(IZQUIERDA)" },
+  "→": { tecla: "ui/arrow_right", llamada: "mover(DERECHA)" },
+};
+const COMANDOS = [...DEMOS.repeticion.teclas].map((k) => ({ ...FLECHA[k], texto: "Mover " + k }));
+const PAUSA = 0.45;   // la repetición, más lenta que los 160 ms reales para poder seguirla
 
 function tarjeta(lienzo, x, w, rol, nombre, codigo, clase = "") {
   const t = el("div", "cmd__rol pos dim " + clase, lienzo, { vars: { x, y: 528, w } });
@@ -25,14 +28,13 @@ function tarjeta(lienzo, x, w, rol, nombre, codigo, clase = "") {
 }
 
 export default {
-  montar(lienzo, { slide }) {
+  montar(lienzo) {
     const c = {};
-    const marco = el("figure", "clip pos dim", lienzo, { vars: { x: 1240, y: 84, w: 560, h: 350 } });
-    const v = crearVideo(marco, "clip__video", "Fragmento del video: Ver repetición vuelve a jugar el nivel con los comandos grabados", { mudo: true, desde: VIDEO_MOMENTOS.repeticion.desde });
-    esperarEn(slide, v.listo);
-    c.video = v.video;
-    c.marco = marco;
-    c.pie = el("figcaption", "clip__pie pos dim", lienzo, { vars: { x: 1240, y: 448, w: 560 }, texto: VIDEO_MOMENTOS.repeticion.texto });
+    const nivel = NIVELES.find((n) => n.numero === DEMOS.repeticion.nivel);
+    c.marco = el("div", "mini pos dim", lienzo, { vars: { x: 1300, y: 76, w: 500, h: 372 } });
+    c.tablero = crearTablero(c.marco, nivel, DEMOS.repeticion.teclas, { x: 34, y: 18, b: 48 });
+    c.tablero.raiz.setAttribute("aria-label", "Nivel 1: seis comandos mueven al jugador; la repetición los vuelve a ejecutar y termina igual");
+    c.pie = el("p", "mini__pie pos dim", lienzo, { vars: { x: 1300, y: 462, w: 500 }, texto: `Nivel ${nivel.numero} real: los mismos comandos, la misma partida` });
 
     c.tecla = el("div", "cmd__tecla pos", lienzo, { vars: { x: 120, y: 556 } });
     c.teclas = COMANDOS.map((k) => pixel(k.tecla, c.tecla, ""));
@@ -63,7 +65,9 @@ export default {
   },
 
   construir(tl, c) {
-    tl.fromTo(c.marco, { autoAlpha: 0, scale: 0.92 }, { autoAlpha: 1, scale: 1, duration: 0.8, ease: "power3.out" }, 0.2)
+    const tab = c.tablero, ver = () => dibujar(tab, tab.estado.k);
+    tl.set(tab.estado, { k: 0, onUpdate: ver, onComplete: ver }, 0)
+      .fromTo(c.marco, { autoAlpha: 0, scale: 0.92 }, { autoAlpha: 1, scale: 1, duration: 0.8, ease: "power3.out" }, 0.2)
       .fromTo(c.pie, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5 }, 0.7)
       .fromTo([c.tecla, c.cliente, c.invocador, c.receptor], { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.12, ease: "power3.out" }, 0.5)
       .fromTo(c.cinta, { autoAlpha: 0, scaleX: 0.9 }, { autoAlpha: 1, scaleX: 1, duration: 0.6, ease: "power3.out" }, 1)
@@ -72,6 +76,7 @@ export default {
       .set(c.teclas, { autoAlpha: 0 }, 0)
       .set(c.teclas[0], { autoAlpha: 1 }, 0)
       .set(c.llamada, { textContent: "mover(d) · deshacer() · …" }, 0);
+    const ejecuta = (i, en, d = 0.25) => tl.to(tab.estado, { k: i + 1, duration: d, ease: "none", onUpdate: ver }, en);
 
     // Paso 1: cada tecla se vuelve un comando que se ejecuta y se anota
     tl.addLabel("p1", 1.8);
@@ -86,40 +91,39 @@ export default {
         .set(c.volando, { autoAlpha: 1, x: C.x, y: C.y, xPercent: -50, yPercent: -50, textContent: k.texto, scale: 0.7 }, en + 0.15)
         .to(c.volando, { scale: 1, duration: 0.2 }, en + 0.15)
         .to(c.volando, { x: I.x, y: I.y, duration: 0.4 * d, ease: "power2.inOut" }, en + 0.3)
-        .set(c.llamada, { textContent: k.llamada }, en + 0.3 + 0.4 * d)
-        .fromTo(c.receptor, { "--marco": 0 }, { "--marco": 1, duration: 0.15, yoyo: true, repeat: 1, immediateRender: false }, en + 0.3 + 0.4 * d)
+        .set(c.llamada, { textContent: k.llamada }, en + 0.3 + 0.4 * d);
+      ejecuta(i, en + 0.3 + 0.4 * d);
+      tl.fromTo(c.receptor, { "--marco": 0 }, { "--marco": 1, duration: 0.15, yoyo: true, repeat: 1, immediateRender: false }, en + 0.3 + 0.4 * d)
         .to(c.volando, { x: () => 270 + hueco.offsetLeft + hueco.offsetWidth / 2, y: 820, duration: 0.4 * d, ease: "power2.in" }, en + 0.4 + 0.4 * d)
         .set(c.volando, { autoAlpha: 0 }, en + 0.4 + 0.8 * d)
         .fromTo(hueco, { autoAlpha: 0, scale: 1.3 }, { autoAlpha: 1, scale: 1, duration: 0.25, immediateRender: false }, en + 0.4 + 0.8 * d);
     });
 
     // Paso 2: la repetición vuelve a ejecutar la cinta
-    tl.addLabel("p2", "p1+=7.6");
+    tl.addLabel("p2", "p1+=" + (4 + (COMANDOS.length - 2) * 1.1 + 1.2));
     const p2 = tl.labels.p2;
     tl.fromTo(c.repe, { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.4, immediateRender: false }, p2)
+      .to(tab.estado, { k: 0, duration: 0.3, ease: "power2.inOut", onUpdate: ver }, p2 + 0.1)
       .set(c.cabezal, { autoAlpha: 1, x: 0 }, p2 + 0.3);
     c.huecos.forEach((h, i) => {
-      const en = p2 + 0.4 + i * 0.5;
+      const en = p2 + 0.6 + i * PAUSA;
+      ejecuta(i, en + 0.2, 0.22);
       tl.to(c.cabezal, { x: () => h.offsetLeft - 12, duration: 0.2, ease: "power1.inOut" }, en)
         .fromTo(h, { "--marco": 0 }, { "--marco": 1, duration: 0.12, yoyo: true, repeat: 1, immediateRender: false }, en + 0.2)
         .set(c.llamada, { textContent: COMANDOS[i].llamada }, en + 0.2)
         .fromTo(c.receptor, { "--marco": 0 }, { "--marco": 1, duration: 0.12, yoyo: true, repeat: 1, immediateRender: false }, en + 0.2);
     });
-    tl.fromTo(c.igual, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.4, immediateRender: false }, p2 + 3.1);
+    const fin = p2 + 0.8 + COMANDOS.length * PAUSA;
+    tl.fromTo(c.igual, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.4, immediateRender: false }, fin)
+      .fromTo(c.marco, { "--marco": 0 }, { "--marco": 1, duration: 0.3, immediateRender: false }, fin);
 
     // Paso 3: lo que no se graba y la diferencia con Memento
-    tl.addLabel("p3", "p2+=3.8");
+    tl.addLabel("p3", fin + 0.8);
     tl.fromTo(c.cita, { autoAlpha: 0, x: 20 }, { autoAlpha: 1, x: 0, duration: 0.5, ease: "power3.out", immediateRender: false }, "p3")
       .to({}, { duration: 0.3 });
   },
 
   vida(c) {
-    return juntas(fragmento(c.video, { desde: VIDEO_MOMENTOS.repeticion.desde, hasta: VIDEO_MOMENTOS.repeticion.hasta }), respirar([c.invocador]));
-  },
-
-  desmontar(c) {
-    c.video.pause();
-    c.video.removeAttribute("src");
-    c.video.load();
+    return respirar([c.invocador]);
   },
 };

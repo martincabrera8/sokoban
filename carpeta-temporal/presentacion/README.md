@@ -8,23 +8,31 @@ presentacion/dist/presentacion-sokoban.html
 
 Abrilo con Chrome o Edge (doble clic) y apretá **F11** para pantalla completa. Se adapta a 1280×720, 1920×1080 y 2560×1440.
 
-## Tarjeta de teclas (no se ven en pantalla)
+## Tarjeta de teclas (no se ven en pantalla; `?` muestra esta lista)
 
 | Tecla | Qué hace |
 |---|---|
-| → · Espacio · Enter · AvPág | Siguiente paso o siguiente diapositiva |
-| ← · RePág | Diapositiva anterior (ya armada) |
+| → · AvPág · Espacio · Enter | Paso siguiente (al terminar los pasos, diapositiva siguiente) |
+| ← · RePág · Retroceso | Paso anterior; en el primer paso, la diapositiva anterior ya armada |
 | Inicio / Fin | Primera / última diapositiva |
-| R | Repite la animación de la diapositiva |
+| 1 a 9 (o dos cifras seguidas, como 1 y 2) | Ir a esa diapositiva |
+| R | Repite la diapositiva desde el principio |
 | Z | Pausa o reanuda todas las animaciones |
+| F | Pantalla completa |
 | H | Oculta todo (pantalla limpia) |
 | N | Abre las notas del expositor con reloj, en otra ventana |
-| Esc | Cierra las notas y vuelve a mostrar todo |
+| ? | Muestra u oculta la ayuda de teclas |
+| Esc | Cierra la ayuda y las notas, y vuelve a mostrar todo |
 
-Un control remoto de presentaciones (clicker) funciona igual, porque manda AvPág y RePág.
+Un control remoto de presentaciones (clicker) manda AvPág y RePág: avanza y retrocede paso a paso, igual que las flechas.
 La intro se reproduce sola al abrir; el resto avanza solo cuando apretás una tecla.
 
-## Diapositivas
+## Versión corta (presentación final)
+
+`python3 build.py --corta` arma `dist/presentacion-corta.html` (y `presentacion-corta-pagina.html`) desde `index-corta.src.html` y `src/main-corta.js`. Nueve diapositivas, de 6 a 8 minutos; el video de gameplay se muestra aparte:
+portada, arquitectura, Strategy y Mediator, DeLorean (Memento), repetición (Command), sonido (Decorator y State, con Observer y Singleton), el diagrama de clases recorrido patrón por patrón, calidad (niveles verificados y 23 pruebas) y cierre.
+
+## Diapositivas (versión larga)
 
 1. Intro 3D: el personaje empuja la N y se enciende "SOKOBAN".
 2. Portada: el almacén en 3D con las tres épocas.
