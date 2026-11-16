@@ -101,7 +101,7 @@ src/test/java/         Pruebas con JUnit y VerificadorDeNiveles
 - `docs/Sokoban.mdj`: diagrama de clases completo y un diagrama por patrón (abrir con StarUML).
 - `docs/video/gameplay-sokoban.mp4`: video de gameplay con los tres niveles, el DeLorean y la repetición.
 
-## Equipo
+## Equipo: Los Abstractos
 
 | Parte | Autor |
 |---|---|
