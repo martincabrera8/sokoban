@@ -30,5 +30,9 @@ public interface Juego {
 
     EstadoJuego getEstado();
 
+    /** Observer: suscribir. */
     void agregarObservador(ObservadorJuego observador);
+
+    /** Observer: desuscribir. */
+    void quitarObservador(ObservadorJuego observador);
 }

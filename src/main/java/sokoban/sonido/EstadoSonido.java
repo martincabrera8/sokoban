@@ -12,7 +12,7 @@ import javax.sound.sampled.Clip;
  *
  * Contexto: {@link Sonidos}.
  *
- * @author Marcelo Coghlan
+ * @author Mora Coghlan
  */
 interface EstadoSonido {
 

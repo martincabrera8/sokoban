@@ -16,7 +16,7 @@ import javax.swing.SwingUtilities;
  * ninguna pantalla ni ningún botón: cualquier botón que exista o se agregue después
  * suena solo.
  *
- * @author Marcelo Coghlan
+ * @author Mora Coghlan
  */
 public final class SonidosDeInterfaz {
 

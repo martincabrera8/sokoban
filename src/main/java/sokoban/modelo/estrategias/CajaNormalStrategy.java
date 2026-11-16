@@ -1,11 +1,12 @@
 package sokoban.modelo.estrategias;
 
-import sokoban.modelo.EstadoNivel;
 import sokoban.modelo.entidades.Caja;
+import sokoban.modelo.movimiento.MediadorMovimiento;
 
+/** Caja normal: un empuje no tiene ningún efecto extra. */
 public class CajaNormalStrategy implements ComportamientoCaja {
     @Override
-    public void despuesDeEmpujar(Caja caja, EstadoNivel estado) {
+    public void despuesDeEmpujar(Caja caja, MediadorMovimiento mediador) {
     }
 
     @Override

@@ -26,7 +26,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  * Si la computadora no tiene salida de audio, el juego sigue funcionando en silencio:
  * nunca se corta por un problema de sonido.
  *
- * @author Marcelo Coghlan
+ * @author Mora Coghlan
  */
 public final class Sonidos {
 

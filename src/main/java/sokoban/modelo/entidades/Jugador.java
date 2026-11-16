@@ -4,6 +4,7 @@ import sokoban.modelo.Direccion;
 import sokoban.modelo.Posicion;
 import sokoban.modelo.movimiento.MediadorMovimiento;
 
+/** El personaje. Es COLEGA del Mediator: no conoce cajas, paredes ni hielo; pide moverse y el mediador resuelve. */
 public class Jugador {
     private Posicion posicion;
     private MediadorMovimiento mediador;

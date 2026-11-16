@@ -5,7 +5,7 @@ Los sonidos se sintetizan por código (ondas + ruido), así que son 100% propios
 pueden liberar como dominio público, como pide la consigna.
 
 Uso (desde la raíz del repositorio):  python docs/generar_sonidos.py
-Autor: Marcelo Coghlan
+Autor: Mora Coghlan
 """
 import math
 import random

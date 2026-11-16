@@ -4,6 +4,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+import sokoban.modelo.movimiento.MediadorMovimiento;
 import sokoban.modelo.movimiento.MotorMovimiento;
 import sokoban.modelo.tiempo.MaquinaDelTiempo;
 
@@ -14,25 +15,45 @@ import sokoban.modelo.tiempo.MaquinaDelTiempo;
  * Los guardan el historial del deshacer y la MaquinaDelTiempo del DeLorean.
  */
 public class JuegoSokoban implements Juego {
-    private static final int NIVELES = 3;
     private static final int MAX_HISTORIAL = 15;
     private static final int PASOS_POR_UNDO = 5;
     private static final int MAX_UNDOS_CONSECUTIVOS = 3;
 
-    private final CargadorNivel cargador = new CargadorNivel();
+    private final CargadorNivel cargador;
+    private final int cantidadNiveles;
     private final List<ObservadorJuego> observadores = new ArrayList<>();
     private final Deque<RecuerdoNivel> historial = new ArrayDeque<>();
     private final MaquinaDelTiempo maquinaDelTiempo = new MaquinaDelTiempo();
     private EstadoNivel estado;
-    private MotorMovimiento motor;
-    private int nivel, movimientos, empujes, undosUsados, undosConsecutivos, plutonio, viajes;
+    private MediadorMovimiento motor;
+    private int nivel;
+    private int movimientos;
+    private int empujes;
+    private int undosUsados;
+    private int undosConsecutivos;
+    private int plutonio;
+    private int viajes;
+
+    /** Juega los niveles oficiales de la carpeta "niveles". */
+    public JuegoSokoban() {
+        this(new CargadorNivel());
+    }
+
+    /** Juega los niveles de otra carpeta (por ejemplo, mapas de prueba). */
+    public JuegoSokoban(CargadorNivel cargador) {
+        this.cargador = cargador;
+        this.cantidadNiveles = cargador.contarNiveles(); // agregar un nivelN.txt agrega un nivel
+        if (cantidadNiveles == 0) {
+            throw new IllegalStateException("No hay niveles en la carpeta " + cargador.getCarpeta());
+        }
+    }
 
     @Override
-    public int getCantidadNiveles() { return NIVELES; }
+    public int getCantidadNiveles() { return cantidadNiveles; }
 
     @Override
     public void iniciarNivel(int numero) {
-        if (numero < 1 || numero > NIVELES) throw new IllegalArgumentException("Nivel inexistente");
+        if (numero < 1 || numero > cantidadNiveles) throw new IllegalArgumentException("Nivel inexistente");
         nivel = numero;
         estado = cargador.cargar(numero);
         conectarMotor();
@@ -44,8 +65,7 @@ public class JuegoSokoban implements Juego {
     }
 
     private void conectarMotor() {
-        motor = new MotorMovimiento(estado);
-        estado.getJugador().conectar(motor);
+        motor = new MotorMovimiento(estado); // se conecta solo con el jugador y las cajas
     }
 
     @Override
@@ -112,16 +132,29 @@ public class JuegoSokoban implements Juego {
 
     @Override
     public EstadoJuego getEstado() {
-        if (estado == null) return new EstadoJuego(0, 0, 0, 0, 0, 0, 0, false, List.of());
-        int puntaje = Math.max(0, 1000 - 10 * movimientos - 5 * empujes - 50 * undosUsados - 100 * viajes);
+        if (estado == null) return new EstadoJuego(0, 0, 0, 0, 0, 0, 0, 0, false, false, List.of());
         return new EstadoJuego(nivel, movimientos, empujes, undosUsados, plutonio, viajes,
-                puntaje, estado.estaCompleto(), estado.tableroParaVista());
+                maquinaDelTiempo.cantidad(),
+                calcularPuntaje(), estado.estaCompleto(), estado.sinSolucion(), estado.tableroParaVista());
+    }
+
+    /**
+     * Criterio del equipo: se arranca con 1000 y se descuenta por cada acción, así gana
+     * quien resuelve el nivel de la forma más eficiente.
+     */
+    private int calcularPuntaje() {
+        return Math.max(0, 1000 - 5 * movimientos - 2 * empujes - 50 * undosUsados - 100 * viajes);
     }
 
     @Override
     public void agregarObservador(ObservadorJuego observador) {
         observadores.add(observador);
         if (estado != null) observador.actualizar(getEstado());
+    }
+
+    @Override
+    public void quitarObservador(ObservadorJuego observador) {
+        observadores.remove(observador);
     }
 
     /** Memento: guarda el momento actual sin exponer cómo está hecho. */

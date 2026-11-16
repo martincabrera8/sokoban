@@ -5,7 +5,7 @@ import javax.sound.sampled.Clip;
 /**
  * Patrón State — estado concreto: el sonido está activado (estado inicial).
  *
- * @author Marcelo Coghlan
+ * @author Mora Coghlan
  */
 class SonidoActivado implements EstadoSonido {
 

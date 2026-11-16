@@ -1,4 +1,4 @@
-# Sonido — parte de Marcelo Coghlan
+# Sonido — parte de Mora Coghlan
 
 Esta parte agrega los **efectos de sonido** que pide la consigna ("las acciones del juego deben estar acompañadas de efectos de sonido apropiados"). No cambia cómo se juega ni cómo se ve el juego.
 

@@ -9,36 +9,35 @@ import javax.swing.Timer;
 import sokoban.modelo.Direccion;
 import sokoban.modelo.EstadoJuego;
 import sokoban.modelo.Juego;
-import sokoban.modelo.ObservadorJuego;
+import sokoban.modelo.JuegoDecorado;
 
 /**
- * Patrón Decorator.
+ * Patrón DECORATOR, decorador concreto.
  *
- * Le agrega sonido a cualquier Juego SIN modificarlo: lo "envuelve".
- * Implementa la misma interfaz Juego, le pasa cada pedido al juego real y,
- * según lo que cambió, hace sonar el efecto que corresponde.
+ * Le agrega sonido a cualquier Juego SIN modificarlo: lo "envuelve". Hereda de
+ * JuegoDecorado (que le pasa cada pedido al juego real) y sobrescribe solo las
+ * acciones que suenan: según lo que cambió, hace sonar el efecto que corresponde.
  *
  * La vista y el dominio no se enteran de que existe: en Main se escribe
  *     new JuegoConSonido(juegoReal)
  * en lugar de juegoReal, y nada más cambia.
  *
- * @author Marcelo Coghlan
+ * Por qué Decorator y no Observer: un observador solo se entera de los cambios que el
+ * juego notifica; no vería un choque contra la pared ni un deshacer que no hizo nada.
+ * El decorador ve cada pedido y su resultado.
+ *
+ * @author Mora Coghlan
  */
-public class JuegoConSonido implements Juego {
+public class JuegoConSonido extends JuegoDecorado {
 
     /** Símbolos del tablero (los mismos que dibuja PanelTablero). */
-    private static final String CAJAS = "$*FfGgLK";          // todas las cajas
-    private static final String DESTINOS = ".+*GgK";         // destinos libres u ocupados
     private static final String CAJAS_EN_DESTINO = "*GgK";
     private static final String CAJAS_FRAGILES = "FfGg";     // intacta / dañada, fuera o sobre destino
-    private static final String ABIERTOS = "Oc";             // muro abierto, cerrojo abierto
-    private static final char MURO_CERRADO = 'X';
+    private static final char MURO_CERRADO = 'X';            // nada puede taparla: si desaparece, se abrió
     private static final int DEMORA_DERROTA_MS = 600;
 
-    private final Juego juego;
-
     public JuegoConSonido(Juego juego) {
-        this.juego = juego;
+        super(juego);
     }
 
     // ---------- Acciones con sonido ----------
@@ -60,7 +59,7 @@ public class JuegoConSonido implements Juego {
         }
         Sonido sonido = queSonidoCorresponde(antes, despues);
         sonar(sonido);
-        if (sonido == Sonido.CAJA_ROTA && quedoSinSolucion(despues)) {
+        if (sonido == Sonido.CAJA_ROTA && despues.sinSolucion()) {
             sonarMasTarde(Sonido.DERROTA);
         }
     }
@@ -85,23 +84,6 @@ public class JuegoConSonido implements Juego {
         sonar(Sonido.REINICIAR);
     }
 
-    // ---------- Sin sonido: se delegan tal cual ----------
-
-    @Override
-    public int getCantidadNiveles() {
-        return juego.getCantidadNiveles();
-    }
-
-    @Override
-    public EstadoJuego getEstado() {
-        return juego.getEstado();
-    }
-
-    @Override
-    public void agregarObservador(ObservadorJuego observador) {
-        juego.agregarObservador(observador);
-    }
-
     // ---------- Qué pasó en un movimiento ----------
 
     /**
@@ -115,8 +97,7 @@ public class JuegoConSonido implements Juego {
         if (contar(despues, CAJAS_FRAGILES) < contar(antes, CAJAS_FRAGILES)) {
             return Sonido.CAJA_ROTA;
         }
-        if (contar(despues, ABIERTOS) > contar(antes, ABIERTOS)
-                || contar(despues, MURO_CERRADO) < contar(antes, MURO_CERRADO)) {
+        if (contar(despues, MURO_CERRADO) < contar(antes, MURO_CERRADO)) {
             return Sonido.CERROJO_ABIERTO;
         }
         if (contar(despues, CAJAS_EN_DESTINO) > contar(antes, CAJAS_EN_DESTINO)) {
@@ -130,11 +111,6 @@ public class JuegoConSonido implements Juego {
             return empujoFragil ? Sonido.CAJA_DANADA : Sonido.EMPUJE;
         }
         return Sonido.PASO;
-    }
-
-    /** "Perder": se rompió una caja y ya no alcanzan las cajas para cubrir todos los destinos. */
-    static boolean quedoSinSolucion(EstadoJuego estado) {
-        return contar(estado, CAJAS) < contar(estado, DESTINOS);
     }
 
     private static void sonar(Sonido sonido) {

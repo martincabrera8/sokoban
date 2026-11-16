@@ -1,14 +1,15 @@
 package sokoban.modelo.estrategias;
 
-import sokoban.modelo.EstadoNivel;
 import sokoban.modelo.entidades.Caja;
+import sokoban.modelo.movimiento.MediadorMovimiento;
 
+/** Caja frágil: cada empuje le quita resistencia; sin resistencia se rompe. */
 public class CajaFragilStrategy implements ComportamientoCaja {
     @Override
-    public void despuesDeEmpujar(Caja caja, EstadoNivel estado) {
+    public void despuesDeEmpujar(Caja caja, MediadorMovimiento mediador) {
         caja.quitarResistencia();
         if (caja.getResistencia() <= 0) {
-            estado.quitarCaja(caja);
+            mediador.cajaRota(caja);
         }
     }
 

@@ -3,7 +3,7 @@ package sokoban.sonido;
 /**
  * Efectos de sonido del juego. Cada uno sabe cuál es su archivo dentro de assets/sonidos/.
  *
- * @author Marcelo Coghlan
+ * @author Mora Coghlan
  */
 public enum Sonido {
 

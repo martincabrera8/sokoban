@@ -10,6 +10,8 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.Map;
 
+import javax.swing.JComponent;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -36,11 +38,16 @@ public class Cartel extends JPanel {
     private static final int MARGEN = 32;
 
     public Cartel(String titulo, String mensaje, Map<String, Runnable> opciones) {
+        this(titulo, crearEtiqueta(mensaje, FUENTE_TEXTO, TEXTO), opciones);
+    }
+
+    /** Cartel con un contenido propio en el centro (por ejemplo, la ayuda con las casillas). */
+    public Cartel(String titulo, JComponent contenido, Map<String, Runnable> opciones) {
         super(new BorderLayout(0, MARGEN / 2));
         setOpaque(false);
         setBorder(new EmptyBorder(MARGEN, MARGEN * 2, MARGEN, MARGEN * 2));
         add(crearEtiqueta(titulo, FUENTE_TITULO, DORADO), BorderLayout.NORTH);
-        add(crearEtiqueta(mensaje, FUENTE_TEXTO, TEXTO), BorderLayout.CENTER);
+        add(contenido, BorderLayout.CENTER);
 
         JPanel botones = new JPanel(new FlowLayout(FlowLayout.CENTER, MARGEN / 2, 0));
         botones.setOpaque(false);

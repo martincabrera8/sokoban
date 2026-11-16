@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.Font;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.List;
@@ -17,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 
 import sokoban.comandos.Comando;
@@ -52,7 +54,11 @@ public class PantallaJuego extends JPanel {
     private final Runnable volverAlMenu;
     private final PanelTablero tablero = new PanelTablero();
     private final GrabadoraDePartida grabadora = new GrabadoraDePartida();
-    private final JLabel avisoRepeticion = new JLabel("REPETICIÓN  •  Esc: saltar al final", SwingConstants.CENTER);
+    private static final String TEXTO_REPETICION = "REPETICIÓN  •  Esc: saltar al final";
+    private static final int DURACION_AVISO_MS = 2500;
+
+    private final JLabel avisoRepeticion = new JLabel(TEXTO_REPETICION, SwingConstants.CENTER);
+    private final Timer ocultarAviso = new Timer(DURACION_AVISO_MS, evento -> avisoRepeticion.setVisible(false));
     private Repeticion repeticion;
 
     public PantallaJuego(Juego juego, Runnable volverAlMenu) {
@@ -97,7 +103,11 @@ public class PantallaJuego extends JPanel {
             return;
         }
         tablero.mirarHacia(direccion);
+        int puntosAntes = juego.getEstado().puntosEnElTiempo();
         grabadora.ejecutar(new ComandoMover(juego, direccion));
+        if (juego.getEstado().puntosEnElTiempo() > puntosAntes) {
+            avisar("Punto en el tiempo guardado: el DeLorean puede volver a este momento");
+        }
         mostrarResultadoSiTermino();
     }
 
@@ -144,7 +154,21 @@ public class PantallaJuego extends JPanel {
         EstadoJuego estado = juego.getEstado();
         if (estado.completado()) {
             mostrarResultado(estado);
+        } else if (estado.sinSolucion()) {
+            mostrarSinSolucion(estado);
         }
+    }
+
+    /** Se rompió una caja frágil necesaria: se avisa en pantalla y se ofrecen las salidas posibles. */
+    private void mostrarSinSolucion(EstadoJuego estado) {
+        Map<String, Runnable> opciones = new LinkedHashMap<>();
+        opciones.put("Deshacer", this::deshacer);
+        if (estado.plutonio() > 0) {
+            opciones.put("DeLorean", this::viajarEnElTiempo);
+        }
+        opciones.put("Reiniciar", this::reiniciar);
+        opciones.put("Menú", volverAlMenu);
+        mostrarCartel("SE ROMPIÓ LA CAJA", "Ya no alcanzan las cajas para cubrir todos los destinos.", opciones);
     }
 
     /** Resumen pedido por la consigna: movimientos, empujes, uso del deshacer y puntaje. */
@@ -169,6 +193,8 @@ public class PantallaJuego extends JPanel {
         List<Comando> partida = grabadora.getGrabados();
         tablero.mirarHacia(Direccion.ABAJO);
         juego.iniciarNivel(nivel);
+        ocultarAviso.stop();
+        avisoRepeticion.setText(TEXTO_REPETICION);
         avisoRepeticion.setVisible(true);
         repeticion = new Repeticion(partida, () -> {
             avisoRepeticion.setVisible(false);
@@ -176,6 +202,14 @@ public class PantallaJuego extends JPanel {
             mostrarResultado(juego.getEstado());
         });
         repeticion.empezar();
+    }
+
+    /** Muestra un aviso corto abajo del tablero, que se oculta solo. */
+    private void avisar(String texto) {
+        avisoRepeticion.setText(texto);
+        avisoRepeticion.setVisible(true);
+        ocultarAviso.setRepeats(false);
+        ocultarAviso.restart();
     }
 
     private boolean repitiendo() {
@@ -206,5 +240,15 @@ public class PantallaJuego extends JPanel {
         dialogo.pack();
         dialogo.setLocationRelativeTo(this);
         dialogo.setVisible(true);
+        devolverFocoALaVentana();
+    }
+
+    /** Al cerrarse un cartel, las flechas vuelven a mover sin tener que hacer clic en el tablero. */
+    private void devolverFocoALaVentana() {
+        Window ventana = SwingUtilities.getWindowAncestor(this);
+        if (ventana != null) {
+            ventana.toFront();
+            ventana.requestFocus();
+        }
     }
 }

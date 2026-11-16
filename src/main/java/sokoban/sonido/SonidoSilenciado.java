@@ -5,7 +5,7 @@ import javax.sound.sampled.Clip;
 /**
  * Patrón State — estado concreto: el sonido está silenciado.
  *
- * @author Marcelo Coghlan
+ * @author Mora Coghlan
  */
 class SonidoSilenciado implements EstadoSonido {
 

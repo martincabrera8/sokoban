@@ -3,7 +3,10 @@ package sokoban.vista;
 import static sokoban.vista.Epoca.PARED;
 import static sokoban.vista.Epoca.PISO;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.util.List;
 import java.util.Map;
 
@@ -53,6 +56,10 @@ public class PanelTablero extends JPanel implements ObservadorJuego {
             Map.entry('O', List.of("tiles/muro_abierto")),
             Map.entry('P', List.of(PISO, "items/plutonio")));
 
+    /** Frágil o llave sobre su destino: el destino queda tapado, así que se marca con un borde dorado. */
+    private static final String SOBRE_DESTINO = "GgK";
+    private static final Color MARCO_DESTINO = new Color(0xF8C14A);
+
     private List<String> tablero = List.of();
     private Epoca epoca = Epoca.delNivel(1);
     private Direccion orientacion = Direccion.ABAJO;
@@ -97,6 +104,13 @@ public class PanelTablero extends JPanel implements ObservadorJuego {
     private void dibujarCelda(Graphics g, char simbolo, int x, int y, int tamano) {
         for (String capa : CAPAS.getOrDefault(simbolo, List.of())) {
             g.drawImage(Imagenes.obtenerInstancia().obtener(rutaDe(capa)), x, y, tamano, tamano, null);
+        }
+        if (SOBRE_DESTINO.indexOf(simbolo) >= 0) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setColor(MARCO_DESTINO);
+            g2.setStroke(new BasicStroke(Math.max(2, tamano / 16f)));
+            g2.drawRoundRect(x + 2, y + 2, tamano - 4, tamano - 4, tamano / 4, tamano / 4);
+            g2.dispose();
         }
     }
 

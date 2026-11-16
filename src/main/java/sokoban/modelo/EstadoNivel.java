@@ -7,6 +7,7 @@ import sokoban.modelo.entidades.Jugador;
 import sokoban.modelo.estrategias.CajaFragilStrategy;
 import sokoban.modelo.estrategias.CajaLlaveStrategy;
 import sokoban.modelo.estrategias.CajaNormalStrategy;
+import sokoban.modelo.movimiento.MediadorMovimiento;
 
 /** Estado interno: terreno + entidades. No depende de Swing. */
 public class EstadoNivel {
@@ -16,7 +17,7 @@ public class EstadoNivel {
     private final int cantidadDestinos;
 
     public EstadoNivel(List<String> lineas) {
-        if (lineas.isEmpty()) throw new IllegalArgumentException("Nivel vacio");
+        if (lineas.isEmpty()) throw new IllegalArgumentException("Nivel vacío");
         int ancho = lineas.get(0).length();
         terreno = new char[lineas.size()][ancho];
         cajas = new ArrayList<>();
@@ -33,7 +34,7 @@ public class EstadoNivel {
                 switch (s) {
                     case '#', ' ', '.', '~', 'C', 'X', 'O', 'P' -> terreno[f][c] = s;
                     case '@', '+' -> {
-                        if (encontrado != null) throw new IllegalArgumentException("Mas de un jugador");
+                        if (encontrado != null) throw new IllegalArgumentException("Más de un jugador");
                         encontrado = new Jugador(p);
                         terreno[f][c] = (s == '+') ? '.' : ' ';
                     }
@@ -49,7 +50,7 @@ public class EstadoNivel {
                         cajas.add(new Caja(p, new CajaLlaveStrategy(), 0));
                         terreno[f][c] = ' ';
                     }
-                    default -> throw new IllegalArgumentException("Simbolo desconocido: " + s);
+                    default -> throw new IllegalArgumentException("Símbolo desconocido: " + s);
                 }
                 if (terreno[f][c] == '.') destinos++;
             }
@@ -70,6 +71,12 @@ public class EstadoNivel {
     }
 
     public Jugador getJugador() { return jugador; }
+
+    /** Conecta al mediador con sus colegas: el jugador y todas las cajas. */
+    public void conectarColegas(MediadorMovimiento mediador) {
+        jugador.conectar(mediador);
+        for (Caja caja : cajas) caja.conectar(mediador);
+    }
 
     public Caja cajaEn(Posicion posicion) {
         for (Caja caja : cajas) {
@@ -132,6 +139,11 @@ public class EstadoNivel {
             if (terreno[p.fila()][p.columna()] == '.') cantidad++;
         }
         return cantidad;
+    }
+
+    /** Se rompió una caja frágil y ya no alcanzan las cajas para cubrir los destinos. */
+    public boolean sinSolucion() {
+        return cajas.size() < cantidadDestinos;
     }
 
     public boolean estaCompleto() {

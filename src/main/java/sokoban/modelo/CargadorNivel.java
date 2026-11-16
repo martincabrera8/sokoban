@@ -5,21 +5,90 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Lee los niveles desde archivos de texto nivel1.txt, nivel2.txt, ... de una carpeta.
+ * Busca primero dentro del .jar y, si no está, en la carpeta del disco.
+ *
+ * La carpeta es configurable: por defecto "niveles", y para probar mapas nuevos
+ * se puede usar otra (por ejemplo "mapas-de-prueba") sin tocar los niveles oficiales.
+ */
 public class CargadorNivel {
+
+    public static final String CARPETA_POR_DEFECTO = "niveles";
+    private static final String BOM = "\uFEFF";
+
+    private final String carpeta;
+
+    public CargadorNivel() {
+        this(CARPETA_POR_DEFECTO);
+    }
+
+    public CargadorNivel(String carpeta) {
+        this.carpeta = carpeta;
+    }
+
     public EstadoNivel cargar(int numero) {
-        String nombre = "nivel" + numero + ".txt";
-        try (InputStream recurso = getClass().getResourceAsStream("/niveles/" + nombre)) {
-            List<String> lineas;
-            if (recurso != null) {
-                lineas = new String(recurso.readAllBytes(), StandardCharsets.UTF_8).lines().toList();
-            } else {
-                lineas = Files.readAllLines(Path.of("niveles", nombre), StandardCharsets.UTF_8);
+        String nombre = nombreDe(numero);
+        try {
+            List<String> lineas = leer(nombre);
+            if (lineas == null) {
+                throw new IllegalStateException("No existe " + carpeta + "/" + nombre);
             }
-            return new EstadoNivel(lineas);
+            return new EstadoNivel(limpiar(lineas));
         } catch (IOException e) {
-            throw new IllegalStateException("No se pudo cargar " + nombre, e);
+            throw new IllegalStateException("No se pudo cargar " + carpeta + "/" + nombre, e);
         }
+    }
+
+    /** Hay un archivo nivelN.txt para ese número. */
+    public boolean existe(int numero) {
+        String nombre = nombreDe(numero);
+        return getClass().getResource("/" + carpeta + "/" + nombre) != null
+                || Files.isRegularFile(Path.of(carpeta, nombre));
+    }
+
+    /** Cuenta los niveles seguidos que hay desde nivel1.txt: agregar un archivo agrega un nivel. */
+    public int contarNiveles() {
+        int cantidad = 0;
+        while (existe(cantidad + 1)) {
+            cantidad++;
+        }
+        return cantidad;
+    }
+
+    public String getCarpeta() {
+        return carpeta;
+    }
+
+    private static String nombreDe(int numero) {
+        return "nivel" + numero + ".txt";
+    }
+
+    private List<String> leer(String nombre) throws IOException {
+        try (InputStream recurso = getClass().getResourceAsStream("/" + carpeta + "/" + nombre)) {
+            if (recurso != null) {
+                return new String(recurso.readAllBytes(), StandardCharsets.UTF_8).lines().toList();
+            }
+        }
+        Path archivo = Path.of(carpeta, nombre);
+        return Files.isRegularFile(archivo) ? Files.readAllLines(archivo, StandardCharsets.UTF_8) : null;
+    }
+
+    /**
+     * Tolera lo que suelen agregar los editores de texto: la marca BOM al principio
+     * (Bloc de notas de Windows) y líneas vacías al final del archivo.
+     */
+    private static List<String> limpiar(List<String> lineas) {
+        List<String> resultado = new ArrayList<>(lineas);
+        if (!resultado.isEmpty() && resultado.get(0).startsWith(BOM)) {
+            resultado.set(0, resultado.get(0).substring(BOM.length()));
+        }
+        while (!resultado.isEmpty() && resultado.get(resultado.size() - 1).isBlank()) {
+            resultado.remove(resultado.size() - 1);
+        }
+        return resultado;
     }
 }
