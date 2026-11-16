@@ -1,0 +1,48 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 15
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #333333
+  ArrowColor #333333
+}
+hide circle
+left to right direction
+
+class PantallaJuego <<cliente: suscribe>> {
+  - juego: Juego
+  + PantallaJuego(juego: Juego, volverAlMenu: Runnable)
+}
+interface Juego <<interface>> <<Sujeto>> {
+  + agregarObservador(observador: ObservadorJuego): void
+  + quitarObservador(observador: ObservadorJuego): void
+}
+class JuegoSokoban <<Sujeto concreto>> {
+  - observadores: List<ObservadorJuego>
+  + agregarObservador(observador: ObservadorJuego): void
+  + quitarObservador(observador: ObservadorJuego): void
+  - notificar(): void
+}
+interface ObservadorJuego <<interface>> <<Observador>> {
+  + actualizar(estado: EstadoJuego): void
+}
+class PanelHUD <<Observador concreto>> {
+  + actualizar(estado: EstadoJuego): void
+}
+class PanelTablero <<Observador concreto>> {
+  + actualizar(estado: EstadoJuego): void
+}
+class EstadoJuego <<record: lo que se avisa>> {
+  movimientos, empujes, nivel,
+  plutonio, tablero, ...
+}
+
+PantallaJuego --> Juego : juego
+JuegoSokoban ..|> Juego
+JuegoSokoban --> "*" ObservadorJuego : observadores
+PanelHUD ..|> ObservadorJuego
+PanelTablero ..|> ObservadorJuego
+ObservadorJuego ..> EstadoJuego : recibe
+@enduml
