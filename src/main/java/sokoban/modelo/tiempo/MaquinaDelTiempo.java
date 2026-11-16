@@ -6,34 +6,52 @@ import java.util.Deque;
 import sokoban.modelo.RecuerdoNivel;
 
 /**
- * Patrón MEMENTO, el cuidador: el DeLorean guarda los puntos en el tiempo del nivel.
- * Guarda los recuerdos y los devuelve, pero no sabe qué tienen adentro (no puede
- * leerlos ni cambiarlos), así el estado del nivel sigue encapsulado.
- *
- * Los puntos se guardan solos: al empezar el nivel y cada vez que una caja llega a
- * un destino. Viajar cuesta una carga de plutonio (eso lo controla JuegoSokoban).
+ * Patrón Memento: cuidador del DeLorean. Guarda los puntos en el tiempo del nivel
+ * (al empezar y cada vez que una caja llega a un destino). Cada punto lleva el número
+ * de movimiento en que se guardó, para saber cuáles quedaron en el pasado.
  */
 public class MaquinaDelTiempo {
 
     private static final int MAXIMO_PUNTOS = 10;
 
-    private final Deque<RecuerdoNivel> puntos = new ArrayDeque<>();
+    private record Punto(int movimiento, RecuerdoNivel recuerdo) {
+    }
 
-    public void guardar(RecuerdoNivel recuerdo) {
-        puntos.push(recuerdo);
+    private final Deque<Punto> puntos = new ArrayDeque<>();
+
+    public void guardar(int movimiento, RecuerdoNivel recuerdo) {
+        puntos.push(new Punto(movimiento, recuerdo));
         if (puntos.size() > MAXIMO_PUNTOS) {
             puntos.removeLast();
         }
     }
 
-    /** El punto en el tiempo más reciente, o null si no hay ninguno. */
-    public RecuerdoNivel ultimo() {
-        return puntos.peek();
+    /**
+     * El último punto anterior al movimiento actual, o null si no hay. Los puntos
+     * posteriores se descartan: después del viaje, ese futuro ya no existe.
+     */
+    public RecuerdoNivel volverAntesDe(int movimientoActual) {
+        Punto destino = null;
+        for (Punto punto : puntos) {
+            if (punto.movimiento() < movimientoActual) {
+                destino = punto;
+                break;
+            }
+        }
+        if (destino == null) {
+            return null;
+        }
+        while (puntos.peek() != destino) {
+            puntos.pop();
+        }
+        return destino.recuerdo();
     }
 
-    /** Borra el punto más reciente (por ejemplo, si quedó en un futuro que ya no existe). */
-    public void descartarUltimo() {
-        puntos.pop();
+    /** Al deshacer, los puntos guardados después del momento al que se volvió ya no existen. */
+    public void olvidarDespuesDe(int movimiento) {
+        while (!puntos.isEmpty() && puntos.peek().movimiento() > movimiento) {
+            puntos.pop();
+        }
     }
 
     public int cantidad() {

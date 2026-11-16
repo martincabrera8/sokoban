@@ -3,12 +3,9 @@ package sokoban.modelo;
 import java.util.Objects;
 
 /**
- * Patrón DECORATOR, el decorador base: es un Juego que envuelve a otro Juego y le
- * pasa cada pedido tal cual. Un decorador concreto (por ejemplo JuegoConSonido)
- * hereda de esta clase y sobrescribe solo lo que quiere agregar.
- *
- * Como recibe cualquier Juego, los decoradores se pueden apilar:
- * new DecoradorA(new DecoradorB(new JuegoSokoban())).
+ * Patrón Decorator: el decorador base. Envuelve a otro Juego y le pasa cada pedido
+ * tal cual. Los decoradores concretos heredan de esta clase y sobrescriben solo lo que
+ * agregan, por ejemplo JuegoConSonido.
  */
 public abstract class JuegoDecorado implements Juego {
 
@@ -61,5 +58,10 @@ public abstract class JuegoDecorado implements Juego {
     @Override
     public void quitarObservador(ObservadorJuego observador) {
         juego.quitarObservador(observador);
+    }
+
+    @Override
+    public void notificarObservadores() {
+        juego.notificarObservadores();
     }
 }

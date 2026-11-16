@@ -1,0 +1,55 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 15
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #333333
+  ArrowColor #333333
+}
+hide circle
+skinparam rectangle {
+  BackgroundColor #FFFFFF
+  BorderColor #333333
+}
+skinparam package {
+  BorderColor #777777
+}
+skinparam ArrowColor #333333
+
+rectangle "**Main**\n(arma todo)" as MAIN
+
+package "sokoban.vista" {
+  rectangle "**Vista**\nVentanaPrincipal, PantallaJuego" as VISTA
+  rectangle "**Observer** (observadores concretos)\nPanelHUD, PanelTablero" as OBS
+}
+package "sokoban.comandos" {
+  rectangle "**Command**\nComando, ComandoMover, ComandoDeshacer,\nComandoViajarEnElTiempo, GrabadoraDePartida" as CMD
+}
+package "sokoban.sonido" {
+  rectangle "**Decorator**\nJuegoConSonido\n(su base JuegoDecorado\nestá en modelo)" as DEC
+  rectangle "**State**\nEstadoSonido, SonidoActivado,\nSonidoSilenciado" as STATE
+}
+rectangle "**Singleton**\nImagenes (vista)\nSonidos (sonido)" as SING
+package "sokoban.modelo (y subpaquetes)" {
+  rectangle "**Facade** + sujeto y observador del **Observer**\nJuego, JuegoSokoban,\nSujetoJuego, ObservadorJuego" as FAC
+  rectangle "**Mediator**\nMediadorMovimiento, MotorMovimiento,\nElementoMovil, Jugador, Caja" as MED
+  rectangle "**Strategy**\nComportamientoCaja, CajaNormalStrategy,\nCajaFragilStrategy, CajaLlaveStrategy" as STR
+  rectangle "**Memento**\nEstadoNivel, RecuerdoNivel,\nHistorialDeshacer, MaquinaDelTiempo" as MEM
+}
+
+MAIN ..> DEC : 1. new JuegoConSonido(new JuegoSokoban(...))
+MAIN ..> VISTA : 2. new VentanaPrincipal(juego)
+VISTA --> CMD : grabadora\n(cada tecla o botón es un comando)
+VISTA --> OBS : tablero\n(crea y suscribe)
+CMD --> FAC : juego: Juego
+DEC --> FAC : juego: Juego\n(implementa Juego)
+DEC ..> SING : Sonidos.obtenerInstancia()
+SING --> STATE : estado\n(Sonidos es el contexto)
+FAC ..> MED : new MotorMovimiento(nivel)
+FAC --> MEM : nivel, historial,\nmaquinaDelTiempo
+MED --> STR : comportamiento\n(caja.despuesDeEmpujar())
+OBS ..|> FAC : implementan\nObservadorJuego
+OBS ..> SING : Imagenes.obtenerInstancia()
+@enduml

@@ -20,11 +20,9 @@ import sokoban.modelo.EstadoJuego;
 import sokoban.modelo.ObservadorJuego;
 
 /**
- * HUD pedido por la consigna, con los íconos del diseño del grupo: indicadores
- * de nivel, movimientos y empujes, y botones Deshacer, Reiniciar y Pausa.
- * Suma el DeLorean (funcionalidad adicional): cargas de plutonio y botón para viajar.
- * Es OBSERVADOR: se actualiza solo cuando cambia la partida.
- * Los botones no tocan el juego: avisan a la pantalla, que arma el comando.
+ * HUD: nivel, movimientos, empujes y plutonio, y los botones deshacer, reiniciar,
+ * pausa y DeLorean. Es un observador: se actualiza cuando cambia la partida.
+ * Los botones no tocan el juego: le avisan a la pantalla, que arma el comando.
  */
 public class PanelHUD extends JPanel implements ObservadorJuego {
 

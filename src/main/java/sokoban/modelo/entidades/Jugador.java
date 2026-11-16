@@ -1,27 +1,17 @@
 package sokoban.modelo.entidades;
 
 import sokoban.modelo.Direccion;
+import sokoban.modelo.Evento;
 import sokoban.modelo.Posicion;
-import sokoban.modelo.movimiento.MediadorMovimiento;
 
-/** El personaje. Es COLEGA del Mediator: no conoce cajas, paredes ni hielo; pide moverse y el mediador resuelve. */
-public class Jugador {
-    private Posicion posicion;
-    private MediadorMovimiento mediador;
+/** El personaje. Le pide al mediador moverse y él resuelve paredes, cajas y hielo. */
+public class Jugador extends ElementoMovil {
 
     public Jugador(Posicion posicion) {
-        this.posicion = posicion;
+        super(posicion);
     }
 
-    public Posicion getPosicion() { return posicion; }
-    public void setPosicion(Posicion posicion) { this.posicion = posicion; }
-
-    public void conectar(MediadorMovimiento mediador) {
-        this.mediador = mediador;
-    }
-
-    public boolean mover(Direccion direccion) {
-        if (mediador == null) throw new IllegalStateException("Jugador sin mediador");
+    public Evento mover(Direccion direccion) {
         return mediador.intentarMover(direccion);
     }
 }

@@ -3,14 +3,8 @@ package sokoban.sonido;
 import javax.sound.sampled.Clip;
 
 /**
- * Patrón State — interfaz Estado.
- *
- * El sonido puede estar activado o silenciado, y según eso se comporta distinto
- * ante los mismos pedidos. Cada estado concreto sabe qué hacer al reproducir y
- * a qué estado pasar cuando se aprieta la tecla M (las transiciones están adentro
- * de cada estado, no en un if del contexto).
- *
- * Contexto: {@link Sonidos}.
+ * Patrón State: el estado. El sonido puede estar activado o silenciado; cada estado
+ * sabe qué hacer al reproducir y a cuál pasar cuando se aprieta la M.
  *
  * @author Mora Coghlan
  */

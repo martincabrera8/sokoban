@@ -1,0 +1,47 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 15
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #333333
+  ArrowColor #333333
+}
+hide circle
+hide empty members
+
+class Main <<final>> <<Cliente>> {
+  + {static} main(args: String[]): void
+}
+interface Juego <<interface>> <<Componente>> {
+  + iniciarNivel(numero: int): void
+  + mover(direccion: Direccion): void
+  + deshacer(): void
+  + reiniciar(): void
+  + viajarEnElTiempo(): void
+  + getEstado(): EstadoJuego
+}
+class JuegoSokoban <<Componente concreto>> {
+  + mover(direccion: Direccion): void
+  + getEstado(): EstadoJuego
+}
+abstract class JuegoDecorado <<abstract>> <<Decorador>> {
+  # juego: Juego
+  # JuegoDecorado(juego: Juego)
+  + mover(direccion: Direccion): void
+  + getEstado(): EstadoJuego
+}
+class JuegoConSonido <<Decorador concreto>> {
+  + JuegoConSonido(juego: Juego)
+  + mover(direccion: Direccion): void
+  - sonarLoQuePaso(): void
+}
+
+Main ..> JuegoConSonido : new JuegoConSonido(\nnew JuegoSokoban(...))
+Main .right.> Juego : variable local juego
+JuegoSokoban .up.|> Juego
+JuegoDecorado .up.|> Juego
+JuegoDecorado o-up-> "1" Juego : juego
+JuegoConSonido -up-|> JuegoDecorado
+@enduml

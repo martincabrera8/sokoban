@@ -9,11 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Lee los niveles desde archivos de texto nivel1.txt, nivel2.txt, ... de una carpeta.
- * Busca primero dentro del .jar y, si no está, en la carpeta del disco.
- *
- * La carpeta es configurable: por defecto "niveles", y para probar mapas nuevos
- * se puede usar otra (por ejemplo "mapas-de-prueba") sin tocar los niveles oficiales.
+ * Lee los niveles nivel1.txt, nivel2.txt, ... de una carpeta (por defecto "niveles"),
+ * primero desde el .jar y si no, desde el disco. Para agregar un nivel alcanza con
+ * crear el archivo siguiente.
  */
 public class CargadorNivel {
 

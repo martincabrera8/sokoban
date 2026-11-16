@@ -3,7 +3,7 @@ package sokoban.comandos;
 import sokoban.modelo.Direccion;
 import sokoban.modelo.Juego;
 
-/** Comando concreto: mover al jugador en una dirección. El receptor es el Juego. */
+/** Comando concreto: mover al jugador. El receptor es el juego. */
 public class ComandoMover implements Comando {
 
     private final Juego juego;

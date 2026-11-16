@@ -1,7 +1,9 @@
 package sokoban.modelo;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
 import sokoban.modelo.entidades.Caja;
 import sokoban.modelo.entidades.Jugador;
 import sokoban.modelo.estrategias.CajaFragilStrategy;
@@ -9,187 +11,287 @@ import sokoban.modelo.estrategias.CajaLlaveStrategy;
 import sokoban.modelo.estrategias.CajaNormalStrategy;
 import sokoban.modelo.movimiento.MediadorMovimiento;
 
-/** Estado interno: terreno + entidades. No depende de Swing. */
+/**
+ * El nivel que se está jugando: el terreno, el jugador, las cajas y sus contadores.
+ * Es el originador del patrón Memento: sabe guardarse en un RecuerdoNivel y volver a él.
+ */
 public class EstadoNivel {
-    private final char[][] terreno;
-    private final Jugador jugador;
-    private final List<Caja> cajas;
-    private final int cantidadDestinos;
 
+    private static final int RESISTENCIA_FRAGIL = 3;
+
+    private char[][] terreno;
+    private final Jugador jugador;
+    private final List<Caja> cajas = new ArrayList<>();
+    private final int cantidadDestinos;
+    private int movimientos;
+    private int empujes;
+    private int plutonio;
+    private MediadorMovimiento mediador;
+
+    /** Arma el nivel a partir de las líneas del archivo, una letra por casilla. */
     public EstadoNivel(List<String> lineas) {
-        if (lineas.isEmpty()) throw new IllegalArgumentException("Nivel vacío");
+        if (lineas.isEmpty()) {
+            throw new IllegalArgumentException("Nivel vacío");
+        }
         int ancho = lineas.get(0).length();
         terreno = new char[lineas.size()][ancho];
-        cajas = new ArrayList<>();
         Jugador encontrado = null;
         int destinos = 0;
 
-        for (int f = 0; f < lineas.size(); f++) {
-            if (lineas.get(f).length() != ancho) {
-                throw new IllegalArgumentException("Filas de distinto ancho en fila " + f);
+        for (int fila = 0; fila < lineas.size(); fila++) {
+            String linea = lineas.get(fila);
+            if (linea.length() != ancho) {
+                throw new IllegalArgumentException("Filas de distinto ancho en la fila " + fila);
             }
-            for (int c = 0; c < ancho; c++) {
-                char s = lineas.get(f).charAt(c);
-                Posicion p = new Posicion(f, c);
-                switch (s) {
-                    case '#', ' ', '.', '~', 'C', 'X', 'O', 'P' -> terreno[f][c] = s;
+            for (int columna = 0; columna < ancho; columna++) {
+                char simbolo = linea.charAt(columna);
+                Posicion posicion = new Posicion(fila, columna);
+                terreno[fila][columna] = switch (simbolo) {
+                    case '#', ' ', '.', '~', 'C', 'X', 'O', 'P' -> simbolo;
                     case '@', '+' -> {
-                        if (encontrado != null) throw new IllegalArgumentException("Más de un jugador");
-                        encontrado = new Jugador(p);
-                        terreno[f][c] = (s == '+') ? '.' : ' ';
+                        if (encontrado != null) {
+                            throw new IllegalArgumentException("Más de un jugador");
+                        }
+                        encontrado = new Jugador(posicion);
+                        yield simbolo == '+' ? '.' : ' ';
                     }
                     case '$', '*' -> {
-                        cajas.add(new Caja(p, new CajaNormalStrategy(), 0));
-                        terreno[f][c] = (s == '*') ? '.' : ' ';
+                        cajas.add(new Caja(posicion, new CajaNormalStrategy(), 0));
+                        yield simbolo == '*' ? '.' : ' ';
                     }
                     case 'F' -> {
-                        cajas.add(new Caja(p, new CajaFragilStrategy(), 3));
-                        terreno[f][c] = ' ';
+                        cajas.add(new Caja(posicion, new CajaFragilStrategy(), RESISTENCIA_FRAGIL));
+                        yield ' ';
                     }
                     case 'L' -> {
-                        cajas.add(new Caja(p, new CajaLlaveStrategy(), 0));
-                        terreno[f][c] = ' ';
+                        cajas.add(new Caja(posicion, new CajaLlaveStrategy(), 0));
+                        yield ' ';
                     }
-                    default -> throw new IllegalArgumentException("Símbolo desconocido: " + s);
+                    default -> throw new IllegalArgumentException("Símbolo desconocido: " + simbolo);
+                };
+                if (terreno[fila][columna] == '.') {
+                    destinos++;
                 }
-                if (terreno[f][c] == '.') destinos++;
             }
         }
-        if (encontrado == null) throw new IllegalArgumentException("Falta el jugador");
-        if (destinos != cajas.size() || destinos == 0) {
-            throw new IllegalArgumentException("Debe haber una caja por cada destino");
+        if (encontrado == null) {
+            throw new IllegalArgumentException("Falta el jugador");
+        }
+        if (destinos == 0 || destinos != cajas.size()) {
+            throw new IllegalArgumentException("Tiene que haber una caja por cada destino");
         }
         jugador = encontrado;
         cantidadDestinos = destinos;
     }
 
-    private EstadoNivel(char[][] terreno, Jugador jugador, List<Caja> cajas, int cantidadDestinos) {
-        this.terreno = terreno;
-        this.jugador = jugador;
-        this.cajas = cajas;
-        this.cantidadDestinos = cantidadDestinos;
-    }
+    // ---------- Mediator ----------
 
-    public Jugador getJugador() { return jugador; }
-
-    /** Conecta al mediador con sus colegas: el jugador y todas las cajas. */
-    public void conectarColegas(MediadorMovimiento mediador) {
+    /** Conecta el mediador con el jugador y con cada caja. */
+    public void conectarMediador(MediadorMovimiento mediador) {
+        this.mediador = mediador;
         jugador.conectar(mediador);
-        for (Caja caja : cajas) caja.conectar(mediador);
+        for (Caja caja : cajas) {
+            caja.conectar(mediador);
+        }
     }
 
-    public Caja cajaEn(Posicion posicion) {
-        for (Caja caja : cajas) {
-            if (caja.getPosicion().equals(posicion)) return caja;
-        }
-        return null;
+    // ---------- Consultas del mediador ----------
+
+    public Jugador getJugador() {
+        return jugador;
     }
+
+    /** Las cajas del nivel (solo lectura). Es siempre la misma lista, aunque se restaure el nivel. */
+    public List<Caja> getCajas() {
+        return Collections.unmodifiableList(cajas);
+    }
+
+    /** El jugador le pide el movimiento al mediador; el nivel solo se lo pasa. */
+    public Evento moverJugador(Direccion direccion) {
+        return jugador.mover(direccion);
+    }
+
+    /** Si se puede pisar el terreno: dentro del tablero y sin pared ni muro cerrado. */
+    public boolean esTransitable(Posicion posicion) {
+        if (!dentro(posicion)) {
+            return false;
+        }
+        char casilla = casilla(posicion);
+        return casilla != '#' && casilla != 'X';
+    }
+
+    public boolean esHielo(Posicion posicion) {
+        return dentro(posicion) && casilla(posicion) == '~';
+    }
+
+    public boolean esCerrojo(Posicion posicion) {
+        return dentro(posicion) && casilla(posicion) == 'C';
+    }
+
+    // ---------- Cambios que hace el mediador ----------
+
+    /** La llave en el cerrojo abre todos los muros del nivel. */
+    public void abrirMuros() {
+        for (char[] fila : terreno) {
+            for (int columna = 0; columna < fila.length; columna++) {
+                if (fila[columna] == 'X') {
+                    fila[columna] = 'O';
+                } else if (fila[columna] == 'C') {
+                    fila[columna] = 'c';
+                }
+            }
+        }
+    }
+
+    public void quitarCaja(Caja caja) {
+        cajas.remove(caja);
+    }
+
+    public void contarMovimiento(boolean fueEmpuje) {
+        movimientos++;
+        if (fueEmpuje) {
+            empujes++;
+        }
+    }
+
+    /** Si en esa casilla hay plutonio, el jugador lo junta. */
+    public boolean recogerPlutonio(Posicion posicion) {
+        if (casilla(posicion) != 'P') {
+            return false;
+        }
+        terreno[posicion.fila()][posicion.columna()] = ' ';
+        plutonio++;
+        return true;
+    }
+
+    public void gastarPlutonio() {
+        plutonio--;
+    }
+
+    // ---------- Reglas ----------
+
+    public int cajasEnDestino() {
+        int cantidad = 0;
+        for (Caja caja : cajas) {
+            if (casilla(caja.getPosicion()) == '.') {
+                cantidad++;
+            }
+        }
+        return cantidad;
+    }
+
+    public boolean estaCompleto() {
+        return cajas.size() == cantidadDestinos && cajasEnDestino() == cantidadDestinos;
+    }
+
+    /** Se rompió una caja frágil y ya no alcanzan las cajas para todos los destinos. */
+    public boolean sinSolucion() {
+        return cajas.size() < cantidadDestinos;
+    }
+
+    public int getMovimientos() {
+        return movimientos;
+    }
+
+    public int getEmpujes() {
+        return empujes;
+    }
+
+    public int getPlutonio() {
+        return plutonio;
+    }
+
+    // ---------- Memento ----------
+
+    public RecuerdoNivel crearRecuerdo() {
+        return new RecuerdoNivel(copiar(terreno), jugador.getPosicion(), copiar(cajas),
+                movimientos, empujes, plutonio);
+    }
+
+    public void restaurar(RecuerdoNivel recuerdo) {
+        terreno = copiar(recuerdo.terreno());
+        jugador.setPosicion(recuerdo.posicionJugador());
+        cajas.clear();
+        cajas.addAll(copiar(recuerdo.cajas()));
+        movimientos = recuerdo.movimientos();
+        empujes = recuerdo.empujes();
+        plutonio = recuerdo.plutonio();
+        if (mediador != null) {
+            conectarMediador(mediador);
+        }
+    }
+
+    /**
+     * El DeLorean vuelve a un punto del pasado, pero el plutonio ya juntado
+     * no reaparece y las cargas que tenía siguen siendo las mismas.
+     */
+    public void viajarA(RecuerdoNivel punto) {
+        char[][] presente = copiar(terreno);
+        int cargas = plutonio;
+        restaurar(punto);
+        for (int fila = 0; fila < terreno.length; fila++) {
+            for (int columna = 0; columna < terreno[fila].length; columna++) {
+                if (terreno[fila][columna] == 'P' && presente[fila][columna] != 'P') {
+                    terreno[fila][columna] = ' ';
+                }
+            }
+        }
+        plutonio = cargas;
+    }
+
+    // ---------- Vista ----------
+
+    /** El tablero como texto, con las letras que dibuja PanelTablero. */
+    public List<String> tableroParaVista() {
+        char[][] dibujo = copiar(terreno);
+        for (Caja caja : cajas) {
+            Posicion p = caja.getPosicion();
+            boolean sobreDestino = dibujo[p.fila()][p.columna()] == '.';
+            dibujo[p.fila()][p.columna()] = sobreDestino ? sobreDestino(caja.getSimbolo()) : caja.getSimbolo();
+        }
+        Posicion p = jugador.getPosicion();
+        dibujo[p.fila()][p.columna()] = dibujo[p.fila()][p.columna()] == '.' ? '+' : '@';
+        List<String> filas = new ArrayList<>();
+        for (char[] fila : dibujo) {
+            filas.add(new String(fila));
+        }
+        return filas;
+    }
+
+    private static char sobreDestino(char simbolo) {
+        return switch (simbolo) {
+            case '$' -> '*';
+            case 'F' -> 'G';
+            case 'f' -> 'g';
+            case 'L' -> 'K';
+            default -> simbolo;
+        };
+    }
+
+    // ---------- Auxiliares ----------
 
     private boolean dentro(Posicion p) {
         return p.fila() >= 0 && p.fila() < terreno.length
                 && p.columna() >= 0 && p.columna() < terreno[0].length;
     }
 
-    public boolean estaLibre(Posicion p) {
-        if (!dentro(p)) return false;
-        char s = terreno[p.fila()][p.columna()];
-        return s != '#' && s != 'X' && cajaEn(p) == null
-                && !jugador.getPosicion().equals(p);
+    private char casilla(Posicion p) {
+        return terreno[p.fila()][p.columna()];
     }
 
-    public boolean esHielo(Posicion p) {
-        return dentro(p) && terreno[p.fila()][p.columna()] == '~';
-    }
-
-    public boolean esCerrojo(Posicion p) {
-        return dentro(p) && terreno[p.fila()][p.columna()] == 'C';
-    }
-
-    public void abrirMuros() {
-        for (int f = 0; f < terreno.length; f++) {
-            for (int c = 0; c < terreno[f].length; c++) {
-                if (terreno[f][c] == 'X') terreno[f][c] = 'O';
-                if (terreno[f][c] == 'C') terreno[f][c] = 'c';
-            }
+    private static char[][] copiar(char[][] original) {
+        char[][] copia = new char[original.length][];
+        for (int i = 0; i < original.length; i++) {
+            copia[i] = original[i].clone();
         }
-    }
-
-    public void quitarCaja(Caja caja) { cajas.remove(caja); }
-
-    /** DeLorean: si en esa casilla hay plutonio ('P'), el jugador lo junta y desaparece. */
-    public boolean recogerPlutonio(Posicion p) {
-        if (!dentro(p) || terreno[p.fila()][p.columna()] != 'P') return false;
-        terreno[p.fila()][p.columna()] = ' ';
-        return true;
-    }
-
-    /** DeLorean: el plutonio que ya se juntó en el presente no vuelve a aparecer en el pasado. */
-    public void conservarPlutonioRecogido(EstadoNivel presente) {
-        for (int f = 0; f < terreno.length; f++) {
-            for (int c = 0; c < terreno[f].length; c++) {
-                if (terreno[f][c] == 'P' && presente.terreno[f][c] != 'P') terreno[f][c] = ' ';
-            }
-        }
-    }
-
-    public int cajasEnDestino() {
-        int cantidad = 0;
-        for (Caja caja : cajas) {
-            Posicion p = caja.getPosicion();
-            if (terreno[p.fila()][p.columna()] == '.') cantidad++;
-        }
-        return cantidad;
-    }
-
-    /** Se rompió una caja frágil y ya no alcanzan las cajas para cubrir los destinos. */
-    public boolean sinSolucion() {
-        return cajas.size() < cantidadDestinos;
-    }
-
-    public boolean estaCompleto() {
-        if (cajas.size() != cantidadDestinos) return false;
-        for (Caja caja : cajas) {
-            Posicion p = caja.getPosicion();
-            if (terreno[p.fila()][p.columna()] != '.') return false;
-        }
-        return true;
-    }
-
-    /** Traduce el estado al formato de caracteres que entiende PanelTablero. */
-    public List<String> tableroParaVista() {
-        char[][] dibujo = copiarTerreno();
-        for (Caja caja : cajas) {
-            Posicion p = caja.getPosicion();
-            char s = caja.getSimbolo();
-            if (dibujo[p.fila()][p.columna()] == '.') {
-                s = switch (s) {
-                    case '$' -> '*';
-                    case 'F' -> 'G';
-                    case 'f' -> 'g';
-                    case 'L' -> 'K';
-                    default -> s;
-                };
-            }
-            dibujo[p.fila()][p.columna()] = s;
-        }
-        Posicion p = jugador.getPosicion();
-        dibujo[p.fila()][p.columna()] = dibujo[p.fila()][p.columna()] == '.' ? '+' : '@';
-        List<String> resultado = new ArrayList<>();
-        for (char[] fila : dibujo) resultado.add(new String(fila));
-        return resultado;
-    }
-
-    private char[][] copiarTerreno() {
-        char[][] copia = new char[terreno.length][];
-        for (int i = 0; i < terreno.length; i++) copia[i] = terreno[i].clone();
         return copia;
     }
 
-    /** Copia profunda del estado mutable para restaurarlo con Undo. */
-    public EstadoNivel copiar() {
-        List<Caja> copiaCajas = new ArrayList<>();
-        for (Caja caja : cajas) copiaCajas.add(caja.copiar());
-        return new EstadoNivel(copiarTerreno(), new Jugador(jugador.getPosicion()),
-                copiaCajas, cantidadDestinos);
+    private static List<Caja> copiar(List<Caja> original) {
+        List<Caja> copia = new ArrayList<>();
+        for (Caja caja : original) {
+            copia.add(caja.copiar());
+        }
+        return copia;
     }
 }

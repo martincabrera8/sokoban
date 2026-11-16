@@ -11,9 +11,8 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 /**
- * Patrón SINGLETON: una única caché de imágenes compartida por el menú, el HUD
- * y el tablero. Cada imagen se lee del disco una sola vez.
- * Las imágenes son las del diseño del grupo, en la carpeta assets/ del repositorio.
+ * Patrón Singleton: una sola caché de imágenes para todo el juego.
+ * Cada imagen de assets/ se lee del disco una sola vez.
  */
 public final class Imagenes {
 

@@ -1,0 +1,48 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 15
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #333333
+  ArrowColor #333333
+}
+hide circle
+hide empty members
+skinparam nodesep 110
+
+interface MediadorMovimiento <<interface>> <<Mediador>> {
+  + intentarMover(direccion: Direccion): Evento
+  + cajaDanada(caja: Caja): void
+  + cajaRota(caja: Caja): void
+  + llaveEmpujada(caja: Caja): void
+}
+class MotorMovimiento <<Mediador concreto>> {
+  - nivel: EstadoNivel
+  - jugador: Jugador
+  - cajas: List<Caja>
+  - evento: Evento
+  + MotorMovimiento(nivel: EstadoNivel)
+  - estaLibre(posicion: Posicion): boolean
+  - cajaEn(posicion: Posicion): Caja
+  - deslizar(destino: Posicion, direccion: Direccion): Posicion
+}
+abstract class ElementoMovil <<abstract>> <<Colega>> {
+  # posicion: Posicion
+  # mediador: MediadorMovimiento
+  + conectar(mediador: MediadorMovimiento): void
+  + setPosicion(posicion: Posicion): void
+}
+class Jugador <<Colega concreto>> {
+  + mover(direccion: Direccion): Evento
+}
+class Caja <<Colega concreto>> {
+  + despuesDeEmpujar(): void
+}
+
+MotorMovimiento .up.|> MediadorMovimiento
+MediadorMovimiento "1" <-right-> "*" ElementoMovil : se conocen
+Jugador -up-|> ElementoMovil
+Caja -up-|> ElementoMovil
+@enduml

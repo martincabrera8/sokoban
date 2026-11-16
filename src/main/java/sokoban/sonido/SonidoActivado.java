@@ -3,7 +3,7 @@ package sokoban.sonido;
 import javax.sound.sampled.Clip;
 
 /**
- * Patrón State — estado concreto: el sonido está activado (estado inicial).
+ * Patrón State: estado concreto. El sonido está activado (es el estado inicial).
  *
  * @author Mora Coghlan
  */

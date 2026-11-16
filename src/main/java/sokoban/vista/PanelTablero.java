@@ -17,13 +17,9 @@ import sokoban.modelo.EstadoJuego;
 import sokoban.modelo.ObservadorJuego;
 
 /**
- * Dibuja el tablero con las imágenes del diseño del grupo, con el fondo, el piso
- * y la pared de la época del nivel (1955, 1985, 2015). Es OBSERVADOR: cada vez
- * que cambia la partida guarda el estado nuevo y se vuelve a pintar.
- *
- * Cada símbolo se dibuja como una o más capas (primero el piso, después lo que
- * está encima). Para un elemento nuevo alcanza con agregar su símbolo acá.
- * El jugador se dibuja mirando hacia donde se movió por última vez.
+ * Dibuja el tablero con el fondo, el piso y la pared de la época del nivel.
+ * Es un observador: cuando cambia la partida guarda el tablero nuevo y se repinta.
+ * Cada letra se dibuja como una o más capas de imágenes (primero el piso).
  */
 public class PanelTablero extends JPanel implements ObservadorJuego {
 

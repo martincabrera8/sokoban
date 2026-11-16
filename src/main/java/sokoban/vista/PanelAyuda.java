@@ -13,9 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 /**
- * Contenido del cartel "Cómo jugar": cada casilla del juego con su imagen y una línea
- * que explica la regla, y abajo las teclas. Así quien juega por primera vez entiende
- * el cerrojo, el hielo, la caja frágil o el plutonio sin que nadie se lo explique.
+ * Contenido del cartel "Cómo jugar": cada casilla con su imagen y su regla, y las teclas.
  */
 public class PanelAyuda extends JPanel {
 

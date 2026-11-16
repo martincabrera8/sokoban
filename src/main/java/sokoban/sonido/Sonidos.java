@@ -14,17 +14,10 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 /**
- * Carga todos los efectos una sola vez al arrancar y los reproduce cuando se le pide.
- *
- * Patrones:
- * - Singleton: hay una única instancia compartida por todo el juego (igual que Imagenes).
- * - Facade: esconde toda la complejidad de javax.sound (AudioSystem, Clip, formatos,
- *   excepciones) detrás de un simple reproducir(Sonido.PASO).
- * - State (contexto): delega en el estado actual (SonidoActivado / SonidoSilenciado)
- *   qué hacer al reproducir y al apretar la tecla M.
- *
- * Si la computadora no tiene salida de audio, el juego sigue funcionando en silencio:
- * nunca se corta por un problema de sonido.
+ * Carga los efectos una sola vez y los reproduce cuando se le pide.
+ * Es Singleton (una sola instancia, como Imagenes) y es el contexto del patrón State:
+ * le pregunta al estado actual si tiene que sonar. Si la PC no tiene audio, el juego
+ * sigue en silencio.
  *
  * @author Mora Coghlan
  */

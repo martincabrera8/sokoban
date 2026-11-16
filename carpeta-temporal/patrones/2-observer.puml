@@ -9,21 +9,16 @@ skinparam class {
   ArrowColor #333333
 }
 hide circle
+hide empty members
 left to right direction
 
-class PantallaJuego <<cliente: suscribe>> {
-  - juego: Juego
-  + PantallaJuego(juego: Juego, volverAlMenu: Runnable)
-}
-interface Juego <<interface>> <<Sujeto>> {
+interface SujetoJuego <<interface>> <<Sujeto>> {
   + agregarObservador(observador: ObservadorJuego): void
   + quitarObservador(observador: ObservadorJuego): void
+  + notificarObservadores(): void
 }
 class JuegoSokoban <<Sujeto concreto>> {
   - observadores: List<ObservadorJuego>
-  + agregarObservador(observador: ObservadorJuego): void
-  + quitarObservador(observador: ObservadorJuego): void
-  - notificar(): void
 }
 interface ObservadorJuego <<interface>> <<Observador>> {
   + actualizar(estado: EstadoJuego): void
@@ -34,15 +29,9 @@ class PanelHUD <<Observador concreto>> {
 class PanelTablero <<Observador concreto>> {
   + actualizar(estado: EstadoJuego): void
 }
-class EstadoJuego <<record: lo que se avisa>> {
-  movimientos, empujes, nivel,
-  plutonio, tablero, ...
-}
 
-PantallaJuego --> Juego : juego
-JuegoSokoban ..|> Juego
+JuegoSokoban ..|> SujetoJuego
 JuegoSokoban --> "*" ObservadorJuego : observadores
 PanelHUD ..|> ObservadorJuego
 PanelTablero ..|> ObservadorJuego
-ObservadorJuego ..> EstadoJuego : recibe
 @enduml

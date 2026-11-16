@@ -3,8 +3,6 @@ package sokoban.comandos;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 
 import sokoban.modelo.Direccion;
@@ -32,10 +30,9 @@ class RepeticionTest {
         EstadoJuego partida = juego.getEstado();
         assertTrue(partida.completado());
 
-        List<Comando> grabados = grabadora.getGrabados();
-        assertEquals(30, grabados.size());
         juego.iniciarNivel(2);
-        new Repeticion(grabados, () -> { }).saltarAlFinal();
+        grabadora.reproducir(() -> { });
+        grabadora.saltarAlFinal();
         assertEquals(partida, juego.getEstado());
     }
 }

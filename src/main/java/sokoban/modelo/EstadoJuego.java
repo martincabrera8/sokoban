@@ -3,20 +3,13 @@ package sokoban.modelo;
 import java.util.List;
 
 /**
- * DTO (record inmutable) con la foto del nivel en curso. Es lo único que la vista
- * recibe del dominio: nunca un Tablero, una Caja ni el Jugador.
- *
- * El tablero viaja como líneas de texto, con un símbolo por celda, igual que en
- * los archivos de nivel (por ejemplo "#  $.@#").
- *
- * sinSolucion avisa que se rompió una caja frágil y ya no alcanzan las cajas.
- * puntosEnElTiempo son los momentos a los que el DeLorean puede volver.
- * plutonio son las cargas del DeLorean que tiene el jugador y viajes, las veces
- * que viajó en el tiempo en este nivel.
+ * Foto de la partida que el juego les manda a los observadores. Es inmutable,
+ * así la vista puede leerla pero no cambiar nada del dominio.
+ * El tablero viaja como texto, con un carácter por casilla.
  */
-public record EstadoJuego(int nivel, int movimientos, int empujes, int undosUsados,
-                          int plutonio, int viajes, int puntosEnElTiempo,
-                          int puntaje, boolean completado, boolean sinSolucion,
+public record EstadoJuego(int nivel, int movimientos, int empujes, int deshacerUsados,
+                          int plutonio, int viajes, int puntosEnElTiempo, int puntaje,
+                          boolean completado, boolean sinSolucion, Evento evento,
                           List<String> tablero) {
 
     public EstadoJuego {

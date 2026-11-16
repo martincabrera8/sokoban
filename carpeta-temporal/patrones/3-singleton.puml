@@ -1,0 +1,40 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 15
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #333333
+  ArrowColor #333333
+}
+hide circle
+hide empty members
+
+class PanelTablero <<Cliente>>
+class PanelHUD <<Cliente>>
+class Imagenes <<final>> <<Singleton>> {
+  - {static} instancia: Imagenes
+  - cache: Map<String, Image>
+  - Imagenes()
+  + {static} obtenerInstancia(): Imagenes
+  + obtener(ruta: String): Image
+}
+
+class JuegoConSonido <<Cliente>>
+class SonidosDeInterfaz <<final>> <<Cliente>>
+class Sonidos <<final>> <<Singleton>> {
+  - {static} instancia: Sonidos
+  - clips: Map<Sonido, Clip>
+  - Sonidos()
+  + {static} obtenerInstancia(): Sonidos
+  + reproducir(sonido: Sonido): void
+}
+
+PanelTablero ..> Imagenes : obtenerInstancia()
+PanelHUD ..> Imagenes : obtenerInstancia()
+Imagenes --> "1" Imagenes : instancia
+JuegoConSonido ..> Sonidos : obtenerInstancia()
+SonidosDeInterfaz ..> Sonidos : obtenerInstancia()
+Sonidos --> "1" Sonidos : instancia
+@enduml

@@ -1,0 +1,55 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 15
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #333333
+  ArrowColor #333333
+}
+hide circle
+hide empty members
+
+class EstadoNivel <<Cliente: elige la estrategia>> {
+  - cajas: List<Caja>
+  + EstadoNivel(lineas: List<String>)
+}
+class MotorMovimiento <<Cliente: dispara el empuje>> {
+  - cajas: List<Caja>
+  + intentarMover(direccion: Direccion): Evento
+}
+class Caja <<Contexto>> {
+  - comportamiento: ComportamientoCaja
+  - resistencia: int
+  + Caja(posicion: Posicion, comportamiento: ComportamientoCaja, resistencia: int)
+  + despuesDeEmpujar(): void
+  + getSimbolo(): char
+}
+interface ComportamientoCaja <<interface>> <<Estrategia>> {
+  + despuesDeEmpujar(caja: Caja, mediador: MediadorMovimiento): void
+  + simbolo(caja: Caja): char
+}
+class CajaNormalStrategy <<Estrategia concreta>> {
+  + despuesDeEmpujar(caja: Caja, mediador: MediadorMovimiento): void
+  + simbolo(caja: Caja): char
+}
+class CajaFragilStrategy <<Estrategia concreta>> {
+  + despuesDeEmpujar(caja: Caja, mediador: MediadorMovimiento): void
+  + simbolo(caja: Caja): char
+}
+class CajaLlaveStrategy <<Estrategia concreta>> {
+  + despuesDeEmpujar(caja: Caja, mediador: MediadorMovimiento): void
+  + simbolo(caja: Caja): char
+}
+
+EstadoNivel --> "*" Caja : cajas
+MotorMovimiento --> "*" Caja : cajas
+EstadoNivel ..> CajaNormalStrategy : new
+EstadoNivel ..> CajaFragilStrategy : new
+EstadoNivel ..> CajaLlaveStrategy : new
+Caja --> "1" ComportamientoCaja : comportamiento
+CajaNormalStrategy .up.|> ComportamientoCaja
+CajaFragilStrategy .up.|> ComportamientoCaja
+CajaLlaveStrategy .up.|> ComportamientoCaja
+@enduml

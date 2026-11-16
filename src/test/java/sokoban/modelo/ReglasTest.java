@@ -108,7 +108,7 @@ class ReglasTest {
         assertEquals(5, j.getEstado().movimientos());
         j.deshacer(); // el cuarto seguido no hace nada
         assertEquals(5, j.getEstado().movimientos());
-        assertEquals(3, j.getEstado().undosUsados());
+        assertEquals(3, j.getEstado().deshacerUsados());
     }
 
     @Test
@@ -172,7 +172,7 @@ class ReglasTest {
         mover(j, "R");
         j.quitarObservador(observador);
         mover(j, "R");
-        assertEquals(2, recibidos.size()); // el aviso al suscribirse y el del primer movimiento
+        assertEquals(1, recibidos.size()); // solo el aviso del primer movimiento
     }
 
     // ---------- Archivos de nivel ----------

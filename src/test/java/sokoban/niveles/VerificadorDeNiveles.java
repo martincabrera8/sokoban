@@ -14,6 +14,7 @@ import java.util.Map;
 
 import sokoban.modelo.Direccion;
 import sokoban.modelo.EstadoNivel;
+import sokoban.modelo.Evento;
 import sokoban.modelo.Posicion;
 import sokoban.modelo.entidades.Caja;
 import sokoban.modelo.movimiento.MotorMovimiento;
@@ -110,7 +111,9 @@ public final class VerificadorDeNiveles {
     }
 
     /** Búsqueda en anchura: la primera vez que llega a un nivel completo es con la menor cantidad de movimientos. */
-    static Resultado resolver(List<String> filas) {
+    static Resultado resolver(List<String> filasConPlutonio) {
+        // El plutonio no cambia qué cajas se pueden mover: se saca para no duplicar las posiciones.
+        List<String> filas = filasConPlutonio.stream().map(fila -> fila.replace('P', ' ')).toList();
         EstadoNivel inicio = new EstadoNivel(filas);
         Map<String, Integer> indice = new HashMap<>();
         List<EstadoNivel> estados = new ArrayList<>();
@@ -136,16 +139,16 @@ public final class VerificadorDeNiveles {
                 break;
             }
             for (Direccion direccion : Direccion.values()) {
-                EstadoNivel siguiente = actual.copiar();
-                MotorMovimiento motor = new MotorMovimiento(siguiente);
-                siguiente.getJugador().conectar(motor);
-                if (!siguiente.getJugador().mover(direccion)) {
+                EstadoNivel siguiente = new EstadoNivel(filas);
+                siguiente.restaurar(actual.crearRecuerdo());
+                siguiente.conectarMediador(new MotorMovimiento(siguiente));
+                if (siguiente.getJugador().mover(direccion) == Evento.CHOQUE) {
                     continue;
                 }
                 String clave = clave(siguiente);
                 Integer j = indice.get(clave);
                 if (j == null) {
-                    j = agregar(siguiente, i, letra(direccion), empujes.get(i) + (motor.fueEmpuje() ? 1 : 0),
+                    j = agregar(siguiente, i, letra(direccion), siguiente.getEmpujes(),
                             indice, estados, padre, paso, empujes, llegaDesde, completo);
                 }
                 llegaDesde.get(j).add(i);
@@ -208,13 +211,12 @@ public final class VerificadorDeNiveles {
     private static String clave(EstadoNivel estado) {
         List<String> tablero = estado.tableroParaVista();
         StringBuilder clave = new StringBuilder(String.join("/", tablero));
-        for (int fila = 0; fila < tablero.size(); fila++) {
-            for (int columna = 0; columna < tablero.get(fila).length(); columna++) {
-                Caja caja = estado.cajaEn(new Posicion(fila, columna));
-                if (caja != null) {
-                    clave.append('|').append(caja.getResistencia());
-                }
-            }
+        List<Caja> cajas = new ArrayList<>(estado.getCajas());
+        cajas.sort((una, otra) -> una.getPosicion().fila() != otra.getPosicion().fila()
+                ? Integer.compare(una.getPosicion().fila(), otra.getPosicion().fila())
+                : Integer.compare(una.getPosicion().columna(), otra.getPosicion().columna()));
+        for (Caja caja : cajas) {
+            clave.append('|').append(caja.getResistencia());
         }
         return clave.toString();
     }

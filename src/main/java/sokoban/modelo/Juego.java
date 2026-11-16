@@ -1,16 +1,10 @@
 package sokoban.modelo;
 
 /**
- * Patrón FACADE: único punto de acceso de la interfaz gráfica al dominio.
- * También es el sujeto del patrón OBSERVER.
- *
- * La implementa JuegoSokoban (el dominio) y la decora JuegoConSonido (el sonido).
- * La vista solo conoce esta interfaz (DIP), así que el dominio puede cambiar sin tocar la vista.
- *
- * Contrato: después de cada cambio (mover, deshacer, reiniciar, viajar en el tiempo o iniciar nivel)
- * hay que llamar a actualizar(getEstado()) en todos los observadores.
+ * Patrón Facade: lo único que la vista conoce del juego.
+ * Hereda de SujetoJuego para que la vista pueda suscribirse a los cambios.
  */
-public interface Juego {
+public interface Juego extends SujetoJuego {
 
     int getCantidadNiveles();
 
@@ -22,17 +16,7 @@ public interface Juego {
 
     void reiniciar();
 
-    /**
-     * Funcionalidad adicional DeLorean: gasta una carga de plutonio y vuelve al
-     * último punto en el tiempo guardado (sin reiniciar todo el nivel).
-     */
     void viajarEnElTiempo();
 
     EstadoJuego getEstado();
-
-    /** Observer: suscribir. */
-    void agregarObservador(ObservadorJuego observador);
-
-    /** Observer: desuscribir. */
-    void quitarObservador(ObservadorJuego observador);
 }

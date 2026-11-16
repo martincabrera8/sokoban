@@ -2,7 +2,7 @@ package sokoban.comandos;
 
 import sokoban.modelo.Juego;
 
-/** Comando concreto: el DeLorean vuelve al último punto en el tiempo. */
+/** Comando concreto: el DeLorean. */
 public class ComandoViajarEnElTiempo implements Comando {
 
     private final Juego juego;

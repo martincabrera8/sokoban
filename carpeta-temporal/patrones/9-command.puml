@@ -1,0 +1,58 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 15
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #333333
+  ArrowColor #333333
+}
+hide circle
+hide empty members
+
+class PantallaJuego <<Cliente>> {
+  - mover(direccion: Direccion): void
+  - deshacer(): void
+  - viajarEnElTiempo(): void
+}
+class GrabadoraDePartida <<Invocador>> {
+  - comandos: List<Comando>
+  + ejecutar(comando: Comando): void
+  + reproducir(alTerminar: Runnable): void
+  + saltarAlFinal(): void
+}
+interface Comando <<interface>> <<Comando>> {
+  + ejecutar(): void
+}
+class ComandoMover <<Comando concreto>> {
+  - juego: Juego
+  - direccion: Direccion
+  + ejecutar(): void
+}
+class ComandoDeshacer <<Comando concreto>> {
+  - juego: Juego
+  + ejecutar(): void
+}
+class ComandoViajarEnElTiempo <<Comando concreto>> {
+  - juego: Juego
+  + ejecutar(): void
+}
+interface Juego <<interface>> <<Receptor>> {
+  + mover(direccion: Direccion): void
+  + deshacer(): void
+  + viajarEnElTiempo(): void
+}
+
+PantallaJuego --> "1" GrabadoraDePartida : grabadora
+PantallaJuego ..> ComandoMover : new
+PantallaJuego ..> ComandoDeshacer : new
+PantallaJuego ..> ComandoViajarEnElTiempo : new
+GrabadoraDePartida o--> "*" Comando : comandos
+ComandoMover .up.|> Comando
+ComandoDeshacer .up.|> Comando
+ComandoViajarEnElTiempo .up.|> Comando
+ComandoMover --> "1" Juego : juego
+ComandoDeshacer --> "1" Juego : juego
+ComandoViajarEnElTiempo --> "1" Juego : juego
+@enduml

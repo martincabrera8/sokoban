@@ -1,0 +1,43 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 15
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #333333
+  ArrowColor #333333
+}
+hide circle
+hide empty members
+
+class SonidosDeInterfaz <<final>> <<Cliente>> {
+  - {static} alApretarTecla(evento: KeyEvent): boolean
+}
+class Sonidos <<final>> <<Contexto>> {
+  - estado: EstadoSonido
+  + reproducir(sonido: Sonido): void
+  + alternarSonido(): void
+  ~ establecerEstado(nuevoEstado: EstadoSonido): void
+  ~ detenerTodo(): void
+}
+interface EstadoSonido <<interface>> <<Estado>> {
+  + reproducir(clip: Clip): void
+  + alternar(contexto: Sonidos): void
+}
+class SonidoActivado <<Estado concreto>> {
+  + reproducir(clip: Clip): void
+  + alternar(contexto: Sonidos): void
+}
+class SonidoSilenciado <<Estado concreto>> {
+  + reproducir(clip: Clip): void
+  + alternar(contexto: Sonidos): void
+}
+
+SonidosDeInterfaz ..> Sonidos : alternarSonido()\nreproducir(CLIC)
+Sonidos --> "1" EstadoSonido : estado
+SonidoActivado .up.|> EstadoSonido
+SonidoSilenciado .up.|> EstadoSonido
+SonidoActivado .right.> SonidoSilenciado : alternar: new SonidoSilenciado()
+SonidoSilenciado .left.> SonidoActivado : alternar: new SonidoActivado()
+@enduml

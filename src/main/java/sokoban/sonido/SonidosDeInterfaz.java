@@ -10,11 +10,8 @@ import javax.swing.AbstractButton;
 import javax.swing.SwingUtilities;
 
 /**
- * Sonidos de la interfaz (no del juego): arranque, clic de botones y tecla M para silenciar.
- *
- * Escucha los eventos de TODA la aplicación desde afuera, así que no hace falta tocar
- * ninguna pantalla ni ningún botón: cualquier botón que exista o se agregue después
- * suena solo.
+ * Sonidos de la interfaz: el arranque, el clic de cualquier botón y la tecla M.
+ * Escucha los eventos de toda la aplicación, así no hay que tocar cada pantalla.
  *
  * @author Mora Coghlan
  */

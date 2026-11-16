@@ -3,7 +3,7 @@ package sokoban.sonido;
 import javax.sound.sampled.Clip;
 
 /**
- * Patrón State — estado concreto: el sonido está silenciado.
+ * Patrón State: estado concreto. El sonido está silenciado.
  *
  * @author Mora Coghlan
  */
