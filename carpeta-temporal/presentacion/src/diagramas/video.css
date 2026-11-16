@@ -1,0 +1,3 @@
+/* El juego: el video llena la pantalla (16:10 dentro de 16:9: las franjas laterales son del mismo azul que el video) */
+.video__marco { position: absolute; inset: calc(var(--ey, 0px) * -1) calc(var(--ex, 0px) * -1); background: var(--fondo); }
+.video__pantalla { display: block; width: 100%; height: 100%; object-fit: contain; background: var(--fondo); }

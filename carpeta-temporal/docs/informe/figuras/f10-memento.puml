@@ -1,0 +1,47 @@
+@startuml f10-memento
+!include estilo.iuml
+package "sokoban.modelo" {
+  class JuegoSokoban <<Originador y cuidador del deshacer>> DOMINIO {
+    {field} -historial: Deque<RecuerdoNivel>  (máx. 15)
+    -maquinaDelTiempo: MaquinaDelTiempo
+    -plutonio, viajes: int
+    -crearRecuerdo(): RecuerdoNivel
+    -restaurar(r: RecuerdoNivel)
+    -olvidarPuntosDelFuturo()
+    +deshacer()
+    +viajarEnElTiempo()
+  }
+  class RecuerdoNivel <<Memento>> INTEG {
+    -nivel: EstadoNivel
+    -movimientos, empujes, plutonio: int
+    ~RecuerdoNivel(nivel, movimientos, empujes, plutonio)
+    ~nivel(): EstadoNivel
+    ~movimientos(): int
+    ~empujes(): int
+    ~plutonio(): int
+  }
+  class EstadoNivel DOMINIO {
+    +copiar(): EstadoNivel
+    +recogerPlutonio(p: Posicion): boolean
+    +conservarPlutonioRecogido(presente)
+    +cajasEnDestino(): int
+  }
+}
+package "sokoban.modelo.tiempo" {
+  class MaquinaDelTiempo <<Cuidador del DeLorean>> INTEG {
+    {field} -puntos: Deque<RecuerdoNivel>  (máx. 10)
+    +guardar(r: RecuerdoNivel)
+    +ultimo(): RecuerdoNivel
+    +descartarUltimo()
+    +cantidad(): int
+    +olvidarTodo()
+  }
+}
+JuegoSokoban ..> RecuerdoNivel : crea y restaura
+JuegoSokoban o--> "0..15" RecuerdoNivel : historial
+JuegoSokoban *--> "1" MaquinaDelTiempo
+MaquinaDelTiempo o--> "0..10" RecuerdoNivel : puntos
+RecuerdoNivel --> "1" EstadoNivel : copia profunda
+note bottom of MaquinaDelTiempo : está en otro paquete: no puede\nleer el contenido del recuerdo
+note left of RecuerdoNivel : constructor y lectores de paquete;\nnivel() devuelve una copia nueva
+@enduml

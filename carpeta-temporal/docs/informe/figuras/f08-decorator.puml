@@ -1,0 +1,36 @@
+@startuml f08-decorator
+!include estilo.iuml
+class "PantallaJuego\ny los comandos" as CLI <<Cliente>> LUCA
+interface Juego <<Componente>> LUCA {
+  +iniciarNivel(numero: int)
+  +mover(direccion: Direccion)
+  +deshacer()
+  +reiniciar()
+  +viajarEnElTiempo()
+  +getEstado(): EstadoJuego
+  ... (9 métodos)
+}
+class JuegoSokoban <<Componente concreto>> DOMINIO
+abstract class JuegoDecorado <<Decorador base>> INTEG {
+  #juego: Juego {final}
+  #JuegoDecorado(juego: Juego)
+  delega los 9 métodos en juego
+}
+class JuegoConSonido <<Decorador concreto>> SONIDO {
+  +JuegoConSonido(juego: Juego)
+  +iniciarNivel(numero: int)
+  +mover(direccion: Direccion)
+  +deshacer()
+  +reiniciar()
+  +viajarEnElTiempo()
+  ~{static} queSonidoCorresponde(antes, despues): Sonido
+}
+class Sonidos <<Singleton>> SONIDO
+CLI --> Juego
+JuegoSokoban ..|> Juego
+JuegoDecorado ..|> Juego
+JuegoDecorado o--> "1" Juego : juego (el envuelto)
+JuegoConSonido --|> JuegoDecorado
+JuegoConSonido ..> Sonidos : reproducir(...)
+note bottom of JuegoConSonido : Main: new JuegoConSonido(new JuegoSokoban(cargador))
+@enduml

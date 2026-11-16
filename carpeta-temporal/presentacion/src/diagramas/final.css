@@ -1,0 +1,14 @@
+/* Cierre: el equipo como cajas en su destino, el uso de IA y las preguntas */
+.fin__fila { display: flex; align-items: center; gap: 30px; }
+.fin__casilla { position: relative; width: 96px; height: 96px; flex: none; }
+.fin__casilla > img { width: 96px; height: 96px; image-rendering: pixelated; }
+.fin__caja.ficha { --b: 96px; }
+.fin__caja { filter: drop-shadow(0 0 calc(8px + var(--vida, 0) * 6px) color-mix(in srgb, var(--acento) calc(var(--marco, 0) * 60%), transparent)); }
+.fin__nombre { font-family: var(--f-display); font-size: 42px; color: var(--titulo); line-height: 1.1; }
+.fin__parte { margin-top: 6px; font-size: 26px; color: var(--tinta-2); line-height: 1.35; }
+.fin__ia-texto { margin: 0; font-size: 26px; line-height: 1.45; color: var(--tinta-2); }
+.fin__ia-texto b { color: var(--tinta); }
+.fin__preguntas { display: flex; align-items: center; gap: 24px; transform: translateY(calc(var(--vida, 0) * -4px)); }
+.fin__pj { width: 96px; height: 96px; }
+.fin__pregunta { font-family: var(--f-display); font-size: 72px; color: var(--acento); line-height: 1; text-shadow: 0 0 30px var(--brillo); }
+.fin__repo { margin: 0; font-size: 24px; color: var(--tinta-3); }

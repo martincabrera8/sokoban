@@ -1,0 +1,51 @@
+/* Portada corta: la bajada no pisa el almacén 3D */
+.cab--portada-corta .bajada { max-width: 640px; }
+/* Cabecera angosta para dejar lugar al fragmento del video (DeLorean y repetición) */
+.cab.cab--corta-clip { width: 1010px; }
+.cab--corta-clip .bajada { max-width: 1010px; }
+.clip { margin: 0; border-radius: var(--radio); overflow: hidden; background: var(--fondo-hondo); border: 2px solid var(--linea-media);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--fondo-hondo) 70%, transparent), var(--sombra-lejos); }
+.clip__video { display: block; width: 100%; height: 100%; object-fit: cover; }
+.clip__pie { margin: 0; font-size: 22px; line-height: 1.35; color: var(--tinta-3); }
+
+/* Memento: los tres roles */
+.mem__rol { padding: 20px 24px; border-radius: var(--radio); background: linear-gradient(180deg, var(--superficie-2), var(--superficie)); border: 1px solid var(--linea-media); box-shadow: var(--sombra-caja); }
+.mem__rol::after { content: ""; position: absolute; inset: -5px; border: 3px solid var(--acento); border-radius: 18px; opacity: var(--marco, 0); pointer-events: none; }
+.mem__rol--rec { border: 2px solid var(--acento); background: linear-gradient(180deg, color-mix(in srgb, var(--acento) 16%, var(--superficie-2)), var(--superficie));
+  box-shadow: 0 0 calc(20px + var(--vida, 0) * 12px) color-mix(in srgb, var(--acento) 30%, transparent), var(--sombra-caja); }
+.mem__rotulo { font-size: 22px; letter-spacing: .08em; text-transform: uppercase; color: var(--tinta-3); font-weight: 600; }
+.mem__nombre { margin: 4px 0 8px; font-family: var(--f-mono); font-size: 32px; color: var(--titulo); }
+.mem__linea { display: block; font-family: var(--f-mono); font-size: 22px; line-height: 1.45; color: var(--tinta-2); }
+.mem__rol--rec .mem__linea { font-family: var(--f-texto); font-size: 24px; }
+.mem__sello { display: inline-block; margin-top: 10px; padding: 3px 12px; border-radius: 999px; font-size: 22px; background: var(--fondo-hondo); border: 1px solid var(--acento); color: var(--acento); }
+.mem__pila { position: absolute; right: 22px; top: 22px; width: 64px; height: 70px; }
+.mem__ficha { position: absolute; left: 0; width: 64px; height: 40px; border-radius: 8px; background: color-mix(in srgb, var(--acento) 35%, var(--superficie-2)); border: 2px solid var(--acento); }
+.mem__ficha:nth-child(1) { top: 30px; }
+.mem__ficha:nth-child(2) { top: 14px; left: 6px; }
+.mem__capsula { left: 0; top: 0; z-index: 6; padding: 8px 16px; border-radius: 10px; font-family: var(--f-mono); font-size: 22px; white-space: nowrap; color: var(--fondo-hondo);
+  background: var(--acento); box-shadow: 0 0 26px var(--brillo); }
+
+/* Línea de tiempo */
+.mem__via { fill: none; stroke: var(--linea-media); stroke-width: 6; stroke-linecap: round; }
+.mem__hecho { fill: none; stroke: var(--acento); stroke-width: 6; stroke-linecap: round; }
+.mem__futuro { fill: none; stroke: var(--fondo); stroke-width: 8; stroke-dasharray: 2 14; }
+.mem__arco { fill: none; stroke: var(--exito); stroke-width: 4; stroke-dasharray: 10 10; stroke-linecap: round; }
+.mem__marca { transform: translate(-50%, -11px); display: flex; flex-direction: column; align-items: center; gap: 10px; white-space: nowrap; }
+.mem__marca i { width: 22px; height: 22px; border-radius: 50%; background: var(--superficie-2); border: 3px solid var(--tinta-3); }
+.mem__marca span { font-size: 22px; color: var(--tinta-2); }
+.mem__marca--punto i { background: var(--acento); border-color: var(--titulo); box-shadow: 0 0 18px var(--brillo); }
+.mem__marca--rota i { background: var(--pj-campera); border-color: var(--tinta); border-radius: 4px; transform: rotate(45deg); }
+.mem__plutonio { transform: translate(-50%, -50%); }
+.mem__plutonio img { width: 52px; height: 52px; image-rendering: pixelated; filter: drop-shadow(0 0 10px color-mix(in srgb, var(--exito) 60%, transparent)); }
+.mem__jugador { left: var(--x); transform: translate(-50%, -50%); }
+.mem__jugador img { width: 64px; height: 64px; image-rendering: pixelated; }
+.mem__delorean { left: 0; top: 0; z-index: 5; }
+.mem__delorean img { width: 76px; height: 76px; image-rendering: pixelated; filter: drop-shadow(0 0 16px color-mix(in srgb, var(--exito) 70%, transparent)); }
+.mem__carga { display: flex; align-items: center; gap: 12px; }
+.mem__carga img { width: 52px; height: 52px; image-rendering: pixelated; }
+.mem__carga b { font-family: var(--f-mono); font-size: 34px; color: var(--exito); font-weight: 500; }
+.mem__carga span { font-size: 22px; color: var(--tinta-3); }
+.mem__dif { display: flex; gap: 46px; align-items: baseline; width: 1680px; }
+.mem__dif p { margin: 0; font-size: 24px; color: var(--tinta-2); }
+.mem__dif b { color: var(--titulo); font-weight: 700; }
+.mem__dif .mem__dif-igual { margin-left: auto; color: var(--acento); }

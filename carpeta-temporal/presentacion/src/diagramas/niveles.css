@@ -1,0 +1,29 @@
+/* Calidad: los tres niveles reales jugando su solución y las pruebas */
+.niv__tablero { width: calc(var(--cols) * var(--b)); filter: drop-shadow(0 22px 34px color-mix(in srgb, var(--fondo-hondo) 70%, transparent)); }
+.niv__tablero::after { content: ""; position: absolute; inset: -8px; border: 3px solid var(--acento); border-radius: 10px; opacity: 0; transition: opacity var(--dur-ui); box-shadow: 0 0 30px var(--brillo); }
+.niv__tablero--completo::after { opacity: 1; }
+.niv__grilla { display: grid; grid-template-columns: repeat(var(--cols), var(--b)); grid-auto-rows: var(--b); border-radius: 6px; overflow: hidden; }
+.niv__celda { position: relative; }
+.niv__celda img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.niv__ficha { position: absolute; left: 0; top: 0; width: var(--b); height: var(--b); will-change: transform; }
+.niv__ficha img { width: 100%; height: 100%; image-rendering: pixelated; }
+.niv__ficha::after { content: ""; position: absolute; inset: 1px; border: 3px solid var(--acento); border-radius: 4px; opacity: var(--marco, 0); }
+.niv__ficha.ficha--en-destino { --marco: 1; }
+.niv__ficha--jugador { z-index: 2; }
+.niv__pie { display: flex; flex-direction: column; gap: 4px; }
+.niv__nombre { font-family: var(--f-display); font-size: 32px; color: var(--titulo); }
+.niv__epoca { font-family: var(--f-texto); font-weight: 700; }
+.niv__epoca--1955 { color: color-mix(in srgb, var(--e1955) 70%, var(--tinta)); }
+.niv__epoca--1985 { color: color-mix(in srgb, var(--e1985) 70%, var(--tinta)); }
+.niv__epoca--2015 { color: color-mix(in srgb, var(--e2015) 70%, var(--tinta)); }
+.niv__titulo { font-size: 24px; color: var(--tinta-2); }
+.niv__cifras { font-size: 24px; color: var(--tinta-2); }
+.niv__cifras b { font-family: var(--f-mono); font-weight: 500; color: var(--exito); }
+.niv__prueba { font-size: 24px; font-weight: 600; color: var(--acento); }
+.niv__pruebas { display: flex; align-items: center; gap: 34px; padding-top: 22px; border-top: 1px solid var(--linea-suave); }
+.niv__total { display: flex; align-items: baseline; gap: 16px; margin-right: auto; }
+.niv__total b { font-family: var(--f-display); font-size: 64px; line-height: 1; color: var(--acento); font-variant-numeric: tabular-nums; }
+.niv__total span { font-size: 26px; color: var(--tinta); }
+.niv__clase { font-size: 22px; color: var(--tinta-2); }
+.niv__clase code { font-family: var(--f-mono); color: var(--tinta-2); }
+.niv__clase b { font-family: var(--f-mono); color: var(--exito); font-weight: 500; }

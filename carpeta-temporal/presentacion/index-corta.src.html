@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sokoban, presentación final</title>
+<!--ESTILOS-->
+</head>
+<body>
+<main class="escenario" aria-label="Presentación final del Sokoban, versión corta">
+
+  <section class="slide" data-diagrama="portada" aria-label="Portada">
+    <div class="lienzo"></div>
+    <header class="cab cab--abajo cab--portada-corta">
+      <p class="rotulo">Trabajo integrador · UADE</p>
+      <h2 class="titulo titulo--portada">Sokoban</h2>
+      <p class="bajada">Un almacén que cambia de época, en Java Swing, con dos funcionalidades propias: el DeLorean y la repetición de la partida.</p>
+      <p class="equipo-linea">Martín Cabrera, Luca Di Gresia, Pedro Castillo, Lucía Santamarina y Mora Coghlan</p>
+    </header>
+    <aside class="notas"><p>Treinta segundos. Somos cinco: presentamos el Sokoban en Java Swing. Cada nivel cambia de época (1955, 1985 y 2015) y sumamos dos funcionalidades con patrones: el DeLorean (Memento) y la repetición de la partida (Command).</p><p>Primero lo vemos jugar; después, cómo está diseñado.</p></aside>
+  </section>
+
+  <section class="slide" data-diagrama="video" data-t="portal" aria-label="El juego">
+    <div class="lienzo"></div>
+    <h2 class="titulo solo-lector">El juego, en 1:45</h2>
+    <aside class="notas"><p>El video arranca solo y dura 1:45, con sonido y subtítulos. Z lo pausa y lo reanuda. Flecha derecha pasa a la siguiente diapositiva.</p><p>0:05 Cómo jugar. 0:14 Nivel 1 (1955) y deshacer. 0:35 Nivel 2 (1985): plutonio, la llave abre los muros. 0:44 la frágil se rompe por error. 0:48 DeLorean. 0:59 Ver repetición. 1:12 Nivel 3 (2015): hielo y reiniciar. 1:20 tecla M. 1:26 resultados.</p></aside>
+  </section>
+
+  <section class="slide" data-diagrama="capas" data-t="profundidad" aria-label="Arquitectura">
+    <div class="lienzo"></div>
+    <header class="cab">
+      <p class="rotulo">Arquitectura · MVC y Facade</p>
+      <h2 class="titulo">La vista no toca el dominio</h2>
+      <p class="bajada">La vista solo conoce la interfaz <code>Juego</code>, la fachada, y recibe una foto inmutable del nivel: <code>EstadoJuego</code>.</p>
+    </header>
+    <aside class="notas"><p>Arriba la vista de Luca, en el medio el contrato y abajo quien lo implementa. La vista pide cosas como mover(DERECHA) y nunca recibe una Caja ni el tablero: recibe EstadoJuego, un record inmutable. Eso es MVC con inversión de dependencias.</p><p>Paso 1: el pedido baja por la fachada Juego, entra a JuegoConSonido y llega a JuegoSokoban, que coordina cargador, nivel, motor y recuerdos. Paso 2: vuelve la foto a cada observador (PanelHUD y PanelTablero): Observer. Paso 3: en Main se arma la cadena en una sola línea.</p></aside>
+  </section>
+
+  <section class="slide" data-diagrama="reglas" data-t="empuje" aria-label="Patrones del dominio">
+    <div class="lienzo"></div>
+    <header class="cab">
+      <p class="rotulo">Patrones del dominio · Strategy y Mediator</p>
+      <h2 class="titulo">Cada caja, su regla</h2>
+      <p class="bajada">Cada <code>Caja</code> delega lo que pasa al empujarla en su estrategia. Nadie mueve nada solo: todo pasa por <code>MotorMovimiento</code>.</p>
+    </header>
+    <aside class="notas"><p>Mediator: el Jugador y las Cajas son colegas que no se conocen. El jugador le pide intentarMover al motor, que resuelve paredes, empujes y el hielo en un solo lugar.</p><p>Strategy: después de cada empuje la caja llama a su ComportamientoCaja. La normal no hace nada; la frágil pierde resistencia (arranca en 3, el tercer empuje la rompe) y avisa cajaRota; la llave avisa llaveEmpujada y, si está sobre el cerrojo, el motor abre los muros. Las estrategias no tocan el tablero: le avisan al mediador.</p></aside>
+  </section>
+
+  <section class="slide" data-diagrama="delorean" data-t="portal" aria-label="DeLorean, patrón Memento">
+    <div class="lienzo"></div>
+    <header class="cab cab--corta-clip">
+      <p class="rotulo">Funcionalidad 1 · DeLorean · Patrón Memento</p>
+      <h2 class="titulo">Volver en el tiempo</h2>
+      <p class="bajada">Cada plutonio que juntás es un viaje al último punto en el tiempo, sin reiniciar el nivel.</p>
+    </header>
+    <aside class="notas"><p>Los puntos en el tiempo se guardan solos: al empezar el nivel y cada vez que una caja llega a un destino (aparece un aviso abajo). Viajar cuesta un plutonio y 100 puntos; el plutonio ya juntado no reaparece.</p><p>Memento: JuegoSokoban es el originador (crearRecuerdo y restaurar). RecuerdoNivel es el recuerdo: una copia del nivel con movimientos, empujes y plutonio, que solo se lee desde sokoban.modelo. MaquinaDelTiempo es el cuidador: guarda hasta 10 y no puede mirar adentro porque está en otro paquete.</p><p>Diferencia con deshacer: deshacer usa el mismo recuerdo, pero vuelve 5 movimientos (hasta 3 veces seguidas, pila de 15). El DeLorean vuelve al último punto guardado.</p></aside>
+  </section>
+
+  <section class="slide" data-diagrama="repeticion" data-t="baldosas" aria-label="Repetición, patrón Command">
+    <div class="lienzo"></div>
+    <header class="cab cab--corta-clip">
+      <p class="rotulo">Funcionalidad 2 · Repetición · Patrón Command</p>
+      <h2 class="titulo">Cada tecla es un objeto</h2>
+      <p class="bajada">La partida queda grabada como una lista de comandos. Al final, «Ver repetición» los vuelve a ejecutar.</p>
+    </header>
+    <aside class="notas"><p>PantallaJuego es el cliente: cada flecha, deshacer o la tecla T se convierte en un ComandoMover, ComandoDeshacer o ComandoViajarEnElTiempo. GrabadoraDePartida es el invocador: ejecuta el comando y lo anota, sin saber qué hace. El receptor es Juego.</p><p>Repeticion reinicia el nivel y vuelve a ejecutar la lista cada 160 ms. Como el juego no tiene azar, termina exactamente igual (lo prueba RepeticionTest). Reiniciar no se graba: borra la grabación.</p><p>Si preguntan: Command guarda acciones; Memento guarda el estado.</p></aside>
+  </section>
+
+  <section class="slide" data-diagrama="envoltura" data-t="profundidad" aria-label="El sonido">
+    <div class="lienzo"></div>
+    <header class="cab">
+      <p class="rotulo">Sonido · Decorator y State</p>
+      <h2 class="titulo">El sonido envuelve al juego</h2>
+      <p class="bajada"><code>JuegoConSonido</code> también es un <code>Juego</code>: mira el estado antes y después de cada pedido y hace sonar lo que cambió.</p>
+    </header>
+    <aside class="notas"><p>Decorator: JuegoDecorado es la base abstracta que delega los 9 métodos de Juego; JuegoConSonido hereda y solo sobrescribe iniciarNivel, mover, deshacer, viajarEnElTiempo y reiniciar. No es un Observer porque un observador no se entera de un choque contra la pared: el decorador ve cada pedido y su resultado.</p><p>State: Sonidos delega en su estado. SonidoActivado reproduce; SonidoSilenciado no hace nada. Con la tecla M, cada estado decide a cuál pasa.</p><p>Observer: PanelHUD y PanelTablero implementan ObservadorJuego. Singleton: Sonidos e Imagenes, con constructor privado y obtenerInstancia(). Los 16 efectos son archivos propios generados por código.</p></aside>
+  </section>
+
+  <section class="slide" data-diagrama="plano" data-t="portal" aria-label="Diagrama de clases">
+    <div class="lienzo"></div>
+    <header class="cab cab--angosta">
+      <p class="rotulo">Diagrama de clases</p>
+      <h2 class="titulo">Todo el diseño en un plano</h2>
+    </header>
+    <aside class="notas"><p>El diagrama completo, en StarUML. Recorremos las zonas con cada flecha: vista y contrato (Facade, Observer, Singleton), dominio (Strategy y Mediator), DeLorean (Memento), repetición (Command) y sonido (Decorator, State y Singleton).</p></aside>
+  </section>
+
+  <section class="slide" data-diagrama="niveles" data-t="empuje" aria-label="Calidad">
+    <div class="lienzo"></div>
+    <header class="cab">
+      <p class="rotulo">Calidad · niveles y pruebas</p>
+      <h2 class="titulo">Cada mecánica hace falta</h2>
+      <p class="bajada">Un solucionador recorre todas las posiciones con el motor real: encuentra la solución más corta y la vuelve a buscar sin cada mecánica.</p>
+    </header>
+    <aside class="notas"><p>Los tableros juegan la solución más corta real, la misma que corre NivelesTest. VerificadorDeNiveles es una búsqueda en anchura sobre MotorMovimiento.</p><p>Nivel 1: 39 movimientos y 18 empujes; el 70% de las posiciones alcanzables no tiene salida, hay que planificar el orden. Nivel 2: sin el cerrojo no tiene solución. Nivel 3: sin el hielo no tiene solución.</p><p>23 pruebas JUnit 5; mvn package las corre y todas pasan.</p></aside>
+  </section>
+
+  <section class="slide" data-diagrama="final" data-t="baldosas" aria-label="Cierre">
+    <div class="lienzo"></div>
+    <header class="cab">
+      <p class="rotulo">Equipo</p>
+      <h2 class="titulo">Cinco partes, un solo juego</h2>
+    </header>
+    <aside class="notas"><p>Quién hizo qué. Cada uno puede defender su parte y el resto del proyecto.</p><p>Uso de IA: usamos Claude (Anthropic) como asistente y está declarado en el informe técnico, sección 10. El equipo revisó, probó y es responsable de todo el código.</p><p>Preguntas.</p></aside>
+  </section>
+
+</main>
+<!--DATOS-->
+<!--PROGRAMA-->
+</body>
+</html>

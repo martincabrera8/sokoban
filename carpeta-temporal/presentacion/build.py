@@ -1,6 +1,8 @@
 """Arma la presentación en un solo HTML offline: dist/presentacion-sokoban.html
 
 Uso (desde presentacion/):  npm install  y después  python3 build.py
+Versión corta (8 a 10 diapositivas, con el video de gameplay embebido): python3 build.py --corta
+  (o PRESENTACION_VERSION=corta), arma dist/presentacion-corta.html desde index-corta.src.html y src/main-corta.js.
 Antes de armar corre un control: sin colores ni tipografías fuera de tokens.css, sin style= en el HTML,
 sin rayas largas en los textos y sin funciones exportadas que nadie use. Si algo falla, no arma.
 """
@@ -18,9 +20,14 @@ from PIL import Image
 AQUI = Path(__file__).resolve().parent
 SRC = AQUI / "src"
 ASSETS = AQUI.parent.parent / "assets"  # assets/ del juego, en la raíz del repo
+CORTA = "--corta" in sys.argv or os.environ.get("PRESENTACION_VERSION", "") == "corta"
+HTML_FUENTE = AQUI / ("index-corta.src.html" if CORTA else "index.src.html")
+ENTRADA = SRC / ("main-corta.js" if CORTA else "main.js")
+# Video de gameplay que la versión corta lleva adentro (base64; el navegador lo convierte en un blob al entrar).
+VIDEO = Path(os.environ.get("PRESENTACION_VIDEO", AQUI.parent.parent / "docs" / "video" / "gameplay-sokoban.mp4"))
 UML = Path(os.environ.get("PRESENTACION_UML", AQUI.parent / "docs" / "uml" / "2-diagrama-completo.svg"))  # otro plano para probar
 FUENTES = AQUI / "node_modules" / "@fontsource"
-SALIDA = Path(os.environ.get("PRESENTACION_SALIDA", AQUI / "dist" / "presentacion-sokoban.html"))  # otra salida para pruebas en paralelo
+SALIDA = Path(os.environ.get("PRESENTACION_SALIDA", AQUI / "dist" / ("presentacion-corta.html" if CORTA else "presentacion-sokoban.html")))  # otra salida para pruebas en paralelo
 
 TIPOS = [  # (familia, archivo, peso)
     ("Pixelify Sans", "pixelify-sans/files/pixelify-sans-latin-500-normal.woff2", 500),
@@ -44,10 +51,11 @@ def control():
             m = re.search(r"font-family\s*:\s*([^;\"]+)", linea)
             if m and not m.group(1).strip().startswith("var("):
                 errores.append(f"{p.name}:{n} tipografía fuera de tokens.css")
-    html = (AQUI / "index.src.html").read_text(encoding="utf-8")
-    if re.search(r"\sstyle=", html):
-        errores.append("index.src.html: hay style= en el HTML")
-    for p in [AQUI / "index.src.html", *SRC.rglob("*.js")]:
+    paginas = sorted(AQUI.glob("index*.src.html"))
+    for p in paginas:
+        if re.search(r"\sstyle=", p.read_text(encoding="utf-8")):
+            errores.append(f"{p.name}: hay style= en el HTML")
+    for p in [*paginas, *SRC.rglob("*.js")]:
         if re.search("[—–]", p.read_text(encoding="utf-8")):
             errores.append(f"{p.name}: tiene raya larga (usar coma, punto o dos puntos)")
     todo_js = {p: p.read_text(encoding="utf-8") for p in SRC.rglob("*.js")}
@@ -64,7 +72,7 @@ def control():
 
 def empaquetar():
     esbuild = AQUI / "node_modules" / ".bin" / "esbuild"
-    r = subprocess.run([str(esbuild), str(SRC / "main.js"), "--bundle", "--format=iife", "--minify", "--target=es2020",
+    r = subprocess.run([str(esbuild), str(ENTRADA), "--bundle", "--format=iife", "--minify", "--target=es2020",
                         "--legal-comments=none"], capture_output=True, text=True, cwd=AQUI)
     if r.returncode != 0:
         print(r.stderr)
@@ -140,7 +148,12 @@ def armar():
     for propio in sorted((SRC / "diagramas").glob("*.css")):  # estilos propios de cada diagrama
         css += "\n" + propio.read_text(encoding="utf-8")
     datos = ("window.PERSONAJE=" + json.dumps(personaje()) + ";window.IMG=" + json.dumps(mapa) + ";window.INVENTARIO=" + json.dumps(inventario) + ";window.UML=" + json.dumps(uml) + ";")
-    html = (AQUI / "index.src.html").read_text(encoding="utf-8")
+    if CORTA:
+        if not VIDEO.exists():
+            print(f"Falta el video: {VIDEO}")
+            sys.exit(1)
+        datos += "window.VIDEO=" + json.dumps("data:video/mp4;base64," + base64.b64encode(VIDEO.read_bytes()).decode()) + ";"
+    html = HTML_FUENTE.read_text(encoding="utf-8")
     html = html.replace("<!--ESTILOS-->", "<style>\n" + css + "\n</style>")
     html = html.replace("<!--DATOS-->", "<script>" + datos.replace("</script", "<\\/script") + "</script>")
     html = html.replace("<!--PROGRAMA-->", "<script>" + js + "</script>")
@@ -152,7 +165,7 @@ def armar():
     for etiqueta in ["<!doctype html>", '<html lang="es">', "<head>", '<meta charset="utf-8">',
                      '<meta name="viewport" content="width=device-width, initial-scale=1">', "</head>", "<body>", "</body>", "</html>"]:
         pagina = pagina.replace(etiqueta, "", 1)
-    (SALIDA.parent / "presentacion-sokoban-pagina.html").write_text(pagina.strip() + "\n", encoding="utf-8")
+    (SALIDA.parent / (SALIDA.stem + "-pagina.html")).write_text(pagina.strip() + "\n", encoding="utf-8")
 
 
 if __name__ == "__main__":

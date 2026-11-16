@@ -1,0 +1,75 @@
+@startuml f12-secuencia-mover
+skinparam shadowing false
+skinparam defaultFontName Inter
+skinparam defaultFontSize 13
+skinparam sequenceMessageAlign center
+skinparam roundCorner 8
+skinparam ArrowColor #4A403A
+skinparam ArrowThickness 1.2
+skinparam sequenceLifeLineBorderColor #8A7F76
+skinparam sequenceParticipantBorderColor #6C8EBF
+skinparam sequenceParticipantBackgroundColor #DAE8FC
+skinparam sequenceActorBorderColor #6E1A2C
+skinparam sequenceGroupBorderColor #C9A24A
+skinparam sequenceGroupHeaderFontColor #6E1A2C
+skinparam noteBackgroundColor #FFFDF5
+skinparam noteBorderColor #C9A24A
+
+actor Jugador as U
+participant "PantallaJuego\n(Cliente)" as PJ
+participant "GrabadoraDePartida\n(Invocador)" as GR #FFF2CC
+participant "c: ComandoMover" as CM #FFF2CC
+participant "JuegoConSonido\n(Decorator)" as JS #EEDDF3
+participant "JuegoSokoban\n(Facade, Originador)" as JK #FCDDC7
+participant "jugador:\nJugador" as JU #FCDDC7
+participant "MotorMovimiento\n(Mediator)" as MM #FCDDC7
+participant "caja:\nCaja" as CA #FCDDC7
+participant "PanelHUD y\nPanelTablero" as OBS
+participant "Sonidos\n(Singleton)" as SO #EEDDF3
+
+U -> PJ : tecla DERECHA
+PJ -> PJ : tablero.mirarHacia(DERECHA)
+PJ -> CM ** : new ComandoMover(juego, DERECHA)
+PJ -> GR : ejecutar(c)
+activate GR
+GR -> CM : ejecutar()
+CM -> JS : mover(DERECHA)
+activate JS
+JS -> JK : getEstado()
+JK --> JS : antes
+JS -> JK : mover(DERECHA)
+activate JK
+JK -> JK : anterior = crearRecuerdo()\n(Memento: RecuerdoNivel)
+JK -> JU : mover(DERECHA)
+JU -> MM : intentarMover(DERECHA)
+activate MM
+MM -> MM : celda siguiente con caja y\ndetrás libre (si es hielo, desliza)
+MM -> CA : setPosicion(destino)
+MM -> CA : despuesDeEmpujar()
+note right of CA : Strategy: la frágil avisa\ncajaRota y la llave\nllaveEmpujada al mediador
+MM -> JU : setPosicion(siguiente)
+MM --> JU : true
+deactivate MM
+JU --> JK : true
+JK -> JK : historial.push(anterior)\nmovimientos++, empujes++\nrecoger plutonio; si llegó una caja\na destino, punto en el tiempo
+group Observer: notificar()
+  JK -> OBS : actualizar(estadoJuego)
+end
+deactivate JK
+JS -> JK : getEstado()
+JK --> JS : despues
+JS -> SO : reproducir(queSonidoCorresponde(antes, despues))
+deactivate JS
+GR -> GR : grabados.add(c)
+deactivate GR
+PJ -> JS : getEstado()
+JS --> PJ : estadoJuego
+opt se guardó un punto en el tiempo
+  PJ -> PJ : avisar("Punto en el tiempo guardado...")
+end
+alt estadoJuego.completado()
+  PJ -> PJ : mostrarResultado(estadoJuego)
+else estadoJuego.sinSolucion()
+  PJ -> PJ : mostrarSinSolucion(estadoJuego)
+end
+@enduml

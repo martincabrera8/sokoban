@@ -26,25 +26,28 @@ const AUTORES = ["Luca", "Integración", "Martín", "Pedro y Lucía", "Mora", "P
    o reordenarse sin tocar este archivo. luces: relaciones que se encienden primero, [desde, hasta]. */
 const ZONAS = [
   { nombre: "Vista", detalle: "Las pantallas de Luca. Cada una contiene a la siguiente y todas piden imágenes a la misma caché.",
-    tomas: [["Main", "VentanaPrincipal", "PantallaJuego"], ["MenuPrincipal", "Cartel", "VentanaPrincipal"], ["PanelTablero", "PanelHUD", "Epoca", "Imagenes"]],
-    luces: [["Main", "VentanaPrincipal"], ["VentanaPrincipal", "PantallaJuego"], ["VentanaPrincipal", "MenuPrincipal"], ["MenuPrincipal", "Cartel"], ["PantallaJuego", "Cartel"],
+    tomas: [["Main", "VentanaPrincipal", "PantallaJuego"], ["MenuPrincipal", "Cartel", "PanelAyuda", "VentanaPrincipal"], ["PanelTablero", "PanelHUD", "Epoca", "Imagenes"]],
+    luces: [["Main", "VentanaPrincipal"], ["VentanaPrincipal", "PantallaJuego"], ["VentanaPrincipal", "MenuPrincipal"], ["MenuPrincipal", "Cartel"], ["MenuPrincipal", "PanelAyuda"], ["PantallaJuego", "Cartel"],
       ["PantallaJuego", "PanelTablero"], ["PantallaJuego", "PanelHUD"], ["PanelTablero", "Epoca"], ["PanelTablero", "Imagenes"], ["PanelHUD", "Imagenes"], ["MenuPrincipal", "Imagenes"], ["Imagenes", "Imagenes"], ["Imagenes", "Assets"]] },
   { nombre: "Contrato", detalle: "Las flechas que salen de la vista terminan acá. Nunca tocan el dominio ni el sonido.",
-    tomas: [["PantallaJuego", "PanelHUD", "PanelTablero", "Juego", "ObservadorJuego", "EstadoJuego", "Direccion"], ["Juego", "ObservadorJuego", "EstadoJuego", "Direccion"]],
-    luces: [["PantallaJuego", "Juego"], ["PanelHUD", "Juego"], ["PanelHUD", "ObservadorJuego"], ["PanelTablero", "ObservadorJuego"], ["PanelTablero", "Direccion"],
-      ["Juego", "ObservadorJuego"], ["Juego", "EstadoJuego"], ["ObservadorJuego", "EstadoJuego"]] },
-  { nombre: "Dominio", detalle: "Pedro y Lucía. JuegoSokoban cumple el contrato; las cajas usan Strategy y el movimiento, un Mediator.",
-    tomas: [["JuegoSokoban", "Foto", "CargadorNivel", "Niveles", "EstadoNivel"], ["Jugador", "Caja", "Posicion", "ComportamientoCaja", "CajaNormalStrategy", "CajaFragilStrategy", "CajaLlaveStrategy", "MediadorMovimiento", "MotorMovimiento"]],
-    luces: [["JuegoSokoban", "Juego"], ["JuegoSokoban", "CargadorNivel"], ["JuegoSokoban", "EstadoNivel"], ["JuegoSokoban", "Foto"], ["JuegoSokoban", "MotorMovimiento"],
-      ["MotorMovimiento", "MediadorMovimiento"], ["Jugador", "MediadorMovimiento"], ["EstadoNivel", "Caja"], ["Caja", "ComportamientoCaja"],
+    tomas: [["PantallaJuego", "PanelHUD", "PanelTablero", "Juego", "ObservadorJuego", "EstadoJuego", "Direccion"], ["Juego", "JuegoDecorado", "ObservadorJuego", "EstadoJuego", "Direccion"]],
+    luces: [["PantallaJuego", "Juego"], ["PanelHUD", "ObservadorJuego"], ["PanelTablero", "ObservadorJuego"], ["PanelTablero", "Direccion"],
+      ["Juego", "ObservadorJuego"], ["Juego", "EstadoJuego"], ["ObservadorJuego", "EstadoJuego"], ["JuegoDecorado", "Juego"]] },
+  { nombre: "Dominio", detalle: "Pedro y Lucía. JuegoSokoban cumple el contrato; las cajas usan Strategy y el jugador y las cajas hablan por un Mediator.",
+    tomas: [["JuegoSokoban", "CargadorNivel", "Niveles", "EstadoNivel"], ["Jugador", "Caja", "Posicion", "ComportamientoCaja", "CajaNormalStrategy", "CajaFragilStrategy", "CajaLlaveStrategy", "MediadorMovimiento", "MotorMovimiento"]],
+    luces: [["JuegoSokoban", "Juego"], ["JuegoSokoban", "CargadorNivel"], ["JuegoSokoban", "EstadoNivel"], ["JuegoSokoban", "MediadorMovimiento"],
+      ["MotorMovimiento", "MediadorMovimiento"], ["Jugador", "MediadorMovimiento"], ["Caja", "MediadorMovimiento"], ["EstadoNivel", "Caja"], ["Caja", "ComportamientoCaja"],
       ["CajaNormalStrategy", "ComportamientoCaja"], ["CajaFragilStrategy", "ComportamientoCaja"], ["CajaLlaveStrategy", "ComportamientoCaja"]] },
+  { nombre: "DeLorean", detalle: "Martín. Memento: JuegoSokoban crea y restaura cada RecuerdoNivel; MaquinaDelTiempo los guarda sin poder leerlos.",
+    tomas: [["JuegoSokoban", "RecuerdoNivel", "MaquinaDelTiempo", "EstadoNivel"]],
+    luces: [["JuegoSokoban", "RecuerdoNivel"], ["JuegoSokoban", "MaquinaDelTiempo"], ["MaquinaDelTiempo", "RecuerdoNivel"], ["RecuerdoNivel", "EstadoNivel"]] },
+  { nombre: "Repetición", detalle: "Martín. Command: PantallaJuego crea los comandos, GrabadoraDePartida los ejecuta y los anota, Repeticion los vuelve a ejecutar.",
+    tomas: [["GrabadoraDePartida", "Comando", "Repeticion", "ComandoMover", "ComandoDeshacer", "ComandoViajarEnElTiempo"]],
+    luces: [["PantallaJuego", "GrabadoraDePartida"], ["GrabadoraDePartida", "Comando"], ["Repeticion", "Comando"], ["ComandoMover", "Comando"], ["ComandoDeshacer", "Comando"], ["ComandoViajarEnElTiempo", "Comando"]] },
   { nombre: "Sonido", detalle: "Mora. JuegoConSonido envuelve al juego (Decorator); Sonidos es Singleton y cambia de estado con la M (State).",
     tomas: [["JuegoConSonido", "Sonidos", "Sonido", "SonidosDeInterfaz"], ["Sonidos", "EstadoSonido", "SonidoActivado", "SonidoSilenciado", "AssetsSonidos"]],
-    luces: [["JuegoConSonido", "Juego"], ["Main", "JuegoConSonido"], ["JuegoConSonido", "Sonidos"], ["Sonidos", "EstadoSonido"], ["SonidoActivado", "EstadoSonido"],
+    luces: [["JuegoConSonido", "JuegoDecorado"], ["Main", "JuegoConSonido"], ["JuegoConSonido", "Sonidos"], ["Sonidos", "EstadoSonido"], ["SonidoActivado", "EstadoSonido"],
       ["SonidoSilenciado", "EstadoSonido"], ["Sonidos", "Sonido"], ["SonidosDeInterfaz", "Sonidos"]] },
-  { nombre: "Prueba y pendientes", detalle: "JuegoDePrueba cumple el contrato por ahora. Lo gris se enchufa al mismo contrato cuando llegue.",
-    tomas: [["JuegoDePrueba", "Foto"], ["ControladorJuego", "ReproductorSonido", "Musica"]],
-    luces: [["JuegoDePrueba", "Juego"], ["Main", "JuegoDePrueba"], ["ControladorJuego", "Juego"], ["JuegoDePrueba", "Foto"], ["JuegoDePrueba", "ObservadorJuego"], ["ReproductorSonido", "ObservadorJuego"]] },
 ];
 /** Una toma no se acerca más que esto (unidades del SVG): así el texto de las cajas no se pixela. */
 const TOMA_MIN = { w: 620, h: 430 };
@@ -557,12 +560,6 @@ export default {
         foco(nombre, t0, j === 0 ? 1.8 : 2.2);
         luces.slice(j * tramo, (j + 1) * tramo).forEach((par, n, todas) => luz(par, t0 + 0.9 + n * (1.6 / Math.max(1, todas.length))));
       });
-      // Los pendientes flotan sobre el papel mientras se nombran
-      if (z.nombre === "Prueba y pendientes") {
-        c.cajas3d.filter((cj) => cj.pendiente).forEach((cj, n) => {
-          tl.fromTo(cj.alza, { y: 0 }, { y: 0.55, duration: 0.9, ease: "power2.out" }, en + 1 + n * 2.2);
-        });
-      }
     });
 
     // Final: todo el plano, todas las flechas encendidas

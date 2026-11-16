@@ -1,109 +1,147 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 840" width="1600" height="840" font-family="Inter, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1640 1090" width="1640" height="1090" font-family="Inter, Arial, sans-serif">
 <style>text{white-space:pre}</style>
-<rect width="1600" height="840" fill="#FFFFFF"/>
-<text x="30" y="40" font-size="22" font-weight="700" fill="#6E1A2C">Deshacer con fotos del nivel (idea del patrón Memento)</text>
-<text x="30" y="62" font-size="12.5" fill="#6B6B6B">Antes de cada movimiento se guarda una copia completa del nivel. Deshacer es volver a una copia anterior.</text>
-<path d="M 275.0 220.5 L 560.0 220.5" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
-<polyline points="549.0,214.5 560.0,220.5 549.0,226.5" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
-<polygon points="275.0,220.5 285.0,226.5 295.0,220.5 285.0,214.5" fill="#1E1A17" stroke="#1E1A17" stroke-width="1.4"/>
-<rect x="391.984375" y="211.5" width="51.03125" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="417.5" y="224.0" font-size="10.5" text-anchor="middle" fill="#3A332E">historial</text><circle cx="382.984375" cy="220.5" r="8.5" fill="#B8892A"/><text x="382.984375" y="224.0" font-size="10" font-weight="700" text-anchor="middle" fill="#FFFFFF">1</text>
-<text x="530" y="212.5" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">0..15</text>
-<path d="M 800.0 220.5 L 1040.0 220.5" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
-<polyline points="1029.0,214.5 1040.0,220.5 1029.0,226.5" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
-<rect x="889.796875" y="211.5" width="60.40625" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="920.0" y="224.0" font-size="10.5" text-anchor="middle" fill="#3A332E">una copia</text><circle cx="880.796875" cy="220.5" r="8.5" fill="#B8892A"/><text x="880.796875" y="224.0" font-size="10" font-weight="700" text-anchor="middle" fill="#FFFFFF">2</text>
-<text x="1024" y="214.5" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
-<path d="M 275.0 343.0 L 1123.0 343.0 L 1123.0 271.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
-<polyline points="1117.0,282.0 1123.0,271.0 1129.0,282.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
-<rect x="740.2890625" y="334" width="119.421875" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="800" y="346.5" font-size="10.5" text-anchor="middle" fill="#3A332E">estado: el nivel actual</text>
-<text x="1135.0" y="281" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
+<rect width="1640" height="1090" fill="#FFFFFF"/>
+<text x="30" y="40" font-size="22" font-weight="700" fill="#6E1A2C">Deshacer y DeLorean: el patrón Memento</text>
+<text x="30" y="62" font-size="12.5" fill="#6B6B6B">Antes de cada movimiento y en cada «punto en el tiempo» se guarda un recuerdo del nivel. Deshacer y viajar en el tiempo es volver a un recuerdo.</text>
+<path d="M 310.0 200.0 L 600.0 200.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="589.0,194.0 600.0,200.0 589.0,206.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polygon points="310.0,200.0 320.0,206.0 330.0,200.0 320.0,194.0" fill="#1E1A17" stroke="#1E1A17" stroke-width="1.4"/>
+<rect x="401.109375" y="191.0" width="107.78125" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="455.0" y="203.5" font-size="10.5" text-anchor="middle" fill="#3A332E">historial (deshacer)</text><circle cx="392.109375" cy="200.0" r="8.5" fill="#B8892A"/><text x="392.109375" y="203.5" font-size="10" font-weight="700" text-anchor="middle" fill="#FFFFFF">1</text>
+<text x="575" y="192" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">0..15</text>
+<path d="M 150.0 407.0 L 150.0 566.0 L 600.0 566.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="589.0,560.0 600.0,566.0 589.0,572.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polygon points="150.0,407.0 144.0,417.0 150.0,427.0 156.0,417.0" fill="#1E1A17" stroke="#1E1A17" stroke-width="1.4"/>
+<rect x="326.0078125" y="557.0" width="107.984375" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="380" y="569.5" font-size="10.5" text-anchor="middle" fill="#3A332E">maquinaDelTiempo</text><circle cx="317.0078125" cy="566.0" r="8.5" fill="#B8892A"/><text x="317.0078125" y="569.5" font-size="10" font-weight="700" text-anchor="middle" fill="#FFFFFF">2</text>
+<text x="584" y="560.0" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
+<path d="M 700.0 500.0 L 700.0 466.0 A 6 6 0 0 0 700.0 454.0 L 700.0 390.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="694.0,401.0 700.0,390.0 706.0,401.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polygon points="700.0,500.0 706.0,490.0 700.0,480.0 694.0,490.0" fill="#FFFFFF" stroke="#1E1A17" stroke-width="1.4"/>
+<rect x="677.0" y="431" width="46.0" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="700" y="443.5" font-size="10.5" text-anchor="middle" fill="#3A332E">puntos</text><circle cx="668.0" cy="440" r="8.5" fill="#B8892A"/><text x="668.0" y="443.5" font-size="10" font-weight="700" text-anchor="middle" fill="#FFFFFF">3</text>
+<text x="728" y="406" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">0..10</text>
+<path d="M 921.0 200.0 L 1160.0 200.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="1149.0,194.0 1160.0,200.0 1149.0,206.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<rect x="995.7421875" y="191.0" width="89.515625" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="1040.5" y="203.5" font-size="10.5" text-anchor="middle" fill="#3A332E">nivel: una copia</text>
+<text x="1144" y="194.0" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">1</text>
+<path d="M 280.0 407.0 L 280.0 460.0 L 1335.5 460.0 L 1335.5 305.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<polyline points="1329.5,316.0 1335.5,305.0 1341.5,316.0" fill="none" stroke="#1E1A17" stroke-width="1.6"/>
+<rect x="940.2890625" y="451" width="119.421875" height="17" rx="4" fill="#FFFFFF" fill-opacity="0.95"/><text x="1000" y="463.5" font-size="10.5" text-anchor="middle" fill="#3A332E">estado: el nivel actual</text>
+<text x="1347.5" y="315" font-size="11.5" font-weight="600" fill="#1E1A17" text-anchor="middle">0..1</text>
 <g class="caja" id="JuegoSokoban">
-<rect x="50" y="121" width="120.46875" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="58" y="133" font-size="10.5" font-weight="600" fill="#7A5A12">Cuidador (Caretaker)</text>
-<rect x="50" y="140" width="225" height="233" rx="6" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.4"/>
-<text x="162.5" y="158" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">JuegoSokoban</text>
-<line x1="50" y1="166" x2="275" y2="166" stroke="#C8683A" stroke-width="1"/>
-<text x="59.0" y="183.5" font-size="12" fill="#1E1A17" text-decoration="underline">- MAX_HISTORIAL: int</text>
-<text x="59.0" y="200.5" font-size="12" fill="#1E1A17" text-decoration="underline">- PASOS_POR_UNDO: int</text>
-<text x="59.0" y="217.5" font-size="12" fill="#1E1A17" text-decoration="underline">- MAX_UNDOS_CONSECUTIVOS: int</text>
-<text x="59.0" y="234.5" font-size="12" fill="#1E1A17">- historial: Deque&lt;Foto&gt;</text>
-<text x="59.0" y="251.5" font-size="12" fill="#1E1A17">- estado: EstadoNivel</text>
-<text x="59.0" y="268.5" font-size="12" fill="#1E1A17">- movimientos: int</text>
-<text x="59.0" y="285.5" font-size="12" fill="#1E1A17">- empujes: int</text>
-<text x="59.0" y="302.5" font-size="12" fill="#1E1A17">- undosUsados: int</text>
-<text x="59.0" y="319.5" font-size="12" fill="#1E1A17">- undosConsecutivos: int</text>
-<line x1="50" y1="329" x2="275" y2="329" stroke="#C8683A" stroke-width="1"/>
-<text x="59.0" y="346.5" font-size="12" fill="#1E1A17">+ mover(direccion: Direccion): void</text>
-<text x="59.0" y="363.5" font-size="12" fill="#1E1A17">+ deshacer(): void</text>
+<rect x="50" y="121" width="128.421875" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="58" y="133" font-size="10.5" font-weight="600" fill="#7A5A12">Originador (Originator)</text>
+<rect x="50" y="140" width="260" height="267" rx="6" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.4"/>
+<text x="180.0" y="158" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">JuegoSokoban</text>
+<line x1="50" y1="166" x2="310" y2="166" stroke="#C8683A" stroke-width="1"/>
+<text x="59.0" y="183.5" font-size="12" fill="#1E1A17" text-decoration="underline">- MAX_HISTORIAL: int = 15</text>
+<text x="59.0" y="200.5" font-size="12" fill="#1E1A17" text-decoration="underline">- PASOS_POR_UNDO: int = 5</text>
+<text x="59.0" y="217.5" font-size="12" fill="#1E1A17" text-decoration="underline">- MAX_UNDOS_CONSECUTIVOS: int = 3</text>
+<text x="59.0" y="234.5" font-size="12" fill="#1E1A17">- historial: Deque&lt;RecuerdoNivel&gt;</text>
+<text x="59.0" y="251.5" font-size="12" fill="#1E1A17">- maquinaDelTiempo: MaquinaDelTiempo</text>
+<text x="59.0" y="268.5" font-size="12" fill="#1E1A17">- estado: EstadoNivel</text>
+<text x="59.0" y="285.5" font-size="12" fill="#1E1A17">- movimientos: int</text>
+<text x="59.0" y="302.5" font-size="12" fill="#1E1A17">- empujes: int</text>
+<text x="59.0" y="319.5" font-size="12" fill="#1E1A17">- plutonio: int</text>
+<text x="59.0" y="336.5" font-size="12" fill="#1E1A17">- viajes: int</text>
+<line x1="50" y1="346" x2="310" y2="346" stroke="#C8683A" stroke-width="1"/>
+<text x="59.0" y="363.5" font-size="12" fill="#1E1A17">- crearRecuerdo(): RecuerdoNivel</text>
+<text x="59.0" y="380.5" font-size="12" fill="#1E1A17">- restaurar(recuerdo: RecuerdoNivel): void</text>
+<text x="59.0" y="397.5" font-size="12" fill="#1E1A17">- olvidarPuntosDelFuturo(): void</text>
 </g>
-<g class="caja" id="Foto">
-<rect x="560" y="151" width="120.796875" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="568" y="163" font-size="10.5" font-weight="600" fill="#7A5A12">Recuerdo (Memento)</text>
-<rect x="560" y="170" width="240" height="101" rx="6" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.4"/>
-<text x="680.0" y="187" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«record · privado, dentro de JuegoSokoban»</text>
-<text x="680.0" y="202" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">Foto</text>
-<line x1="560" y1="210" x2="800" y2="210" stroke="#C8683A" stroke-width="1"/>
-<text x="569.0" y="227.5" font-size="12" fill="#1E1A17">- estado: EstadoNivel</text>
-<text x="569.0" y="244.5" font-size="12" fill="#1E1A17">- movimientos: int</text>
-<text x="569.0" y="261.5" font-size="12" fill="#1E1A17">- empujes: int</text>
+<g class="caja" id="RecuerdoNivel">
+<rect x="600" y="141" width="120.796875" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="608" y="153" font-size="10.5" font-weight="600" fill="#7A5A12">Recuerdo (Memento)</text>
+<rect x="600" y="160" width="321" height="230" rx="6" fill="#D5E8D4" stroke="#82B366" stroke-width="1.4"/>
+<text x="760.5" y="177" text-anchor="middle" font-size="10.5" fill="#6B6B6B">«Memento»</text>
+<text x="760.5" y="192" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">RecuerdoNivel</text>
+<line x1="600" y1="200" x2="921" y2="200" stroke="#82B366" stroke-width="1"/>
+<text x="609.0" y="217.5" font-size="12" fill="#1E1A17">- nivel: EstadoNivel</text>
+<text x="609.0" y="234.5" font-size="12" fill="#1E1A17">- movimientos: int</text>
+<text x="609.0" y="251.5" font-size="12" fill="#1E1A17">- empujes: int</text>
+<text x="609.0" y="268.5" font-size="12" fill="#1E1A17">- plutonio: int</text>
+<line x1="600" y1="278" x2="921" y2="278" stroke="#82B366" stroke-width="1"/>
+<text x="609.0" y="295.5" font-size="12" fill="#1E1A17">~ RecuerdoNivel(nivel: EstadoNivel, movimientos: int,</text>
+<text x="629.4" y="312.5" font-size="12" fill="#1E1A17">empujes: int, plutonio: int)</text>
+<text x="609.0" y="329.5" font-size="12" fill="#1E1A17">~ nivel(): EstadoNivel</text>
+<text x="609.0" y="346.5" font-size="12" fill="#1E1A17">~ movimientos(): int</text>
+<text x="609.0" y="363.5" font-size="12" fill="#1E1A17">~ empujes(): int</text>
+<text x="609.0" y="380.5" font-size="12" fill="#1E1A17">~ plutonio(): int</text>
+</g>
+<g class="caja" id="MaquinaDelTiempo">
+<rect x="600" y="481" width="189.515625" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="608" y="493" font-size="10.5" font-weight="600" fill="#7A5A12">Cuidador del DeLorean (Caretaker)</text>
+<rect x="600" y="500" width="255" height="165" rx="6" fill="#D5E8D4" stroke="#82B366" stroke-width="1.4"/>
+<text x="727.5" y="518" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">MaquinaDelTiempo</text>
+<line x1="600" y1="526" x2="855" y2="526" stroke="#82B366" stroke-width="1"/>
+<text x="609.0" y="543.5" font-size="12" fill="#1E1A17" text-decoration="underline">- MAXIMO_PUNTOS: int = 10</text>
+<text x="609.0" y="560.5" font-size="12" fill="#1E1A17">- puntos: Deque&lt;RecuerdoNivel&gt;</text>
+<line x1="600" y1="570" x2="855" y2="570" stroke="#82B366" stroke-width="1"/>
+<text x="609.0" y="587.5" font-size="12" fill="#1E1A17">+ guardar(recuerdo: RecuerdoNivel): void</text>
+<text x="609.0" y="604.5" font-size="12" fill="#1E1A17">+ ultimo(): RecuerdoNivel</text>
+<text x="609.0" y="621.5" font-size="12" fill="#1E1A17">+ descartarUltimo(): void</text>
+<text x="609.0" y="638.5" font-size="12" fill="#1E1A17">+ cantidad(): int</text>
+<text x="609.0" y="655.5" font-size="12" fill="#1E1A17">+ olvidarTodo(): void</text>
 </g>
 <g class="caja" id="EstadoNivel">
-<rect x="1040" y="121" width="128.421875" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="1048" y="133" font-size="10.5" font-weight="600" fill="#7A5A12">Originador (Originator)</text>
-<rect x="1040" y="140" width="166" height="131" rx="6" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.4"/>
-<text x="1123.0" y="158" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">EstadoNivel</text>
-<line x1="1040" y1="166" x2="1206" y2="166" stroke="#C8683A" stroke-width="1"/>
-<text x="1049.0" y="183.5" font-size="12" fill="#1E1A17">- terreno: char[][]</text>
-<text x="1049.0" y="200.5" font-size="12" fill="#1E1A17">- jugador: Jugador</text>
-<text x="1049.0" y="217.5" font-size="12" fill="#1E1A17">- cajas: List&lt;Caja&gt;</text>
-<line x1="1040" y1="227" x2="1206" y2="227" stroke="#C8683A" stroke-width="1"/>
-<text x="1049.0" y="244.5" font-size="12" fill="#1E1A17">- copiarTerreno(): char[][]</text>
-<text x="1049.0" y="261.5" font-size="12" fill="#1E1A17">+ copiar(): EstadoNivel</text>
+<rect x="1160" y="121" width="94.671875" height="17" rx="8.5" fill="#F6EBCF" stroke="#B8892A" stroke-width="1"/><text x="1168" y="133" font-size="10.5" font-weight="600" fill="#7A5A12">Lo que se copia</text>
+<rect x="1160" y="140" width="351" height="165" rx="6" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.4"/>
+<text x="1335.5" y="158" text-anchor="middle" font-size="14" font-weight="600" fill="#1E1A17">EstadoNivel</text>
+<line x1="1160" y1="166" x2="1511" y2="166" stroke="#C8683A" stroke-width="1"/>
+<text x="1169.0" y="183.5" font-size="12" fill="#1E1A17">- terreno: char[][]</text>
+<text x="1169.0" y="200.5" font-size="12" fill="#1E1A17">- jugador: Jugador</text>
+<text x="1169.0" y="217.5" font-size="12" fill="#1E1A17">- cajas: List&lt;Caja&gt;</text>
+<line x1="1160" y1="227" x2="1511" y2="227" stroke="#C8683A" stroke-width="1"/>
+<text x="1169.0" y="244.5" font-size="12" fill="#1E1A17">+ recogerPlutonio(p: Posicion): boolean</text>
+<text x="1169.0" y="261.5" font-size="12" fill="#1E1A17">+ conservarPlutonioRecogido(presente: EstadoNivel): void</text>
+<text x="1169.0" y="278.5" font-size="12" fill="#1E1A17">+ cajasEnDestino(): int</text>
+<text x="1169.0" y="295.5" font-size="12" fill="#1E1A17">+ copiar(): EstadoNivel</text>
 </g>
-<text x="60" y="454" font-size="12.5" font-weight="400" fill="#1E1A17" text-anchor="start"><tspan font-weight="700">La pila historial</tspan> (máximo 15 fotos; la más nueva a la derecha)</text>
-<rect x="60" y="470" width="64" height="34" rx="4" fill="#FEF7F1" stroke="#C8683A" stroke-width="1.2"/>
-<text x="92.0" y="492" font-size="11" font-weight="400" fill="#1E1A17" text-anchor="middle">foto 1</text>
-<rect x="132" y="470" width="64" height="34" rx="4" fill="#FEF7F1" stroke="#C8683A" stroke-width="1.2"/>
-<text x="164.0" y="492" font-size="11" font-weight="400" fill="#1E1A17" text-anchor="middle">foto 2</text>
-<rect x="204" y="470" width="64" height="34" rx="4" fill="#FEF7F1" stroke="#C8683A" stroke-width="1.2"/>
-<text x="236.0" y="492" font-size="11" font-weight="400" fill="#1E1A17" text-anchor="middle">foto 3</text>
-<rect x="276" y="470" width="64" height="34" rx="4" fill="#FEF7F1" stroke="#C8683A" stroke-width="1.2"/>
-<text x="308.0" y="492" font-size="11" font-weight="400" fill="#1E1A17" text-anchor="middle">foto 4</text>
-<rect x="348" y="470" width="64" height="34" rx="4" fill="#FEF7F1" stroke="#C8683A" stroke-width="1.2"/>
-<text x="380.0" y="492" font-size="11" font-weight="400" fill="#1E1A17" text-anchor="middle">foto 5</text>
-<rect x="420" y="470" width="64" height="34" rx="4" fill="#FEF7F1" stroke="#C8683A" stroke-width="1.2"/>
-<text x="452.0" y="492" font-size="11" font-weight="400" fill="#1E1A17" text-anchor="middle">foto 6</text>
-<rect x="492" y="470" width="64" height="34" rx="4" fill="#FEF7F1" stroke="#C8683A" stroke-width="1.2"/>
-<text x="524.0" y="492" font-size="11" font-weight="400" fill="#1E1A17" text-anchor="middle">foto 7</text>
-<rect x="564" y="470" width="64" height="34" rx="4" fill="#FEF7F1" stroke="#C8683A" stroke-width="1.2"/>
-<text x="596.0" y="492" font-size="11" font-weight="400" fill="#1E1A17" text-anchor="middle">foto 8</text>
-<rect x="636" y="470" width="64" height="34" rx="4" fill="#FEF7F1" stroke="#C8683A" stroke-width="1.2"/>
-<text x="668.0" y="492" font-size="11" font-weight="400" fill="#1E1A17" text-anchor="middle">foto 9</text>
-<rect x="708" y="470" width="64" height="34" rx="4" fill="#FEF7F1" stroke="#C8683A" stroke-width="1.2"/>
-<text x="740.0" y="492" font-size="11" font-weight="400" fill="#1E1A17" text-anchor="middle">foto 10</text>
-<rect x="780" y="470" width="64" height="34" rx="4" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.2"/>
-<text x="812.0" y="492" font-size="11" font-weight="400" fill="#1E1A17" text-anchor="middle">foto 11</text>
-<rect x="852" y="470" width="64" height="34" rx="4" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.2"/>
-<text x="884.0" y="492" font-size="11" font-weight="400" fill="#1E1A17" text-anchor="middle">foto 12</text>
-<rect x="924" y="470" width="64" height="34" rx="4" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.2"/>
-<text x="956.0" y="492" font-size="11" font-weight="400" fill="#1E1A17" text-anchor="middle">foto 13</text>
-<rect x="996" y="470" width="64" height="34" rx="4" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.2"/>
-<text x="1028.0" y="492" font-size="11" font-weight="400" fill="#1E1A17" text-anchor="middle">foto 14</text>
-<rect x="1068" y="470" width="64" height="34" rx="4" fill="#FCDDC7" stroke="#C8683A" stroke-width="1.2"/>
-<text x="1100.0" y="492" font-size="11" font-weight="400" fill="#1E1A17" text-anchor="middle">foto 15</text>
-<path d="M 780 512 L 780 520 L 1132 520 L 1132 512" fill="none" stroke="#6E1A2C" stroke-width="1.4"/>
-<text x="956.0" y="538" font-size="11.5" font-weight="600" fill="#6E1A2C" text-anchor="middle">un deshacer saca estas 5 y vuelve a la «foto 11»</text>
-<path d="M 60 512 L 60 520 L 124 520 L 124 512" fill="none" stroke="#8A7F76" stroke-width="1.2" stroke-dasharray="4 3"/>
-<text x="60" y="538" font-size="11" font-weight="400" fill="#8A7F76" text-anchor="start" font-style="italic">cuando llega la foto 16, sale la foto 1 (la más vieja)</text>
-<path d="M 50 600 L 738 600 L 750 612 L 750 728 L 50 728 Z" fill="#FFFDF5" stroke="#B8892A" stroke-width="1.2"/>
-<text x="60" y="618" font-size="12" font-weight="700" fill="#6E1A2C">Las reglas de la consigna: 15 / 5 / 3</text>
-<text x="60" y="636" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">1</tspan> mover(): antes de mover arma new Foto(estado.copiar(), movimientos, empujes).</text>
-<text x="60" y="652" font-size="11.5" fill="#1E1A17">     Si el movimiento se hizo, la apila; si pasa de 15, borra la más vieja.</text>
-<text x="60" y="668" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">2</tspan> La Foto guarda una copia completa del EstadoNivel (terreno, jugador, cajas).</text>
-<text x="60" y="684" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">deshacer():</tspan> saca hasta 5 fotos, restaura la última que sacó y suma 1 a</text>
-<text x="60" y="700" font-size="11.5" fill="#1E1A17">     undosUsados. Máximo 3 deshacer seguidos: el contador vuelve a 0 al mover.</text>
-<text x="60" y="716" font-size="11.5" fill="#1E1A17">No hace nada si el historial está vacío o el nivel ya se completó.</text>
-<path d="M 800 600 L 1538 600 L 1550 612 L 1550 712 L 800 712 Z" fill="#FFFDF5" stroke="#B8892A" stroke-width="1.2"/>
-<text x="810" y="618" font-size="12" font-weight="700" fill="#6E1A2C">¿Es un Memento?</text>
-<text x="810" y="636" font-size="11.5" fill="#1E1A17">En el Memento del libro, el originador crea el recuerdo y lo restaura</text>
-<text x="810" y="652" font-size="11.5" fill="#1E1A17">(crearMemento / restaurar) y el cuidador solo lo guarda sin mirarlo.</text>
-<text x="810" y="668" font-size="11.5" fill="#1E1A17">Acá JuegoSokoban arma la Foto con estado.copiar() y la restaura con</text>
-<text x="810" y="684" font-size="11.5" fill="#1E1A17">estado = foto.estado(). Funciona igual: es una <tspan font-weight="700">instantánea del estado</tspan>.</text>
-<text x="810" y="700" font-size="11.5" fill="#1E1A17">Para presentarlo como Memento conviene nombrarlo así en el informe.</text>
+<text x="60" y="704" font-size="12.5" font-weight="400" fill="#1E1A17" text-anchor="start"><tspan font-weight="700">La pila historial</tspan> (máximo 15 recuerdos; el más nuevo a la derecha)</text>
+<rect x="60" y="720" width="64" height="34" rx="4" fill="#F3FAF1" stroke="#82B366" stroke-width="1.2"/>
+<text x="92.0" y="742" font-size="11" font-weight="400" fill="#1E1A17" text-anchor="middle">rec. 1</text>
+<rect x="132" y="720" width="64" height="34" rx="4" fill="#F3FAF1" stroke="#82B366" stroke-width="1.2"/>
+<text x="164.0" y="742" font-size="11" font-weight="400" fill="#1E1A17" text-anchor="middle">rec. 2</text>
+<rect x="204" y="720" width="64" height="34" rx="4" fill="#F3FAF1" stroke="#82B366" stroke-width="1.2"/>
+<text x="236.0" y="742" font-size="11" font-weight="400" fill="#1E1A17" text-anchor="middle">rec. 3</text>
+<rect x="276" y="720" width="64" height="34" rx="4" fill="#F3FAF1" stroke="#82B366" stroke-width="1.2"/>
+<text x="308.0" y="742" font-size="11" font-weight="400" fill="#1E1A17" text-anchor="middle">rec. 4</text>
+<rect x="348" y="720" width="64" height="34" rx="4" fill="#F3FAF1" stroke="#82B366" stroke-width="1.2"/>
+<text x="380.0" y="742" font-size="11" font-weight="400" fill="#1E1A17" text-anchor="middle">rec. 5</text>
+<rect x="420" y="720" width="64" height="34" rx="4" fill="#F3FAF1" stroke="#82B366" stroke-width="1.2"/>
+<text x="452.0" y="742" font-size="11" font-weight="400" fill="#1E1A17" text-anchor="middle">rec. 6</text>
+<rect x="492" y="720" width="64" height="34" rx="4" fill="#F3FAF1" stroke="#82B366" stroke-width="1.2"/>
+<text x="524.0" y="742" font-size="11" font-weight="400" fill="#1E1A17" text-anchor="middle">rec. 7</text>
+<rect x="564" y="720" width="64" height="34" rx="4" fill="#F3FAF1" stroke="#82B366" stroke-width="1.2"/>
+<text x="596.0" y="742" font-size="11" font-weight="400" fill="#1E1A17" text-anchor="middle">rec. 8</text>
+<rect x="636" y="720" width="64" height="34" rx="4" fill="#F3FAF1" stroke="#82B366" stroke-width="1.2"/>
+<text x="668.0" y="742" font-size="11" font-weight="400" fill="#1E1A17" text-anchor="middle">rec. 9</text>
+<rect x="708" y="720" width="64" height="34" rx="4" fill="#F3FAF1" stroke="#82B366" stroke-width="1.2"/>
+<text x="740.0" y="742" font-size="11" font-weight="400" fill="#1E1A17" text-anchor="middle">rec. 10</text>
+<rect x="780" y="720" width="64" height="34" rx="4" fill="#D5E8D4" stroke="#82B366" stroke-width="1.2"/>
+<text x="812.0" y="742" font-size="11" font-weight="400" fill="#1E1A17" text-anchor="middle">rec. 11</text>
+<rect x="852" y="720" width="64" height="34" rx="4" fill="#D5E8D4" stroke="#82B366" stroke-width="1.2"/>
+<text x="884.0" y="742" font-size="11" font-weight="400" fill="#1E1A17" text-anchor="middle">rec. 12</text>
+<rect x="924" y="720" width="64" height="34" rx="4" fill="#D5E8D4" stroke="#82B366" stroke-width="1.2"/>
+<text x="956.0" y="742" font-size="11" font-weight="400" fill="#1E1A17" text-anchor="middle">rec. 13</text>
+<rect x="996" y="720" width="64" height="34" rx="4" fill="#D5E8D4" stroke="#82B366" stroke-width="1.2"/>
+<text x="1028.0" y="742" font-size="11" font-weight="400" fill="#1E1A17" text-anchor="middle">rec. 14</text>
+<rect x="1068" y="720" width="64" height="34" rx="4" fill="#D5E8D4" stroke="#82B366" stroke-width="1.2"/>
+<text x="1100.0" y="742" font-size="11" font-weight="400" fill="#1E1A17" text-anchor="middle">rec. 15</text>
+<path d="M 780 762 L 780 770 L 1132 770 L 1132 762" fill="none" stroke="#6E1A2C" stroke-width="1.4"/>
+<text x="956.0" y="788" font-size="11.5" font-weight="600" fill="#6E1A2C" text-anchor="middle">un deshacer saca estos 5 y vuelve al «rec. 11»</text>
+<path d="M 60 762 L 60 770 L 124 770 L 124 762" fill="none" stroke="#8A7F76" stroke-width="1.2" stroke-dasharray="4 3"/>
+<text x="60" y="788" font-size="11" font-weight="400" fill="#8A7F76" text-anchor="start" font-style="italic">cuando llega el 16, sale el 1 (el más viejo)</text>
+<path d="M 50 850 L 798 850 L 810 862 L 810 994 L 50 994 Z" fill="#FFFDF5" stroke="#B8892A" stroke-width="1.2"/>
+<text x="60" y="868" font-size="12" font-weight="700" fill="#6E1A2C">Las reglas: 15 / 5 / 3 y el DeLorean</text>
+<text x="60" y="886" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">1</tspan> mover(): antes de mover hace crearRecuerdo() (copia del nivel y de los contadores).</text>
+<text x="60" y="902" font-size="11.5" fill="#1E1A17">     Si el movimiento se hizo, lo apila; si pasa de 15, borra el más viejo.</text>
+<text x="60" y="918" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">deshacer():</tspan> saca hasta 5, restaura el último que sacó; máximo 3 seguidos.</text>
+<text x="60" y="934" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">2</tspan> Puntos en el tiempo: al iniciar el nivel y cada vez que una caja llega a destino,</text>
+<text x="60" y="950" font-size="11.5" fill="#1E1A17">     guarda un recuerdo en la MaquinaDelTiempo (máximo 10).</text>
+<text x="60" y="966" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">DeLorean (tecla T):</tspan> cuesta 1 plutonio, vuelve al último punto y borra el historial.</text>
+<text x="60" y="982" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">3</tspan> La máquina guarda los recuerdos pero no puede leerlos (está en otro paquete).</text>
+<path d="M 860 850 L 1588 850 L 1600 862 L 1600 978 L 860 978 Z" fill="#FFFDF5" stroke="#B8892A" stroke-width="1.2"/>
+<text x="870" y="868" font-size="12" font-weight="700" fill="#6E1A2C">Por qué es un Memento (Martín)</text>
+<text x="870" y="886" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">Originador:</tspan> JuegoSokoban crea el recuerdo (crearRecuerdo) y lo restaura (restaurar).</text>
+<text x="870" y="902" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">Memento:</tspan> RecuerdoNivel. Su constructor y sus lectores son de paquete (~):</text>
+<text x="870" y="918" font-size="11.5" fill="#1E1A17">     solo sokoban.modelo puede crearlo y abrirlo. nivel() devuelve una copia.</text>
+<text x="870" y="934" font-size="11.5" fill="#1E1A17"><tspan font-weight="700">Cuidadores:</tspan> el historial del deshacer y MaquinaDelTiempo (sokoban.modelo.tiempo),</text>
+<text x="870" y="950" font-size="11.5" fill="#1E1A17">     que guardan los recuerdos sin poder mirarlos adentro.</text>
+<text x="870" y="966" font-size="11.5" fill="#1E1A17">Deshacer descarta los puntos «del futuro» (olvidarPuntosDelFuturo).</text>
 </svg>

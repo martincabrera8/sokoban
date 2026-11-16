@@ -94,7 +94,7 @@
 <text x="670" y="264" font-size="11.5" fill="#4A403A" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace">public class PanelHUD extends JPanel implements ObservadorJuego</text>
 <text x="670" y="330" font-size="13" font-weight="700" fill="#6E1A2C" text-anchor="start">LO CREA Y LO CONTIENE  ·  composición (◆ lleno)</text>
 <text x="670" y="350" font-size="12.5" font-weight="400" fill="#1E1A17" text-anchor="start">PantallaJuego crea su HUD; el HUD no existe sin la pantalla.</text>
-<text x="670" y="372" font-size="11.5" fill="#4A403A" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace">PanelHUD hud = new PanelHUD(juego, this::pausar);  add(hud);</text>
+<text x="670" y="372" font-size="11.5" fill="#4A403A" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace">PanelHUD hud = new PanelHUD(this::deshacer, this::reiniciar, this::viajarEnElTiempo, this::pausar);</text>
 <text x="670" y="438" font-size="13" font-weight="700" fill="#6E1A2C" text-anchor="start">TIENE UNA LISTA, SIN CREARLOS  ·  agregación (◇ vacío)</text>
 <text x="670" y="458" font-size="12.5" font-weight="400" fill="#1E1A17" text-anchor="start">Se los pasan desde afuera con agregarObservador(...).</text>
 <text x="670" y="480" font-size="11.5" fill="#4A403A" font-family="IBM Plex Mono, DejaVu Sans Mono, monospace">private final List&lt;ObservadorJuego&gt; observadores = new ArrayList&lt;&gt;();</text>

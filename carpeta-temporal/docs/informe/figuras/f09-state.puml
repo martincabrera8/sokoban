@@ -1,0 +1,27 @@
+@startuml f09-state
+!include estilo.iuml
+class JuegoConSonido <<Cliente: efectos>> SONIDO
+class SonidosDeInterfaz <<Cliente: tecla M>> SONIDO
+class Sonidos <<Contexto (también Singleton)>> SONIDO {
+  -estado: EstadoSonido
+  +reproducir(sonido: Sonido)
+  +alternarSonido()
+  ~establecerEstado(e: EstadoSonido)
+  ~detenerTodo()
+}
+interface EstadoSonido <<Estado>> SONIDO {
+  +reproducir(clip: Clip)
+  +alternar(contexto: Sonidos)
+}
+class SonidoActivado <<Estado concreto, inicial>> SONIDO
+class SonidoSilenciado <<Estado concreto>> SONIDO
+JuegoConSonido ..> Sonidos : reproducir
+SonidosDeInterfaz ..> Sonidos : alternarSonido
+Sonidos --> "1" EstadoSonido : estado
+SonidoActivado ..|> EstadoSonido
+SonidoSilenciado ..|> EstadoSonido
+SonidoActivado ..> SonidoSilenciado : M
+SonidoSilenciado ..> SonidoActivado : M
+SonidoActivado ..> Sonidos : establecerEstado(...)
+SonidoSilenciado ..> Sonidos : establecerEstado(...)
+@enduml

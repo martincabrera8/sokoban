@@ -1,0 +1,55 @@
+@startuml f11-command
+!include estilo.iuml
+class PantallaJuego <<Cliente>> LUCA {
+  -grabadora: GrabadoraDePartida
+  -repeticion: Repeticion
+  -mover(d: Direccion)
+  -deshacer()
+  -viajarEnElTiempo()
+  -verRepeticion(nivel: int)
+}
+class PanelHUD LUCA {
+  +PanelHUD(alDeshacer, alReiniciar,\n  alViajar, alPausar: Runnable)
+}
+interface Comando <<Comando>> INTEG {
+  +ejecutar()
+}
+class ComandoMover <<Comando concreto>> INTEG {
+  -juego: Juego
+  -direccion: Direccion
+}
+class ComandoDeshacer <<Comando concreto>> INTEG {
+  -juego: Juego
+}
+class ComandoViajarEnElTiempo <<Comando concreto>> INTEG {
+  -juego: Juego
+}
+class GrabadoraDePartida <<Invocador>> INTEG {
+  -grabados: List<Comando>
+  +ejecutar(c: Comando)
+  +borrar()
+  +getGrabados(): List<Comando>
+}
+class Repeticion <<vuelve a invocar>> INTEG {
+  -pendientes: Iterator<Comando>
+  {field} -reloj: javax.swing.Timer  (160 ms)
+  +empezar()
+  +saltarAlFinal()
+  +estaReproduciendo(): boolean
+}
+interface Juego <<Receptor>> LUCA
+PanelHUD ..> PantallaJuego : callbacks
+PantallaJuego ..> ComandoMover : crea
+PantallaJuego ..> ComandoDeshacer : crea
+PantallaJuego ..> ComandoViajarEnElTiempo : crea
+PantallaJuego *--> GrabadoraDePartida
+PantallaJuego --> Repeticion
+ComandoMover ..|> Comando
+ComandoDeshacer ..|> Comando
+ComandoViajarEnElTiempo ..|> Comando
+GrabadoraDePartida o--> "0..*" Comando : grabados
+Repeticion o--> "0..*" Comando
+ComandoMover --> Juego
+ComandoDeshacer --> Juego
+ComandoViajarEnElTiempo --> Juego
+@enduml

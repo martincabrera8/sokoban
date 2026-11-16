@@ -1,0 +1,10 @@
+/* El diagrama de clases sobre papel, con un marco de luz por clase de la zona */
+.plano__marco { background: var(--papel); border: 1px solid var(--linea-media); box-shadow: 0 0 0 8px color-mix(in srgb, var(--fondo-hondo) 70%, transparent), var(--sombra-lejos); }
+.plano__svg { display: block; width: 100%; height: 100%; }
+.plano__luz { fill: none; stroke: var(--acento); stroke-width: 5; filter: drop-shadow(0 0 6px var(--acento)); }
+.plano__lista { display: flex; flex-direction: column; gap: 22px; }
+.plano__zona { position: relative; padding-left: 26px; }
+.plano__zona::before { content: ""; position: absolute; left: 0; top: 4px; bottom: 4px; width: 5px; border-radius: 3px; background: var(--acento); opacity: var(--marco, 0); }
+.plano__zona-nombre { font-family: var(--f-display); font-size: 36px; color: var(--titulo); line-height: 1.1; }
+.plano__zona-patrones { margin-top: 4px; font-size: 24px; color: var(--tinta-2); }
+.plano__falta { font-size: 26px; color: var(--pendiente); }
