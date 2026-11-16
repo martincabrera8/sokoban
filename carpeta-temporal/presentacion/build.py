@@ -62,6 +62,9 @@ def control():
             usos = sum(len(re.findall(rf"\b{nombre}\b", t)) for q, t in todo_js.items() if q != p)
             if usos == 0:
                 errores.append(f"{p.name}: {nombre} se exporta y nadie lo usa")
+    codigo = subprocess.run(["node", str(AQUI / "verificar-codigo.mjs")], capture_output=True, text=True, cwd=AQUI)
+    if codigo.returncode != 0:
+        errores.append("verificar-codigo.mjs: " + codigo.stdout.strip())
     if errores:
         print("CONTROL FALLÓ:\n  " + "\n  ".join(errores))
         sys.exit(1)
@@ -146,6 +149,9 @@ def armar():
     for propio in sorted((SRC / "diagramas").glob("*.css")):  # estilos propios de cada diagrama
         css += "\n" + propio.read_text(encoding="utf-8")
     datos = ("window.PERSONAJE=" + json.dumps(personaje()) + ";window.IMG=" + json.dumps(mapa) + ";window.INVENTARIO=" + json.dumps(inventario) + ";window.UML=" + json.dumps(uml) + ";")
+    if CORTA:  # diagramas de cada patrón (generar_patrones.py), como SVG vectorial
+        patrones = {p.stem: p.read_text(encoding="utf-8") for p in sorted((AQUI / "medios" / "patrones").glob("*.svg"))}
+        datos += "window.PATRONES_SVG=" + json.dumps(patrones) + ";"
     html = HTML_FUENTE.read_text(encoding="utf-8")
     html = html.replace("<!--ESTILOS-->", "<style>\n" + css + "\n</style>")
     html = html.replace("<!--DATOS-->", "<script>" + datos.replace("</script", "<\\/script") + "</script>")

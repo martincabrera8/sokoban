@@ -9,8 +9,8 @@ import { el, s, offsetEn, eventos } from "../util.js";
  */
 const VISTA = ["PantallaJuego", "PanelHUD", "PanelTablero", "MenuPrincipal"];
 const CONTRATO = [["Juego", "interface"], ["ObservadorJuego", "interface"], ["EstadoJuego", "record"], ["Direccion", "enum"]];
-const METODOS = "9 métodos: mover(d) · deshacer() · reiniciar() · viajarEnElTiempo() · getEstado() · …";
-const PIEZAS = ["CargadorNivel", "EstadoNivel", "MotorMovimiento", "RecuerdoNivel", "MaquinaDelTiempo"];
+const METODOS = "mover(d) · deshacer() · reiniciar() · viajarEnElTiempo() · getEstado() · … y los 3 de SujetoJuego";
+const PIEZAS = ["EstadoNivel", "MotorMovimiento", "HistorialDeshacer", "MaquinaDelTiempo", "Puntaje", "CargadorNivel"];
 const MAIN = [
   ["Juego juego = new ", ["JuegoConSonido", "capas__k-sonido"], "("],
   ["    new ", ["JuegoSokoban", "capas__k-dominio"], "("],
@@ -33,7 +33,7 @@ export default {
     c.bandas = [
       banda(lienzo, 372, 104, "Vista", "sokoban.vista · Luca"),
       banda(lienzo, 540, 150, "Contrato", "lo único del modelo que importa la vista", "capas__banda--contrato"),
-      banda(lienzo, 754, 262, "Modelo", "Main elige quién cumple"),
+      banda(lienzo, 754, 284, "Modelo", "Main elige quién cumple"),
     ];
     const filaV = el("div", "capas__fila pos", lienzo, { vars: { x: 470, y: 396 } });
     c.vista = Object.fromEntries(VISTA.map((n) => [n, el("span", "chip chip--codigo capas__clase", filaV, { texto: n })]));
@@ -48,17 +48,17 @@ export default {
     c.metodos = el("div", "capas__metodos pos", lienzo, { vars: { x: 470, y: 638 }, texto: METODOS });
 
     // La implementación: el dominio adentro del decorador de sonido
-    c.sonido = el("div", "capas__envase capas__envase--sonido pos dim", lienzo, { vars: { x: 470, y: 772, w: 740, h: 226 } });
+    c.sonido = el("div", "capas__envase capas__envase--sonido pos dim", lienzo, { vars: { x: 470, y: 772, w: 740, h: 250 } });
     const rs = el("div", "capas__envase-rotulo", c.sonido);
     el("b", "", rs, { texto: "JuegoConSonido" });
     el("span", "", rs, { texto: "Decorator · Mora" });
-    c.dominio = el("div", "capas__envase capas__envase--dominio pos dim", lienzo, { vars: { x: 496, y: 834, w: 688, h: 148 } });
+    c.dominio = el("div", "capas__envase capas__envase--dominio pos dim", lienzo, { vars: { x: 496, y: 834, w: 688, h: 174 } });
     const rd = el("div", "capas__envase-rotulo", c.dominio);
     el("b", "", rd, { texto: "JuegoSokoban" });
     el("span", "", rd, { texto: "el dominio · Pedro y Lucía" });
     el("div", "capas__piezas", c.dominio, { texto: PIEZAS.join(" · ") });
 
-    c.main = el("div", "capas__main pos dim", lienzo, { vars: { x: 1240, y: 772, w: 540, h: 226 } });
+    c.main = el("div", "capas__main pos dim", lienzo, { vars: { x: 1240, y: 772, w: 540, h: 250 } });
     el("div", "capas__main-archivo", c.main, { texto: "Main.java" });
     const pre = el("pre", "capas__codigo", c.main);
     c.lineas = MAIN.map((partes) => {
@@ -89,7 +89,7 @@ export default {
     c.etiquetas = {
       mover: rot(xPedido + 18, 491, "mover(DERECHA)", "capas__etiqueta--pedido"),
       delega: rot(xPedido + 18, 705, "lo atraviesa y delega", "capas__etiqueta--pedido"),
-      notifica: rot(xObs + 18, 705, "notificar()", "capas__etiqueta--estado"),
+      notifica: rot(xObs + 18, 705, "notificarObservadores()", "capas__etiqueta--estado"),
       actualizar: rot(xTab + 22, 491, "actualizar(estado) a cada observador", "capas__etiqueta--estado"),
     };
     c.x = { xPedido, xHud, xTab, xObs, G1, G2 };

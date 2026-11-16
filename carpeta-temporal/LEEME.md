@@ -2,7 +2,7 @@
 
 Material para compartir dentro del equipo. No es parte de la entrega: se borra antes de mostrar el repositorio.
 
-- `presentacion/dist/presentacion-corta.html`: **la presentación para el 18/11** (9 diapositivas; el video va aparte, en docs/video). Abrir con Chrome o Edge y apretar F11; se avanza con las flechas.
+- `presentacion/dist/presentacion-corta.html`: **la presentación para el 18/11** (13 diapositivas: un patrón por diapositiva con el UML y la teoría lado a lado; el video va aparte, en docs/video). Abrir con Chrome o Edge y apretar F11; se avanza con las flechas.
 - `CAMBIOS-Y-DEFENSA.md`: qué se cambió después de la auditoría, cómo comprobarlo y preguntas probables para la defensa.
 - `presentacion/dist/presentacion-sokoban.html`: la versión larga anterior (textos del 10/11). Abrir con Chrome o Edge y apretar F11. Se avanza con las flechas; arrastrando con el mouse se giran las escenas 3D; N abre las notas del expositor. Incluye el dominio (Pedro y Lucía) y el sonido (Mora).
 - `presentacion/`: las fuentes de la presentación, para editarla (ver `presentacion/README.md`).

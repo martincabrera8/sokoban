@@ -29,8 +29,13 @@ La intro se reproduce sola al abrir; el resto avanza solo cuando apretás una te
 
 ## Versión corta (presentación final)
 
-`python3 build.py --corta` arma `dist/presentacion-corta.html` (y `presentacion-corta-pagina.html`) desde `index-corta.src.html` y `src/main-corta.js`. Nueve diapositivas, de 6 a 8 minutos; el video de gameplay se muestra aparte:
-portada, arquitectura, Strategy y Mediator, DeLorean (Memento), repetición (Command), sonido (Decorator y State, con Observer y Singleton), el diagrama de clases recorrido patrón por patrón, calidad (niveles verificados y 23 pruebas) y cierre.
+`python3 build.py --corta` arma `dist/presentacion-corta.html` (y `presentacion-corta-pagina.html`) desde `index-corta.src.html` y `src/main-corta.js`. Trece diapositivas, de 8 a 10 minutos; el video de gameplay se muestra aparte:
+portada, arquitectura (MVC), un patrón por diapositiva (Facade, Observer, Singleton, Strategy, Mediator, Decorator, State, Memento con el DeLorean y Command con la repetición), calidad (niveles verificados y 24 pruebas) y cierre.
+
+Cada diapositiva de patrón muestra el diagrama aprobado de `carpeta-temporal/patrones/` a la izquierda y la teoría a la derecha; cada → enciende un rol. Los textos están en `src/datos-patrones.js`.
+
+- **Diagramas:** `PLANTUML_JAR=/ruta/plantuml.jar python3 generar_patrones.py` vuelve a generar `medios/patrones/*.svg` desde los `.puml` (solo cambia colores).
+- **Código que se muestra:** `node verificar-codigo.mjs` controla que cada línea exista en `src/main/java/sokoban/`; `build.py` lo corre antes de armar.
 
 ## Diapositivas (versión larga)
 

@@ -31,11 +31,11 @@ export const NIVELES = [
   },
 ];
 
-/** Pruebas JUnit 5 de src/test/java (mvn package las corre; todas pasan). Fuente: target/surefire-reports. */
+/** Pruebas JUnit 5 de src/test/java (mvn package las corre; las 24 pasan). Fuente: target/surefire-reports. */
 export const PRUEBAS = [
   { clase: "ReglasTest", cuantas: 17, que: "movimiento, hielo, frágil, llave, deshacer, DeLorean, puntaje" },
   { clase: "NivelesTest", cuantas: 3, que: "la solución más corta completa cada nivel" },
-  { clase: "JuegoConSonidoTest", cuantas: 2, que: "el sonido del cerrojo" },
+  { clase: "EventosTest", cuantas: 3, que: "los eventos del dominio: cerrojo, frágil y victoria" },
   { clase: "RepeticionTest", cuantas: 1, que: "la repetición termina igual" },
 ];
 

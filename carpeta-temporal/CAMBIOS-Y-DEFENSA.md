@@ -1,5 +1,7 @@
 # Cambios después de la auditoría y guía para la defensa
 
+> **Documento de la etapa anterior (16/11).** Después de esto el código se simplificó para que cada patrón tenga su estructura clásica. Lo vigente está en `Resumen-de-estudio-Sokoban.pdf` y en las fichas de `patrones/`.
+
 Este documento es para el equipo (está en la carpeta temporal, que se borra antes de entregar). Explica **qué se cambió, por qué, dónde está y cómo comprobarlo**, para que cada uno lo revise y lo pueda defender.
 
 ## 1. Qué dijo la auditoría y qué se hizo

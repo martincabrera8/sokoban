@@ -8,7 +8,7 @@ Requisito: **Java 17 o superior**. Se ejecuta desde la **raíz del repositorio**
 
 - **Con Maven**: `mvn package` y después `java -jar target/sokoban.jar` (el `.jar` ya incluye las imágenes, los sonidos y los niveles).
 - **VS Code / IntelliJ / Eclipse / NetBeans**: abrir la carpeta (se importa como proyecto Maven) y ejecutar `sokoban.Main`.
-- **Pruebas automáticas**: `mvn test` (23 pruebas con JUnit sobre las reglas, los niveles, la repetición y el sonido).
+- **Pruebas automáticas**: `mvn test` (24 pruebas con JUnit sobre las reglas, los eventos, los niveles y la repetición).
 
 En el menú, **Cómo jugar** explica cada casilla y las teclas.
 
@@ -67,12 +67,12 @@ src/main/java/sokoban/
 ├── Main.java          Conecta todo: new JuegoConSonido(new JuegoSokoban(new CargadorNivel(carpeta)))
 ├── vista/             Interfaz Swing: ventana, menú, partida, HUD, tablero, carteles
 ├── comandos/          Comandos del jugador, grabadora y repetición (Command)
-├── modelo/            Contrato con la vista (Juego, ObservadorJuego, EstadoJuego, Direccion)
-│   │                  y dominio (JuegoSokoban, EstadoNivel, RecuerdoNivel, CargadorNivel, Posicion)
-│   ├── entidades/     Jugador y Caja
+├── modelo/            Contrato con la vista (Juego, SujetoJuego, ObservadorJuego, EstadoJuego, Direccion)
+│   │                  y dominio (JuegoSokoban, EstadoNivel, RecuerdoNivel, Puntaje, Evento, CargadorNivel)
+│   ├── entidades/     ElementoMovil, Jugador y Caja
 │   ├── estrategias/   Comportamiento de cada tipo de caja
 │   ├── movimiento/    Motor que resuelve los movimientos
-│   └── tiempo/        Máquina del tiempo del DeLorean (Memento)
+│   └── tiempo/        HistorialDeshacer y MaquinaDelTiempo (cuidadores del Memento)
 └── sonido/            Efectos de sonido
 assets/                Imágenes (personaje, cajas, pisos, fondos, HUD) y sonidos (.wav)
 niveles/               Niveles en texto
@@ -85,15 +85,15 @@ src/test/java/         Pruebas con JUnit y VerificadorDeNiveles
 | Patrón | Dónde | Para qué |
 |---|---|---|
 | MVC | `vista` / `modelo` | La vista no conoce las clases del dominio |
-| Facade | `Juego` | Único punto de entrada de la vista al juego |
-| Observer | `Juego` (suscribir y desuscribir), `ObservadorJuego` (HUD y tablero) | Se actualizan solos cuando cambia la partida |
+| Facade | `Juego` y `JuegoSokoban` | Único punto de entrada de la vista; reparte el trabajo entre el nivel, el mediador, el deshacer, el DeLorean y el puntaje |
+| Observer | `SujetoJuego`, `JuegoSokoban`, `ObservadorJuego` (HUD y tablero) | Se actualizan solos cuando cambia la partida |
 | Singleton | `Imagenes`, `Sonidos` | Una sola caché de imágenes y de sonidos |
 | Strategy | `ComportamientoCaja` | Cada tipo de caja (normal, frágil, llave) tiene su regla |
-| Mediator | `MediadorMovimiento`, `MotorMovimiento` (colegas: `Jugador` y `Caja`) | El jugador y las cajas no tocan el tablero: el mediador resuelve colisiones, empujes, hielo, roturas y cerrojos |
+| Mediator | `MediadorMovimiento`, `MotorMovimiento` y `ElementoMovil` (`Jugador` y `Caja`) | El jugador y las cajas no tocan el tablero: el mediador resuelve colisiones, empujes, hielo, roturas y cerrojos |
 | Decorator | `JuegoDecorado` (base) y `JuegoConSonido` | Le agrega sonido al juego sin modificarlo |
 | State | `SonidoActivado` / `SonidoSilenciado` | La tecla M cambia el comportamiento del sonido |
-| Memento | `RecuerdoNivel`, `JuegoSokoban`, `MaquinaDelTiempo` | Deshacer y DeLorean: guardar y restaurar momentos del nivel sin exponer su interior |
-| Command | `Comando`, `GrabadoraDePartida`, `Repeticion` | Grabar las acciones del jugador y repetir la partida |
+| Memento | `EstadoNivel` (originador), `RecuerdoNivel`, `HistorialDeshacer` y `MaquinaDelTiempo` (cuidadores) | Deshacer y DeLorean: guardar y restaurar momentos del nivel sin exponer su interior |
+| Command | `Comando`, los tres comandos y `GrabadoraDePartida` (invocador) | Grabar las acciones del jugador y repetir la partida |
 
 ## Documentación
 
