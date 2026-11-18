@@ -7,6 +7,7 @@ const DIAGRAMAS = {};
 export const registrar = (clave, modulo) => { DIAGRAMAS[clave] = modulo; };
 
 const FRENO = 450; // ms entre cambios de diapositiva
+const PAUSA_BUCLE = 2.5; // s quieta al terminar, antes de volver a empezar (diapositivas data-auto)
 let escenario, slides, actual = -1, ocupado = false, ultimo = 0, est = null, notas = null, inicioCharla = Date.now(), turno = 0;
 /** Mediciones para pruebas: montaje (ms), espera de preparación (ms) y transición (ms) de la última entrada. */
 const medidas = { montaje: 0, preparacion: 0, transicion: 0 };
@@ -44,10 +45,11 @@ function montar(i) {
   const ctx = modulo.montar(lienzo, { slide, escenario });
   const tl = gsap.timeline({ paused: true });
   entradaCabecera(tl, slide);
+  const finCabecera = tl.duration();
   modulo.construir(tl, ctx);
   const pasos = Object.values(tl.labels).sort((a, b) => a - b).filter((x) => x > 0 && x < tl.duration());
   pasos.push(tl.duration());
-  return { slide, modulo, ctx, tl, pasos, paso: 0, vida: null, reproductor: null };
+  return { slide, modulo, ctx, tl, pasos, paso: 0, vida: null, reproductor: null, finCabecera };
 }
 
 function desmontar(e) {
@@ -56,6 +58,28 @@ function desmontar(e) {
   if (e.reproductor) e.reproductor.kill();
   e.tl.kill();
   if (e.modulo.desmontar) e.modulo.desmontar(e.ctx);
+}
+
+/** Diapositivas con data-auto: se arman solas y vuelven a empezar en bucle; las flechas pasan de diapositiva. */
+const esAuto = (e) => e.slide.hasAttribute("data-auto");
+
+function bucle(e) {
+  if (est !== e) return;
+  if (e.reproductor) e.reproductor.kill();
+  const fin = e.tl.duration();
+  if (reducido()) { e.tl.seek(fin, false); return; }
+  const otraVuelta = () => {
+    if (est !== e) return;
+    arrancarVida(e);
+    e.reproductor = gsap.delayedCall(PAUSA_BUCLE, () => {
+      if (est !== e) return;
+      if (e.vida) { e.vida.kill(); e.vida = null; }
+      e.tl.seek(Math.min(e.finCabecera, fin), false); // la cabecera queda; el resto se vuelve a armar
+      bucle(e);
+    });
+  };
+  if (e.tl.time() >= fin - 0.01) { otraVuelta(); return; }
+  e.reproductor = e.tl.tweenTo(fin, { ease: "none", onComplete: otraVuelta });
 }
 
 function arrancarVida(e) {
@@ -146,9 +170,10 @@ function mostrar(i, dir, construido) {
       desmontar(anterior);
       medidas.transicion = performance.now() - t1;
       if (mio === turno) ocupado = false;
-      arrancarVida(e);
+      if (!esAuto(e)) arrancarVida(e);
     };
-    if (!construido) reproducirHasta(e, e.pasos[0]);
+    if (esAuto(e)) bucle(e);
+    else if (!construido) reproducirHasta(e, e.pasos[0]);
     if (!prevEl || reducido()) { terminar(); return; }
     // La que sale deja de dibujar su 3D apenas empieza la transición (su último cuadro queda quieto en el lienzo).
     prevEl.classList.add("saliendo");
@@ -162,6 +187,7 @@ function mostrar(i, dir, construido) {
 
 function avanzar() {
   if (!est || !est.slide.classList.contains("activa")) return; // todavía se prepara
+  if (esAuto(est)) { irA(actual + 1, 1); return; }
   if (est.paso < est.pasos.length - 1 && est.tl.time() >= est.pasos[est.paso] - 0.01) {
     est.paso += 1;
     reproducirHasta(est, est.pasos[est.paso]);
@@ -178,6 +204,7 @@ function avanzar() {
 /** ← : vuelve un paso dentro de la diapositiva; en el primer paso, a la diapositiva anterior ya armada. */
 function retroceder() {
   if (!est || !est.slide.classList.contains("activa")) return;
+  if (esAuto(est)) { irA(actual - 1, -1, true); return; }
   if (est.paso > 0) {
     est.paso -= 1;
     const destino = est.pasos[est.paso];

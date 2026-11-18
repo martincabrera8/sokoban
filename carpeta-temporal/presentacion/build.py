@@ -21,11 +21,12 @@ AQUI = Path(__file__).resolve().parent
 SRC = AQUI / "src"
 ASSETS = AQUI.parent.parent / "assets"  # assets/ del juego, en la raíz del repo
 CORTA = "--corta" in sys.argv or os.environ.get("PRESENTACION_VERSION", "") == "corta"
-HTML_FUENTE = AQUI / ("index-corta.src.html" if CORTA else "index.src.html")
-ENTRADA = SRC / ("main-corta.js" if CORTA else "main.js")
+COMPLETA = "--completa" in sys.argv or os.environ.get("PRESENTACION_VERSION", "") == "completa"
+HTML_FUENTE = AQUI / ("index-corta.src.html" if CORTA else "index-completa.src.html" if COMPLETA else "index.src.html")
+ENTRADA = SRC / ("main-corta.js" if CORTA else "main-completa.js" if COMPLETA else "main.js")
 UML = Path(os.environ.get("PRESENTACION_UML", AQUI.parent / "docs" / "uml" / "2-diagrama-completo.svg"))  # otro plano para probar
 FUENTES = AQUI / "node_modules" / "@fontsource"
-SALIDA = Path(os.environ.get("PRESENTACION_SALIDA", AQUI / "dist" / ("presentacion-corta.html" if CORTA else "presentacion-sokoban.html")))  # otra salida para pruebas en paralelo
+SALIDA = Path(os.environ.get("PRESENTACION_SALIDA", AQUI / "dist" / ("presentacion-corta.html" if CORTA else "presentacion-completa.html" if COMPLETA else "presentacion-sokoban.html")))  # otra salida para pruebas en paralelo
 
 TIPOS = [  # (familia, archivo, peso)
     ("Pixelify Sans", "pixelify-sans/files/pixelify-sans-latin-500-normal.woff2", 500),
@@ -149,7 +150,7 @@ def armar():
     for propio in sorted((SRC / "diagramas").glob("*.css")):  # estilos propios de cada diagrama
         css += "\n" + propio.read_text(encoding="utf-8")
     datos = ("window.PERSONAJE=" + json.dumps(personaje()) + ";window.IMG=" + json.dumps(mapa) + ";window.INVENTARIO=" + json.dumps(inventario) + ";window.UML=" + json.dumps(uml) + ";")
-    if CORTA:  # diagramas de cada patrón (generar_patrones.py), como SVG vectorial
+    if CORTA or COMPLETA:  # diagramas de cada patrón (generar_patrones.py), como SVG vectorial
         patrones = {p.stem: p.read_text(encoding="utf-8") for p in sorted((AQUI / "medios" / "patrones").glob("*.svg"))}
         datos += "window.PATRONES_SVG=" + json.dumps(patrones) + ";"
     html = HTML_FUENTE.read_text(encoding="utf-8")

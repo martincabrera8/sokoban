@@ -14,10 +14,10 @@ export const NIVEL_ESCENA = [
 /** Partes del trabajo. Fuente: historial de commits del repo (dominio: commits de Pedro del 6/11 y 9/11; sonido: pull request 1 de Mora, 9/11). */
 export const PARTES = [
   { nombre: "Arte", quien: "Martín", detalle: "104 imágenes en assets/", listo: true },
-  { nombre: "Interfaz Swing", quien: "Luca", detalle: "13 archivos Java: menú, HUD, tablero, carteles", listo: true },
+  { nombre: "Interfaz Swing", quien: "Luca", detalle: "9 clases Swing: menú, HUD, tablero, carteles", listo: true },
   { nombre: "Integración", quien: "Martín y Luca", detalle: "épocas y personaje en 4 direcciones", listo: true },
   { nombre: "Dominio y personaje", quien: "Pedro y Lucía", detalle: "3 cajas, hielo, cerrojos y deshacer", listo: true, recien: true },
-  { nombre: "Sonido", quien: "Mora", detalle: "14 efectos propios y tecla M", listo: true, recien: true },
+  { nombre: "Sonido", quien: "Mora", detalle: "16 efectos propios y tecla M", listo: true, recien: true },
 ];
 
 /** Imágenes que hoy usa el juego (30). Fuente: rutas en src/main/java/sokoban/vista/*.java. */
@@ -27,12 +27,12 @@ export const USADAS = [
   "characters/player_down", "characters/player_left", "characters/player_right", "characters/player_up",
   "goals/goal", "goals/goal_placed",
   "tiles/cerrojo_abierto", "tiles/cerrojo_cerrado", "tiles/floor_1955", "tiles/floor_1985", "tiles/floor_2015", "tiles/muro_abierto", "tiles/muro_cerrado",
-  "tiles/terreno_resbaladizo", "tiles/wall_brick", "tiles/wall_future", "tiles/wall_mall",
-  "ui/boton_pause", "ui/boton_restart", "ui/boton_undo", "ui/indicador_empujes", "ui/indicador_movimientos", "ui/indicador_nivel",
+  "tiles/terreno_resbaladizo", "tiles/wall_brick", "tiles/wall_future", "tiles/wall_mall", "items/plutonio",
+  "ui/boton_delorean", "ui/indicador_plutonio", "ui/boton_pause", "ui/boton_restart", "ui/boton_undo", "ui/indicador_empujes", "ui/indicador_movimientos", "ui/indicador_nivel",
 ];
 
 /** Orden de los estantes del depósito de arte (carpetas de assets/). */
-export const ESTANTES = ["characters", "boxes", "goals", "backgrounds", "ui", "tiles"];
+export const ESTANTES = ["characters", "boxes", "goals", "items", "backgrounds", "ui", "tiles"];
 
 /** Pantallas de la interfaz. Fuente: docs/interfaz.md y docs/capturas/. */
 export const PANTALLAS = [

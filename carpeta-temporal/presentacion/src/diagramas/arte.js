@@ -11,7 +11,7 @@ import { cargando } from "../vista3d.js";
  * (una carta, una imagen). Después las pilas estallan en un depósito donde se ve cada imagen y se encienden las 30
  * que el juego usa. Al final esas 30 vuelan y arman un nivel del juego: con 30 imágenes alcanza para todo el tablero.
  */
-const ANCHO = { characters: 2, boxes: 2, goals: 2, backgrounds: 2, ui: 4, tiles: 8 }; // columnas de cada estante
+const ANCHO = { characters: 2, boxes: 2, goals: 2, items: 1, backgrounds: 2, ui: 4, tiles: 8 }; // columnas de cada estante
 const HUECO = 0.8, CARTA = 0.92, GROSOR = 0.07, PILA_Z = 2.2, BASE_Y = 0.6;
 const ANCHAS = (k) => k.startsWith("backgrounds/") || k.startsWith("ui/pantalla_");
 
