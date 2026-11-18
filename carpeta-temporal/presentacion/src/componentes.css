@@ -224,3 +224,9 @@ html, body { background: var(--fondo); }
 .ayuda__lista { display: grid; grid-template-columns: 300px 1fr; gap: 12px 28px; margin: 0; }
 .ayuda__lista dt { font-family: var(--f-mono); font-size: 24px; color: var(--acento); }
 .ayuda__lista dd { margin: 0; font-size: 24px; color: var(--tinta-2); }
+
+/* Aviso discreto mientras las animaciones están en pausa (tecla I). */
+.aviso-pausa { position: absolute; right: 28px; bottom: 22px; z-index: 30; padding: 8px 16px; border-radius: var(--radio-chico);
+  font-family: var(--f-mono); font-size: 18px; color: var(--tinta-2); background: color-mix(in srgb, var(--fondo-hondo) 80%, transparent);
+  border: 1px solid var(--linea-suave); opacity: 0; transition: opacity var(--dur-ui); pointer-events: none; }
+.aviso-pausa--visible { opacity: 1; }

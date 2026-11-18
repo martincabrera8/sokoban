@@ -1,0 +1,18 @@
+/* Plano UML completo en 2D (plano.js): vectorial, la cámara es una transformación del bloque. */
+.umlp { position: absolute; inset: 0; overflow: hidden; }
+.umlp__ventana { position: absolute; left: var(--x); top: var(--y); width: var(--w); height: var(--h); overflow: hidden;
+  border-radius: var(--radio); background: var(--papel); box-shadow: var(--sombra-caja); }
+.umlp__mundo { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+.umlp__mundo > svg { display: block; max-width: none; border-radius: var(--radio); }
+.umlp__velo { fill: var(--papel); pointer-events: none; }
+.umlp__borde { fill: none; stroke: var(--acento); stroke-width: 5; }
+.umlp__titulo rect { fill: var(--fondo-hondo); }
+.umlp__titulo text { fill: var(--acento); font-family: var(--f-display); font-size: 34px; letter-spacing: 1px; }
+.umlp__arriba { position: absolute; left: var(--margen); right: var(--margen); top: 34px; height: 190px; }
+.umlp__rotulo { position: absolute; inset: 0; visibility: hidden; }
+.umlp__nombre { margin: 0; font-family: var(--f-display); font-size: 58px; line-height: 1.05; color: var(--titulo); }
+.umlp__bajada { margin: 8px 0 0; font-size: 24px; color: var(--tinta-2); max-width: 1500px; }
+.umlp__roles { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 12px 0 0; padding: 0; list-style: none; font-size: 21px; }
+.umlp__roles li { display: flex; gap: 8px; align-items: baseline; }
+.umlp__rol { color: var(--acento); font-weight: 600; }
+.umlp__roles code { font-family: var(--f-mono); color: var(--tinta); }

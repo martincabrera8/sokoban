@@ -25,7 +25,7 @@ window.__vista3d = estado;
 /** Resolución de dibujo: la del escenario por la densidad de la pantalla, como máximo 1.5. */
 function ratioBase() {
   const escala = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--escala")) || 1;
-  return Math.min(1.5, (window.devicePixelRatio || 1) * escala);
+  return Math.min(1.25, (window.devicePixelRatio || 1) * escala);
 }
 
 /** Una imagen o un lienzo que se dibuja después del montaje: la diapositiva espera a que esté para entrar. */

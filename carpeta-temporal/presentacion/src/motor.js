@@ -8,6 +8,13 @@ export const registrar = (clave, modulo) => { DIAGRAMAS[clave] = modulo; };
 
 const FRENO = 450; // ms entre cambios de diapositiva
 const PAUSA_BUCLE = 2.5; // s quieta al terminar, antes de volver a empezar (diapositivas data-auto)
+/* <html data-velocidad="2.5">: todas las animaciones van más rápido. <html data-inicio="pausa">: arranca quieta y la I la inicia. */
+const VELOCIDAD = parseFloat(document.documentElement.dataset.velocidad) || 1;
+let avisoPausa = null;
+function pausar(quieta) {
+  gsap.globalTimeline.paused(quieta);
+  if (avisoPausa) avisoPausa.classList.toggle("aviso-pausa--visible", quieta);
+}
 let escenario, slides, actual = -1, ocupado = false, ultimo = 0, est = null, notas = null, inicioCharla = Date.now(), turno = 0;
 /** Mediciones para pruebas: montaje (ms), espera de preparación (ms) y transición (ms) de la última entrada. */
 const medidas = { montaje: 0, preparacion: 0, transicion: 0 };
@@ -275,7 +282,7 @@ const TECLAS = [
   ["Inicio · Fin", "Primera o última diapositiva"],
   ["1 a 9 · dos cifras", "Ir a esa diapositiva"],
   ["R", "Repetir la diapositiva desde el principio"],
-  ["Z", "Pausar o reanudar"],
+  ["I", "Iniciar o pausar las animaciones (la presentación arranca en pausa)"],
   ["F", "Pantalla completa"],
   ["H", "Ocultar todo"],
   ["N", "Notas del expositor, en otra ventana"],
@@ -338,7 +345,7 @@ function teclado(ev) {
   else if (k === "Home") irA(0, -1);
   else if (k === "End") irA(slides.length - 1, 1, true);
   else if (/^[0-9]$/.test(k)) cifra(k);
-  else if (k === "z" || k === "Z") gsap.globalTimeline.paused(!gsap.globalTimeline.paused());
+  else if (k === "z" || k === "Z" || k === "i" || k === "I") pausar(!gsap.globalTimeline.paused());
   else if (k === "r" || k === "R") repetir();
   else if (k === "f" || k === "F") pantallaCompleta();
   else if (k === "h" || k === "H") escenario.classList.toggle("oculto-todo");
@@ -355,6 +362,13 @@ export function iniciar() {
   slides.forEach((s) => s.setAttribute("aria-hidden", "true"));
   crearMosaico();
   crearAyuda();
+  gsap.globalTimeline.timeScale(VELOCIDAD);
+  avisoPausa = document.createElement("div");
+  avisoPausa.className = "aviso-pausa";
+  avisoPausa.setAttribute("aria-hidden", "true");
+  avisoPausa.textContent = "En pausa · I para iniciar";
+  escenario.appendChild(avisoPausa);
+  if (document.documentElement.dataset.inicio === "pausa") pausar(true);
   const anillo = document.createElement("div");
   anillo.className = "portal-anillo";
   anillo.setAttribute("aria-hidden", "true");
