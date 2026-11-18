@@ -77,6 +77,7 @@ src/main/java/sokoban/
 assets/                Imágenes (personaje, cajas, pisos, fondos, HUD) y sonidos (.wav)
 niveles/               Niveles en texto
 docs/                  Informe técnico, diagrama StarUML (Sokoban.mdj), video de gameplay y notas del dominio y del sonido
+Presentacion.html      Presentación del trabajo (un solo archivo, sin internet)
 src/test/java/         Pruebas con JUnit y VerificadorDeNiveles
 ```
 
@@ -94,6 +95,10 @@ src/test/java/         Pruebas con JUnit y VerificadorDeNiveles
 | State | `SonidoActivado` / `SonidoSilenciado` | La tecla M cambia el comportamiento del sonido |
 | Memento | `EstadoNivel` (originador), `RecuerdoNivel`, `HistorialDeshacer` y `MaquinaDelTiempo` (cuidadores) | Deshacer y DeLorean: guardar y restaurar momentos del nivel sin exponer su interior |
 | Command | `Comando`, los tres comandos y `GrabadoraDePartida` (invocador) | Grabar las acciones del jugador y repetir la partida |
+
+## Presentación
+
+`Presentacion.html` (en la raíz): abrir con Chrome o Edge, funciona sin internet. Arranca en pausa: la tecla **I** inicia o pausa las animaciones, que van solas y en bucle. Las flechas pasan de diapositiva y, en el diagrama UML grande, cada flecha va a un patrón con su título y sus roles. **F** pone pantalla completa y **?** muestra todas las teclas.
 
 ## Documentación
 
