@@ -8,6 +8,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import sokoban.modelo.construccion.ConstructorEstadoNivel;
+import sokoban.modelo.construccion.ConstructorNivel;
+import sokoban.modelo.construccion.DirectorNivel;
+
 /**
  * Lee los niveles nivel1.txt, nivel2.txt, ... de una carpeta (por defecto "niveles"),
  * primero desde el .jar y si no, desde el disco. Para agregar un nivel alcanza con
@@ -35,10 +39,20 @@ public class CargadorNivel {
             if (lineas == null) {
                 throw new IllegalStateException("No existe " + carpeta + "/" + nombre);
             }
-            return new EstadoNivel(limpiar(lineas));
+            return construir(limpiar(lineas));
         } catch (IOException e) {
             throw new IllegalStateException("No se pudo cargar " + carpeta + "/" + nombre, e);
         }
+    }
+
+    /**
+     * Patrón Builder: el cliente. Crea el builder y el director, el director arma el nivel
+     * con los pasos del builder y el builder entrega el resultado.
+     */
+    public static EstadoNivel construir(List<String> lineas) {
+        ConstructorNivel constructor = new ConstructorEstadoNivel();
+        new DirectorNivel(constructor).construir(lineas);
+        return constructor.obtenerNivel();
     }
 
     /** Hay un archivo nivelN.txt para ese número. */

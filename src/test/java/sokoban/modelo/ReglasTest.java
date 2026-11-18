@@ -179,8 +179,8 @@ class ReglasTest {
 
     @Test
     void unNivelSinJugadorOConCajasDeMasSeRechaza() {
-        assertThrows(IllegalArgumentException.class, () -> new EstadoNivel(List.of("####", "#$.#", "####")));
-        assertThrows(IllegalArgumentException.class, () -> new EstadoNivel(List.of("######", "#@$$.#", "######")));
+        assertThrows(IllegalArgumentException.class, () -> CargadorNivel.construir(List.of("####", "#$.#", "####")));
+        assertThrows(IllegalArgumentException.class, () -> CargadorNivel.construir(List.of("######", "#@$$.#", "######")));
     }
 
     @Test

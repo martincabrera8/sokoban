@@ -6,9 +6,6 @@ import java.util.List;
 
 import sokoban.modelo.entidades.Caja;
 import sokoban.modelo.entidades.Jugador;
-import sokoban.modelo.estrategias.CajaFragilStrategy;
-import sokoban.modelo.estrategias.CajaLlaveStrategy;
-import sokoban.modelo.estrategias.CajaNormalStrategy;
 import sokoban.modelo.movimiento.MediadorMovimiento;
 
 /**
@@ -16,8 +13,6 @@ import sokoban.modelo.movimiento.MediadorMovimiento;
  * Es el originador del patrón Memento: sabe guardarse en un RecuerdoNivel y volver a él.
  */
 public class EstadoNivel {
-
-    private static final int RESISTENCIA_FRAGIL = 3;
 
     private char[][] terreno;
     private final Jugador jugador;
@@ -28,60 +23,12 @@ public class EstadoNivel {
     private int plutonio;
     private MediadorMovimiento mediador;
 
-    /** Arma el nivel a partir de las líneas del archivo, una letra por casilla. */
-    public EstadoNivel(List<String> lineas) {
-        if (lineas.isEmpty()) {
-            throw new IllegalArgumentException("Nivel vacío");
-        }
-        int ancho = lineas.get(0).length();
-        terreno = new char[lineas.size()][ancho];
-        Jugador encontrado = null;
-        int destinos = 0;
-
-        for (int fila = 0; fila < lineas.size(); fila++) {
-            String linea = lineas.get(fila);
-            if (linea.length() != ancho) {
-                throw new IllegalArgumentException("Filas de distinto ancho en la fila " + fila);
-            }
-            for (int columna = 0; columna < ancho; columna++) {
-                char simbolo = linea.charAt(columna);
-                Posicion posicion = new Posicion(fila, columna);
-                terreno[fila][columna] = switch (simbolo) {
-                    case '#', ' ', '.', '~', 'C', 'X', 'O', 'P' -> simbolo;
-                    case '@', '+' -> {
-                        if (encontrado != null) {
-                            throw new IllegalArgumentException("Más de un jugador");
-                        }
-                        encontrado = new Jugador(posicion);
-                        yield simbolo == '+' ? '.' : ' ';
-                    }
-                    case '$', '*' -> {
-                        cajas.add(new Caja(posicion, new CajaNormalStrategy(), 0));
-                        yield simbolo == '*' ? '.' : ' ';
-                    }
-                    case 'F' -> {
-                        cajas.add(new Caja(posicion, new CajaFragilStrategy(), RESISTENCIA_FRAGIL));
-                        yield ' ';
-                    }
-                    case 'L' -> {
-                        cajas.add(new Caja(posicion, new CajaLlaveStrategy(), 0));
-                        yield ' ';
-                    }
-                    default -> throw new IllegalArgumentException("Símbolo desconocido: " + simbolo);
-                };
-                if (terreno[fila][columna] == '.') {
-                    destinos++;
-                }
-            }
-        }
-        if (encontrado == null) {
-            throw new IllegalArgumentException("Falta el jugador");
-        }
-        if (destinos == 0 || destinos != cajas.size()) {
-            throw new IllegalArgumentException("Tiene que haber una caja por cada destino");
-        }
-        jugador = encontrado;
-        cantidadDestinos = destinos;
+    /** Lo usa el builder (ConstructorEstadoNivel) cuando ya juntó todas las piezas. */
+    public EstadoNivel(char[][] terreno, Jugador jugador, List<Caja> cajas) {
+        this.terreno = terreno;
+        this.jugador = jugador;
+        this.cajas.addAll(cajas);
+        this.cantidadDestinos = cajas.size();
     }
 
     // ---------- Mediator ----------

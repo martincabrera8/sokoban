@@ -69,6 +69,7 @@ src/main/java/sokoban/
 ├── comandos/          Comandos del jugador, grabadora y repetición (Command)
 ├── modelo/            Contrato con la vista (Juego, SujetoJuego, ObservadorJuego, EstadoJuego, Direccion)
 │   │                  y dominio (JuegoSokoban, EstadoNivel, RecuerdoNivel, Puntaje, Evento, CargadorNivel)
+│   ├── construccion/  Builder que arma cada nivel desde su archivo de texto
 │   ├── entidades/     ElementoMovil, Jugador y Caja
 │   ├── estrategias/   Comportamiento de cada tipo de caja
 │   ├── movimiento/    Motor que resuelve los movimientos
@@ -89,6 +90,7 @@ src/test/java/         Pruebas con JUnit y VerificadorDeNiveles
 | Facade | `Juego` y `JuegoSokoban` | Único punto de entrada de la vista; reparte el trabajo entre el nivel, el mediador, el deshacer, el DeLorean y el puntaje |
 | Observer | `SujetoJuego`, `JuegoSokoban`, `ObservadorJuego` (HUD y tablero) | Se actualizan solos cuando cambia la partida |
 | Singleton | `Imagenes`, `Sonidos` | Una sola caché de imágenes y de sonidos |
+| Builder | `DirectorNivel`, `ConstructorNivel` y `ConstructorEstadoNivel` (cliente: `CargadorNivel`) | El director lee el texto del nivel y el builder arma cada pieza (terreno, jugador y cajas con su estrategia) y entrega el `EstadoNivel` validado |
 | Strategy | `ComportamientoCaja` | Cada tipo de caja (normal, frágil, llave) tiene su regla |
 | Mediator | `MediadorMovimiento`, `MotorMovimiento` y `ElementoMovil` (`Jugador` y `Caja`) | El jugador y las cajas no tocan el tablero: el mediador resuelve colisiones, empujes, hielo, roturas y cerrojos |
 | Decorator | `JuegoDecorado` (base) y `JuegoConSonido` | Le agrega sonido al juego sin modificarlo |

@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import sokoban.modelo.Direccion;
+import sokoban.modelo.CargadorNivel;
 import sokoban.modelo.EstadoNivel;
 import sokoban.modelo.Evento;
 import sokoban.modelo.Posicion;
@@ -86,7 +87,7 @@ public final class VerificadorDeNiveles {
         System.out.println("\n=== " + titulo);
         filas.forEach(fila -> System.out.println("    " + fila));
         try {
-            new EstadoNivel(filas);
+            CargadorNivel.construir(filas);
         } catch (IllegalArgumentException e) {
             System.out.println("  FORMATO INVÁLIDO: " + e.getMessage());
             return;
@@ -114,7 +115,7 @@ public final class VerificadorDeNiveles {
     static Resultado resolver(List<String> filasConPlutonio) {
         // El plutonio no cambia qué cajas se pueden mover: se saca para no duplicar las posiciones.
         List<String> filas = filasConPlutonio.stream().map(fila -> fila.replace('P', ' ')).toList();
-        EstadoNivel inicio = new EstadoNivel(filas);
+        EstadoNivel inicio = CargadorNivel.construir(filas);
         Map<String, Integer> indice = new HashMap<>();
         List<EstadoNivel> estados = new ArrayList<>();
         List<Integer> padre = new ArrayList<>();
@@ -139,7 +140,7 @@ public final class VerificadorDeNiveles {
                 break;
             }
             for (Direccion direccion : Direccion.values()) {
-                EstadoNivel siguiente = new EstadoNivel(filas);
+                EstadoNivel siguiente = CargadorNivel.construir(filas);
                 siguiente.restaurar(actual.crearRecuerdo());
                 siguiente.conectarMediador(new MotorMovimiento(siguiente));
                 if (siguiente.getJugador().mover(direccion) == Evento.CHOQUE) {
